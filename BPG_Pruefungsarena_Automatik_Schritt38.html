@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>BPG Prüfungsarena</title>
+<style>body{font-family:system-ui,sans-serif;background:#10162d;color:white;max-width:780px;margin:30px auto;padding:16px}h1{color:#f5ba28}.card{background:#242b4a;border-radius:16px;padding:22px;margin:16px 0}input,button{font:inherit;padding:12px;border-radius:9px;border:0;margin:5px 0;box-sizing:border-box}input{background:#f9fafb;color:#10162d;width:100%;max-width:400px}button{background:#f5ba28;color:#10162d;cursor:pointer;font-weight:700}button:disabled{opacity:.55;cursor:wait}.muted{color:#c4cce3}#options button{display:block;width:100%;text-align:left;background:#2f73ce;color:white}#notice{white-space:pre-wrap}#notice.error{color:#ff9d9d}#notice.ok{color:#80e3b5}code{overflow-wrap:anywhere}#waiting[hidden],#hostPanel[hidden],#hostControls[hidden],#liveGame[hidden]{display:none}#playerList{list-style:none;padding:0}#playerList li{padding:11px 13px;background:#344064;border-radius:9px;margin:7px 0;display:flex;justify-content:space-between}#waitingStatus{color:#c4cce3}#liveAnswers{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}#liveAnswers button{background:#345da2;color:white;text-align:left;min-height:72px;white-space:normal}#liveAnswers button:disabled{opacity:.75}#liveAnswers button.correct{background:#187b4b}#liveAnswers button.wrong{background:#9a333b}#liveBoard{list-style:none;padding:0}#liveBoard li{background:#344064;padding:10px;margin:5px 0;border-radius:8px}#liveTimer{font-size:2rem;font-weight:800;color:#f5ba28}@media(max-width:500px){#liveAnswers{grid-template-columns:1fr}}</style>
+</head><body>
+<h1>🚆 BPG Prüfungsarena</h1><p class="muted">Online beitreten oder alleine üben – die Mehrspieler-Runde wird schrittweise ergänzt.</p>
+<section class="card"><h2>🌐 Online-Spiel beitreten</h2><p>Ein Gastgeber muss den Raum zuvor in Supabase erstellt haben. Trage unten deinen öffentlichen Supabase-Schlüssel ein, um die Verbindung zu testen.</p>
+<label for="key">Öffentlicher Supabase Publishable Key (sb_publishable_...)</label><input type="password" id="key" placeholder="sb_publishable_..." autocomplete="off"><br>
+<label for="pin">Sechsstelliger Spielcode</label><input id="pin" inputmode="numeric" maxlength="6" placeholder="z. B. 402365"><br>
+<label for="nickname">Dein Spitzname</label><input id="nickname" maxlength="24" placeholder="z. B. Loklöwe"><br>
+<button id="join">Spiel beitreten</button><p id="notice" role="status" aria-live="polite"></p>
+<p class="muted"><small>Nur den öffentlichen sb_publishable_-Schlüssel verwenden, niemals einen Secret Key. Die Spielerliste wird alle 3 Sekunden aktualisiert. Das ist noch kein fertiges Live-Quiz.</small></p></section>
+<section class="card" id="hostPanel"><h2>🔐 Als Spielleiter anmelden</h2><p class="muted">Mit deinem geheimen Gastgeber-Code anmelden. Der Code wird nicht in der HTML-Datei gespeichert. Für den Test brauchst du den öffentlichen Supabase-Schlüssel im Feld oben.</p><label for="hostCode">Geheimer Gastgeber-Code</label><input type="password" id="hostCode" autocomplete="off" placeholder="Gastgeber-Code eingeben"><br><button type="button" id="hostLogin">Als Spielleiter anmelden</button><p id="hostNotice" role="status" aria-live="polite"></p><p class="muted"><small>Diese Anmeldung testet nur die Datenbankfunktion. Spiel starten, Fragen steuern und Gastgeber-Abmeldung werden in den nächsten Schritten ergänzt. Noch nicht öffentlich freigeben.</small></p></section>
+<section class="card" id="hostControls" hidden><h2>🎮 Gastgeber-Steuerung</h2><p class="muted">Wähle ein Quiz und erstelle einen neuen Spielraum. Nur deine eigene Gastgeber-Sitzung kann ihn starten.</p><label for="quizSelect">Quiz auswählen</label><select id="quizSelect" style="display:block;width:100%;max-width:480px;padding:12px;border-radius:9px;margin:8px 0 14px;font:inherit"></select><br><button id="reloadQuizzes" type="button">Quizze aktualisieren</button> <button id="createRoom" type="button">Neuen Spielraum erstellen</button><p id="roomInfo" role="status" aria-live="polite"></p><button id="startGame" type="button" hidden>▶ Spiel starten</button><p id="hostActionNotice" role="status" aria-live="polite"></p><p class="muted"><small>Das Starten setzt den Spielstatus in Supabase auf „playing“. Die Fragen laufen nach dem Start automatisch weiter. Bestehende alte Testräume können nicht über diesen Button gestartet werden.</small></p></section>
+<section class="card" id="waiting" hidden><h2>👥 Live-Warteraum</h2><p>Spielcode: <strong id="roomPin"></strong></p><p id="waitingStatus" role="status">Spieler werden geladen ...</p><ul id="playerList"></ul><button id="refreshPlayers" type="button">Spielerliste aktualisieren</button><p class="muted"><small>Nur Mitglieder dieses Spielraums können die Liste abrufen. Punkte, die hier erscheinen, sind derzeit noch nicht mit dem Einzeltraining verbunden.</small></p></section>
+<section class="card" id="liveGame" hidden><h2>🏁 Live-Quiz</h2><p id="liveStatus" aria-live="polite"></p><p><strong id="liveProgress"></strong> · <span id="liveTimer"></span></p><h3 id="liveQuestion"></h3><div id="liveAnswers"></div><p id="liveFeedback" aria-live="polite"></p><ol id="liveBoard"></ol><p class="muted"><small>Serverzeit entscheidet über Antworten und Punkte. Die Anzeige aktualisiert sich jede Sekunde; bei schlechter Verbindung kann sie verzögert sein.</small></p></section>
+<section class="card"><h2>📚 Einzeltraining (lokale Demo)</h2><input type="file" id="upload" accept=".csv,text/csv"><p class="muted"><small>CSV-Spalten: Frage,Richtig,Falsch1,Falsch2,Falsch3. Excel als CSV UTF-8 speichern.</small></p><h3 id="question"></h3><div id="options"></div><p id="result"></p><button id="next">Nächste Frage</button><p id="score"></p></section>
+<script type="module">
+import {createClient} from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+const URL='https://fhgozciqheeuscwvscvx.supabase.co';
+const $=id=>document.getElementById(id);
+let activeClient=null,activePin='',pollTimer=null,loadingPlayers=false;
+let client=null,hostRoomId=null,hostPin='',livePin='',liveTimerHandle=null,liveBusy=false,liveLastKey='',liveLastPhase='',localAnswered=false;
+async function getConnectedClient(){
+ const key=$('key').value.trim();
+ if(!key.startsWith('sb_publishable_')&&!key.startsWith('eyJ'))throw Error('Bitte zuerst den öffentlichen Publishable Key oben eingeben.');
+ if(!client)client=createClient(URL,key,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:false}});
+ let {data:{user},error}=await client.auth.getUser();
+ if(error||!user){const result=await client.auth.signInAnonymously();if(result.error)throw result.error;}
+ return client;
+}
+$('key').addEventListener('change',()=>{client=null});
+$('hostLogin').onclick=async()=>{
+ const button=$('hostLogin'),notice=$('hostNotice'),code=$('hostCode').value;
+ notice.textContent='';notice.className='';
+ if(!code){notice.className='error';notice.textContent='Bitte den Gastgeber-Code eingeben.';return;}
+ button.disabled=true;notice.textContent='Code wird geprüft ...';
+ try{
+  const supabase=await getConnectedClient();
+  const {data,error}=await supabase.rpc('host_login',{p_code:code});
+  if(error)throw error;
+  if(data===true){notice.className='ok';notice.textContent='Gastgeber-Anmeldung erfolgreich! Wähle unten ein Quiz.';$('hostControls').hidden=false;await loadQuizzes();}
+  else{notice.className='error';notice.textContent='Code falsch oder Anmeldung vorübergehend gesperrt.';}
+ }catch(e){notice.className='error';notice.textContent='Anmeldung fehlgeschlagen: '+(e.message||String(e));}
+ finally{$('hostCode').value='';button.disabled=false;}
+};
+async function loadQuizzes(){
+ const info=$('hostActionNotice');info.textContent='Quizze werden geladen ...';info.className='';
+ try{const sb=await getConnectedClient();const {data,error}=await sb.rpc('host_list_quizzes');if(error)throw error;
+ const sel=$('quizSelect');sel.replaceChildren();for(const q of data||[]){const opt=document.createElement('option');opt.value=q.quiz_id;opt.textContent=q.quiz_title+' ('+q.question_count+' Fragen)';opt.disabled=Number(q.question_count)===0;sel.append(opt)}
+ $('createRoom').disabled=!(data||[]).some(q=>Number(q.question_count)>0);info.textContent=(data||[]).length+' Quizze gefunden.';
+ }catch(e){info.className='error';info.textContent='Quiz-Auswahl fehlgeschlagen: '+(e.message||String(e));}
+}
+$('reloadQuizzes').onclick=loadQuizzes;
+$('createRoom').onclick=async()=>{
+ const b=$('createRoom'),note=$('hostActionNotice'),quiz=$('quizSelect').value;if(!quiz)return;
+ b.disabled=true;note.className='';note.textContent='Spielraum wird erstellt ...';
+ try{const sb=await getConnectedClient();const {data,error}=await sb.rpc('host_create_room',{p_quiz_id:quiz});if(error)throw error;
+ if(!data?.[0]?.room_id)throw Error('Kein Spielraum zurückgegeben.');hostRoomId=data[0].room_id;
+ hostPin=data[0].game_pin;$('roomInfo').textContent='Deine neue Spiel-PIN: '+hostPin+' – gib sie deinen Mitspielern.';
+ $('startGame').hidden=false;note.className='ok';note.textContent='Spielraum erstellt. Die Mitspieler können jetzt über die PIN beitreten.';
+ }catch(e){note.className='error';note.textContent='Erstellung fehlgeschlagen: '+(e.message||String(e));}
+ finally{b.disabled=false;}
+};
+$('startGame').onclick=async()=>{
+ const b=$('startGame'),note=$('hostActionNotice');if(!hostRoomId)return;
+ if(!confirm('Spiel jetzt starten? Die Spieler können danach nicht mehr über die Wartelobby beitreten.'))return;
+ b.disabled=true;note.className='';note.textContent='Spiel wird gestartet ...';
+ try{const sb=await getConnectedClient();const {data,error}=await sb.rpc('start_game',{p_room_id:hostRoomId});if(error)throw error;
+ if(data!==true)throw Error('Spielstart nicht bestätigt.');note.className='ok';note.textContent='Spiel gestartet! Die Fragen laufen jetzt automatisch.';beginLive(hostPin);
+ }catch(e){b.disabled=false;note.className='error';note.textContent='Spielstart fehlgeschlagen: '+(e.message||String(e));}
+};
+async function loadPlayers(){
+ if(!activeClient||!activePin||loadingPlayers)return;
+ loadingPlayers=true;
+ try{
+  const {data,error}=await activeClient.rpc('get_room_players',{p_pin:activePin});
+  if(error)throw error;
+  const list=$('playerList');list.replaceChildren();
+  for(const p of data||[]){const li=document.createElement('li');const name=document.createElement('span');name.textContent=p.player_name;const score=document.createElement('span');score.textContent=String(p.player_score??0)+' Punkte';li.append(name,score);list.append(li)}
+  $('waitingStatus').textContent=(data?.length||0)+' Spieler im Raum · zuletzt aktualisiert: '+new Date().toLocaleTimeString('de-DE');
+ }catch(e){$('waitingStatus').textContent='Spielerliste konnte nicht geladen werden: '+(e.message||String(e))}
+ finally{loadingPlayers=false}
+}
+$('refreshPlayers').onclick=loadPlayers;
+$('join').onclick=async()=>{
+ const key=$('key').value.trim(),pin=$('pin').value.trim(),nickname=$('nickname').value.trim();
+ const note=$('notice');note.className='';note.textContent='';
+ if(!key.startsWith('sb_publishable_')&&!key.startsWith('eyJ')){note.className='error';note.textContent='Bitte nur den öffentlichen Publishable Key eingeben.';return}
+ if(!/^\d{6}$/.test(pin)){note.className='error';note.textContent='Bitte einen sechsstelligen Spielcode eingeben.';return}
+ if(nickname.length<2||nickname.length>24){note.className='error';note.textContent='Spitzname: 2 bis 24 Zeichen.';return}
+ $('join').disabled=true;note.textContent='Verbindung wird aufgebaut ...';
+ try{
+  const supabase=await getConnectedClient();
+  const {data,error}=await supabase.rpc('join_game',{p_pin:pin,p_nickname:nickname});
+  if(error)throw error;
+  if(!data?.length)throw Error('Keine Bestätigung vom Server erhalten.');
+  note.className='ok';note.textContent='Erfolgreich beigetreten! Spieler: '+data[0].nickname+' | Spielcode: '+pin;
+  activeClient=supabase;activePin=pin;$('roomPin').textContent=pin;$('waiting').hidden=false;
+  if(pollTimer)clearInterval(pollTimer);await loadPlayers();pollTimer=setInterval(loadPlayers,3000);beginLive(pin);
+ }catch(e){note.className='error';note.textContent='Beitritt fehlgeschlagen: '+(e.message||String(e));}
+ finally{$('join').disabled=false;}
+};
+function beginLive(pin){
+ if(!pin)return;livePin=pin;liveLastKey='';liveLastPhase='';localAnswered=false;
+ $('liveGame').hidden=false;
+ if(liveTimerHandle)clearInterval(liveTimerHandle);
+ refreshLive();liveTimerHandle=setInterval(refreshLive,1000);
+}
+async function refreshLive(){
+ if(!livePin||liveBusy)return;liveBusy=true;
+ try{
+  const sb=await getConnectedClient();
+  const {data:s,error}=await sb.rpc('live_game_state',{p_pin:livePin});
+  if(error)throw error;
+  const phase=s.phase||'waiting',key=String(s.question_number||0);
+  $('liveStatus').textContent=({waiting:'Warte auf den Spielstart …',question:'Jetzt antworten!',reveal:'Richtige Antwort',leaderboard:'Zwischenstand',finished:'Quiz beendet – Endrangliste'})[phase]||phase;
+  $('liveProgress').textContent=(s.question_number||0)+' / '+(s.question_count||0);
+  $('liveTimer').textContent=phase==='waiting'||phase==='finished'?'':s.remaining_seconds+' s';
+  if(key!==liveLastKey){localAnswered=false;liveLastKey=key;}
+  if(s.my_answer!==null&&s.my_answer!==undefined)localAnswered=true;
+  $('liveQuestion').textContent=s.question||'';
+  const opts=$('liveAnswers');
+  if(key+'|'+phase!==liveLastPhase){opts.replaceChildren();
+   if(Array.isArray(s.options))s.options.forEach((label,i)=>{
+    const b=document.createElement('button');b.textContent=String.fromCharCode(65+i)+': '+String(label);
+    b.dataset.index=String(i);b.onclick=()=>sendLiveAnswer(i);opts.append(b);
+   });
+   liveLastPhase=key+'|'+phase;
+  }
+  for(const b of opts.children){
+   const i=Number(b.dataset.index);
+   b.disabled=phase!=='question'||localAnswered||s.is_host;
+   b.classList.toggle('correct',s.correct_index!==undefined&&i===s.correct_index);
+   b.classList.toggle('wrong',s.correct_index!==undefined&&s.my_answer===i&&i!==s.correct_index);
+  }
+  $('liveFeedback').textContent=phase==='question'?(s.is_host?'Du schaust als Spielleiter zu.':localAnswered?'Antwort abgegeben – bitte warten.':'Wähle eine Antwort.'):
+   (phase==='reveal'||phase==='leaderboard')?(s.correct_index!==undefined?'Richtig: '+String.fromCharCode(65+Number(s.correct_index))+(s.explanation?' · '+s.explanation:''):'') :'';
+  const board=$('liveBoard');board.replaceChildren();
+  if(Array.isArray(s.leaderboard))s.leaderboard.forEach((p,i)=>{
+   const li=document.createElement('li');li.textContent=(i+1)+'. '+p.name+' – '+p.score+' Punkte';board.append(li);
+  });
+  if(phase==='finished'&&liveTimerHandle){clearInterval(liveTimerHandle);liveTimerHandle=null;}
+ }catch(e){$('liveStatus').textContent='Verbindungsproblem: '+(e.message||String(e));}
+ finally{liveBusy=false;}
+}
+async function sendLiveAnswer(index){
+ if(localAnswered||!livePin)return;
+ localAnswered=true;for(const b of $('liveAnswers').children)b.disabled=true;
+ $('liveFeedback').textContent='Antwort wird übermittelt …';
+ try{const sb=await getConnectedClient();const {error}=await sb.rpc('live_submit_answer',{p_pin:livePin,p_selected_index:index});if(error)throw error;
+ $('liveFeedback').textContent='Antwort angenommen!';
+ }catch(e){$('liveFeedback').textContent='Antwort nicht angenommen: '+(e.message||String(e));}
+ await refreshLive();
+}
+let questions=[{q:'Wie hoch ist der Regeldruck der Hauptluftleitung?',a:['5 bar','3 bar','8 bar','10 bar'],right:0}],idx=0,points=0,answered=false;
+function render(){const q=questions[idx];$('question').textContent=q.q;$('options').replaceChildren();$('result').textContent='';answered=false;q.a.forEach((a,i)=>{const b=document.createElement('button');b.textContent=a;b.onclick=()=>{if(answered)return;answered=true;if(i===q.right){points+=1000;$('result').textContent='Richtig! +1000 Punkte'}else $('result').textContent='Leider falsch. Richtig: '+q.a[q.right];$('score').textContent='Punkte: '+points};$('options').append(b)})}
+$('next').onclick=()=>{idx=(idx+1)%questions.length;render()};
+$('upload').onchange=async e=>{const f=e.target.files[0];if(!f)return;const text=(await f.text()).replace(/^\uFEFF/,'');const rows=[];let row=[],cell='',quoted=false;for(let i=0;i<text.length;i++){const c=text[i];if(c==='"'){if(quoted&&text[i+1]==='"'){cell+='"';i++}else quoted=!quoted}else if(c===','&&!quoted){row.push(cell);cell=''}else if((c==='\n'||c==='\r')&&!quoted){if(c==='\r'&&text[i+1]==='\n')i++;row.push(cell);rows.push(row);row=[];cell=''}else cell+=c}if(cell||row.length){row.push(cell);rows.push(row)}const valid=rows.slice(1).filter(r=>r.length>=5&&r.slice(0,5).every(x=>x.trim()));if(!valid.length){alert('Keine gültigen Fragen gefunden. Erwartet: Frage,Richtig,Falsch1,Falsch2,Falsch3');return}questions=valid.map(r=>({q:r[0],a:r.slice(1,5),right:0}));idx=0;points=0;$('score').textContent='Punkte: 0';render();alert(valid.length+' Fragen geladen. Bitte fachlich prüfen!')};render();
+</script></body></html>
