@@ -1,8 +1,4 @@
--- BPG Prüfungsarena: öffentliche Raumerstellung mit anonymem Supabase Auth.
--- Zuerst in Supabase Authentication > Providers > Anonymous Sign-ins aktivieren.
--- Alte Hostfunktionen bleiben bestehen, werden aber von der neuen Seite nicht mehr verwendet.
--- Jeder Nutzer darf nur eigene Räume starten; Fragen/Lösungen bleiben durch RPC geschützt.
-BEGIN;
+<!doctype html>
 
 CREATE OR REPLACE FUNCTION public.arena_list_quizzes()
 RETURNS TABLE(quiz_id uuid, quiz_title text, question_count bigint)
