@@ -1,5 +1,4 @@
 <!doctype html>
-
 CREATE OR REPLACE FUNCTION public.arena_list_quizzes()
 RETURNS TABLE(quiz_id uuid, quiz_title text, question_count bigint)
 LANGUAGE sql SECURITY DEFINER SET search_path = ''
