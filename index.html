@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>BPG Prüfungsarena</title>
-<style>body{font-family:system-ui,sans-serif;background:#10162d;color:white;max-width:780px;margin:30px auto;padding:16px}h1{color:#f5ba28}.card{background:#242b4a;border-radius:16px;padding:22px;margin:16px 0}input,button{font:inherit;padding:12px;border-radius:9px;border:0;margin:5px 0;box-sizing:border-box}input{background:#f9fafb;color:#10162d;width:100%;max-width:400px}button{background:#f5ba28;color:#10162d;cursor:pointer;font-weight:700}button:disabled{opacity:.55;cursor:wait}.muted{color:#c4cce3}#options button{display:block;width:100%;text-align:left;background:#2f73ce;color:white}#notice{white-space:pre-wrap}#notice.error{color:#ff9d9d}#notice.ok{color:#80e3b5}code{overflow-wrap:anywhere}#waiting[hidden],#hostControls[hidden],#liveGame[hidden]{display:none}#playerList{list-style:none;padding:0}#playerList li{padding:11px 13px;background:#344064;border-radius:9px;margin:7px 0;display:flex;justify-content:space-between}#waitingStatus{color:#c4cce3}#liveAnswers{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}#liveAnswers button{background:#345da2;color:white;text-align:left;min-height:72px;white-space:normal}#liveAnswers button:disabled{opacity:.75}#liveAnswers button.correct{background:#187b4b}#liveAnswers button.wrong{background:#9a333b}#liveBoard{list-style:none;padding:0}#liveBoard li{background:#344064;padding:10px;margin:5px 0;border-radius:8px}#liveTimer{font-size:2rem;font-weight:800;color:#f5ba28}@media(max-width:500px){#liveAnswers{grid-template-columns:1fr}}</style>
+<style>body{font-family:system-ui,sans-serif;background:#10162d;color:white;max-width:780px;margin:30px auto;padding:16px}h1{color:#f5ba28}.card{background:#242b4a;border-radius:16px;padding:22px;margin:16px 0}input,button{font:inherit;padding:12px;border-radius:9px;border:0;margin:5px 0;box-sizing:border-box}input{background:#f9fafb;color:#10162d;width:100%;max-width:400px}button{background:#f5ba28;color:#10162d;cursor:pointer;font-weight:700}button:disabled{opacity:.55;cursor:wait}.muted{color:#c4cce3}#options button{display:block;width:100%;text-align:left;background:#2f73ce;color:white}#notice{white-space:pre-wrap}#notice.error{color:#ff9d9d}#notice.ok{color:#80e3b5}code{overflow-wrap:anywhere}#waiting[hidden],#hostControls[hidden],#liveGame[hidden]{display:none}#playerList{list-style:none;padding:0}#playerList li{padding:11px 13px;background:#344064;border-radius:9px;margin:7px 0;display:flex;justify-content:space-between}#waitingStatus{color:#c4cce3}#liveAnswers{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}#liveAnswers button{background:#345da2;color:white;text-align:left;min-height:72px;white-space:normal}#liveAnswers button:disabled{opacity:.75}#liveAnswers button.correct{background:#187b4b}#liveAnswers button.wrong{background:#9a333b}#liveBoard{list-style:none;padding:0}#liveBoard li{background:#344064;padding:10px;margin:5px 0;border-radius:8px}#liveTimer{font-size:2rem;font-weight:800;color:#f5ba28}@media(max-width:500px){#liveAnswers{grid-template-columns:1fr}}.top30-list{list-style:none;padding:0;margin:12px 0}.top30-list li{display:flex;align-items:center;gap:12px;padding:12px 10px;border-bottom:1px solid #445072}.top30-rank{width:42px;flex-shrink:0;font-weight:800}.top30-name{flex:1;min-width:0;overflow-wrap:anywhere}.top30-score{white-space:nowrap;color:#f5ba28}@media(max-width:500px){.top30-list li{gap:8px}.top30-rank{width:36px}} </style>
 </head><body>
 <h1>🚆 BPG Prüfungsarena</h1><p class="muted">Kostenlos einen Raum erstellen oder mit einer Spiel-PIN beitreten.</p>
 <section class="card"><h2>🌐 Online-Spiel beitreten</h2><p>Du brauchst nur eine sechsstellige PIN und einen Spitznamen.</p>
@@ -12,7 +12,13 @@
 <section class="card" id="hostControls"><h2>🎮 Gastgeber-Steuerung</h2><p class="muted">Wähle ein Quiz. Nur du kannst den von dir erstellten Raum starten.</p><label for="quizSelect">Quiz auswählen</label><select id="quizSelect" style="display:block;width:100%;max-width:480px;padding:12px;border-radius:9px;margin:8px 0 14px;font:inherit"></select><br><button id="reloadQuizzes" type="button">Quizze aktualisieren</button> <button id="createRoom" type="button">Neuen Spielraum erstellen</button><p id="roomInfo" role="status" aria-live="polite"></p><button id="startGame" type="button" hidden>▶ Spiel starten</button><p id="hostActionNotice" role="status" aria-live="polite"></p><p class="muted"><small>Das Starten setzt den Spielstatus in Supabase auf „playing“. Die Fragen laufen nach dem Start automatisch weiter. Bestehende alte Testräume können nicht über diesen Button gestartet werden.</small></p></section>
 <section class="card" id="waiting" hidden><h2>👥 Live-Warteraum</h2><p>Spielcode: <strong id="roomPin"></strong></p><p id="waitingStatus" role="status">Spieler werden geladen ...</p><ul id="playerList"></ul><button id="refreshPlayers" type="button">Spielerliste aktualisieren</button><p class="muted"><small>Spieler und Punkte werden automatisch aktualisiert.</small></p></section>
 <section class="card" id="liveGame" hidden><h2>🏁 Live-Quiz</h2><p id="liveStatus" aria-live="polite"></p><p><strong id="liveProgress"></strong> · <span id="liveTimer"></span></p><h3 id="liveQuestion"></h3><div id="liveAnswers"></div><p id="liveFeedback" aria-live="polite"></p><ol id="liveBoard"></ol><p class="muted"><small>Serverzeit entscheidet über Antworten und Punkte. Die Anzeige aktualisiert sich jede Sekunde; bei schlechter Verbindung kann sie verzögert sein.</small></p></section>
-<section class="card"><h2>📚 Einzeltraining (lokale Demo)</h2><input type="file" id="upload" accept=".csv,text/csv"><p class="muted"><small>CSV-Spalten: Frage,Richtig,Falsch1,Falsch2,Falsch3. Excel als CSV UTF-8 speichern.</small></p><h3 id="question"></h3><div id="options"></div><p id="result"></p><button id="next">Nächste Frage</button><p id="score"></p></section>
+<section class="card" id="top30Section">
+<h2>🏆 Top 30 – Bestenliste</h2>
+<p class="muted"><small>Die besten Ergebnisse aus abgeschlossenen Online-Spielen. Pro Spieler zählt das beste Ergebnis.</small></p>
+<p id="top30Status" role="status" aria-live="polite">Rangliste wird geladen …</p>
+<ol id="top30List" class="top30-list"></ol>
+<button id="refreshTop30" type="button">🔄 Rangliste aktualisieren</button>
+</section>
 <script type="module">
 import {createClient} from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
 const URL='https://fhgozciqheeuscwvscvx.supabase.co';
@@ -135,9 +141,36 @@ async function sendLiveAnswer(index){
  }catch(e){$('liveFeedback').textContent='Antwort nicht angenommen: '+(e.message||String(e));}
  await refreshLive();
 }
-let questions=[{q:'Wie hoch ist der Regeldruck der Hauptluftleitung?',a:['5 bar','3 bar','8 bar','10 bar'],right:0}],idx=0,points=0,answered=false;
-function render(){const q=questions[idx];$('question').textContent=q.q;$('options').replaceChildren();$('result').textContent='';answered=false;q.a.forEach((a,i)=>{const b=document.createElement('button');b.textContent=a;b.onclick=()=>{if(answered)return;answered=true;if(i===q.right){points+=1000;$('result').textContent='Richtig! +1000 Punkte'}else $('result').textContent='Leider falsch. Richtig: '+q.a[q.right];$('score').textContent='Punkte: '+points};$('options').append(b)})}
-$('next').onclick=()=>{idx=(idx+1)%questions.length;render()};
-$('upload').onchange=async e=>{const f=e.target.files[0];if(!f)return;const text=(await f.text()).replace(/^\uFEFF/,'');const rows=[];let row=[],cell='',quoted=false;for(let i=0;i<text.length;i++){const c=text[i];if(c==='"'){if(quoted&&text[i+1]==='"'){cell+='"';i++}else quoted=!quoted}else if(c===','&&!quoted){row.push(cell);cell=''}else if((c==='\n'||c==='\r')&&!quoted){if(c==='\r'&&text[i+1]==='\n')i++;row.push(cell);rows.push(row);row=[];cell=''}else cell+=c}if(cell||row.length){row.push(cell);rows.push(row)}const valid=rows.slice(1).filter(r=>r.length>=5&&r.slice(0,5).every(x=>x.trim()));if(!valid.length){alert('Keine gültigen Fragen gefunden. Erwartet: Frage,Richtig,Falsch1,Falsch2,Falsch3');return}questions=valid.map(r=>({q:r[0],a:r.slice(1,5),right:0}));idx=0;points=0;$('score').textContent='Punkte: 0';render();alert(valid.length+' Fragen geladen. Bitte fachlich prüfen!')};render();
+async function loadTop30(){
+ const status=$('top30Status'),list=$('top30List');
+ status.textContent='Rangliste wird geladen …';
+ try{
+  const sb=await getConnectedClient();
+  const {data,error}=await sb.rpc('arena_top30');
+  if(error)throw error;
+  list.replaceChildren();
+  const entries=Array.isArray(data)?data:[];
+  entries.forEach((p,i)=>{
+   const li=document.createElement('li');
+   const place=document.createElement('span');
+   place.className='top30-rank';
+   place.textContent=i===0?'🥇':i===1?'🥈':i===2?'🥉':String(i+1)+'.';
+   const name=document.createElement('span');
+   name.className='top30-name';
+   name.textContent=p.player_name||'Unbekannt';
+   const score=document.createElement('strong');
+   score.className='top30-score';
+   score.textContent=Number(p.player_score||0).toLocaleString('de-DE')+' Pkt.';
+   li.append(place,name,score);
+   list.append(li);
+  });
+  status.textContent=entries.length?('Stand: '+new Date().toLocaleTimeString('de-DE')):'Noch keine abgeschlossenen Spielrunden vorhanden.';
+ }catch(e){
+  status.textContent='Rangliste konnte nicht geladen werden: '+(e.message||String(e));
+ }
+}
+$('refreshTop30').addEventListener('click',loadTop30);
+loadTop30();
+setInterval(()=>{if(!document.hidden)loadTop30()},30000);
 loadQuizzes();
 </script></body></html>
