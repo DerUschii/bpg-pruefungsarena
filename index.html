@@ -148,13 +148,22 @@ $('join').onclick=async()=>{
  $('join').disabled=true;note.textContent='Verbindung wird aufgebaut ...';
  try{
   const supabase=await getConnectedClient();
-  const {data,error}=await supabase.rpc('join_game',{p_pin:pin,p_nickname:nickname});
-  if(error)throw error;
-  if(!data?.length)throw Error('Keine Bestätigung vom Server erhalten.');
-  note.className='ok';note.textContent='Erfolgreich beigetreten! Spieler: '+data[0].nickname+' | Spielcode: '+pin;
+  // Existing players must resume via the authenticated session, not join_game.
+  // live_game_state validates room membership server-side, even after the game starts.
+  let resumed=false;
+  const {data:existing,error:resumeError}=await supabase.rpc('live_game_state',{p_pin:pin});
+  if(!resumeError && existing && ['waiting','question','reveal','leaderboard','finished'].includes(existing.phase)){
+    resumed=true;
+  } else {
+    // Only new participants use join_game. It may legitimately reject a started room.
+    const {data,error}=await supabase.rpc('join_game',{p_pin:pin,p_nickname:nickname});
+    if(error)throw error;
+    if(!data?.length)throw Error('Keine Bestätigung vom Server erhalten.');
+  }
+  note.className='ok';note.textContent=(resumed?'🔄 Erfolgreich wieder verbunden!':'Erfolgreich beigetreten!')+' Spieler: '+nickname+' | Spielcode: '+pin;
   saveRejoin(pin,nickname);activeClient=supabase;activePin=pin;$('roomPin').textContent=pin;$('waiting').hidden=false;
   if(pollTimer)clearInterval(pollTimer);await loadPlayers();pollTimer=setInterval(loadPlayers,3000);beginLive(pin);
- }catch(e){note.className='error';note.textContent='Beitritt fehlgeschlagen: '+(e.message||String(e));}
+ }catch(e){note.className='error';note.textContent='Beitritt fehlgeschlagen: '+(e.message||String(e))+' Falls du vorher in diesem Raum warst, muss dieselbe Supabase-Spielersitzung auf diesem Gerät erhalten bleiben.';}
  finally{$('join').disabled=false;}
 };
 function beginLive(pin){
