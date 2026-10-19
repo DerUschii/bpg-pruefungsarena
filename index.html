@@ -36,6 +36,35 @@ let kanuutUnlocked=false;
 let activeClient=null,activePin='',pollTimer=null,loadingPlayers=false;
 let client=null,hostRoomId=null,hostPin='',livePin='',liveTimerHandle=null,liveBusy=false,liveLastKey='',liveLastPhase='',localAnswered=false;
 let smoothTimerHandle=null,smoothDeadline=0,smoothPhase='waiting';
+const REJOIN_KEY='kanuut_tf14_last_room_v1';
+let restoringRoom=false;
+function saveRejoin(pin,nickname){try{localStorage.setItem(REJOIN_KEY,JSON.stringify({pin,nickname,at:Date.now()}));}catch(e){}}
+function forgetRejoin(){try{localStorage.removeItem(REJOIN_KEY);}catch(e){}}
+async function restoreRejoin(){
+ if(restoringRoom||activePin||!kanuutUnlocked)return;
+ let saved;try{saved=JSON.parse(localStorage.getItem(REJOIN_KEY)||'null');}catch(e){forgetRejoin();return;}
+ if(!saved||!/^[0-9]{6}$/.test(saved.pin)||!saved.nickname)return;
+ restoringRoom=true;
+ try{
+  const sb=await getConnectedClient();
+  // Read-only check: never call join_game again, which could create a duplicate player.
+  const {data:s,error}=await sb.rpc('live_game_state',{p_pin:saved.pin});
+  if(error)throw error;
+  if(!s||!['waiting','question','reveal','leaderboard','finished'].includes(s.phase))throw Error('Raum nicht mehr erreichbar');
+  // The same anonymous Supabase auth session is retained across app restarts.
+  // If the server no longer recognizes this player, do not silently create another.
+  activeClient=sb;activePin=saved.pin;
+  $('pin').value=saved.pin;$('nickname').value=saved.nickname;
+  $('roomPin').textContent=saved.pin;$('waiting').hidden=false;
+  $('notice').className='ok';$('notice').textContent='🔄 Wieder verbunden: '+saved.nickname+' · Raum '+saved.pin;
+  if(pollTimer)clearInterval(pollTimer);
+  await loadPlayers();pollTimer=setInterval(loadPlayers,3000);
+  beginLive(saved.pin);
+ }catch(e){
+  $('pin').value=saved.pin;$('nickname').value=saved.nickname;
+  $('notice').textContent='Letzten Spielraum erkannt ('+saved.pin+'). Automatische Rückkehr derzeit nicht möglich: '+(e.message||String(e));
+ }finally{restoringRoom=false;}
+}
 function paintSmoothTimer(){
  const el=$('liveTimer');if(!el)return;
  el.textContent=(smoothPhase==='waiting'||smoothPhase==='finished')?'':Math.max(0,Math.ceil((smoothDeadline-performance.now())/1000))+' s';
@@ -67,7 +96,7 @@ async function submitKanuutPassword(){
  const btn=$('kanuutEnter');btn.disabled=true;$('kanuutGateError').textContent='Prüfe Passwort …';
  try {const sb=await getConnectedClient();const {data,error}=await sb.rpc('kanuut_login',{p_password:$('kanuutPassword').value});if(error)throw error;
  if(data!==true)throw Error('Passwort nicht gültig.');$('kanuutPassword').value='';$('kanuutGateError').textContent='';
- if(await checkKanuutAccess()){await loadQuizzes();await loadTop30();}
+ if(await checkKanuutAccess()){await loadQuizzes();await loadTop30();await restoreRejoin();}
  }catch(e){$('kanuutGateError').textContent=e.message||String(e);}finally{btn.disabled=false;}
 }
 $('kanuutEnter').onclick=submitKanuutPassword;
@@ -123,7 +152,7 @@ $('join').onclick=async()=>{
   if(error)throw error;
   if(!data?.length)throw Error('Keine Bestätigung vom Server erhalten.');
   note.className='ok';note.textContent='Erfolgreich beigetreten! Spieler: '+data[0].nickname+' | Spielcode: '+pin;
-  activeClient=supabase;activePin=pin;$('roomPin').textContent=pin;$('waiting').hidden=false;
+  saveRejoin(pin,nickname);activeClient=supabase;activePin=pin;$('roomPin').textContent=pin;$('waiting').hidden=false;
   if(pollTimer)clearInterval(pollTimer);await loadPlayers();pollTimer=setInterval(loadPlayers,3000);beginLive(pin);
  }catch(e){note.className='error';note.textContent='Beitritt fehlgeschlagen: '+(e.message||String(e));}
  finally{$('join').disabled=false;}
@@ -213,6 +242,6 @@ async function loadTop30(){
  }
 }
 $('refreshTop30').addEventListener('click',loadTop30);
-checkKanuutAccess().then(ok=>{if(ok){loadQuizzes();loadTop30();}});
-setInterval(async()=>{const was=kanuutUnlocked;const ok=await checkKanuutAccess();if(ok&&!was){loadQuizzes();loadTop30();}if(ok&&!document.hidden)loadTop30();},30000);
+checkKanuutAccess().then(ok=>{if(ok){loadQuizzes();loadTop30();restoreRejoin();}});
+setInterval(async()=>{const was=kanuutUnlocked;const ok=await checkKanuutAccess();if(ok&&!was){loadQuizzes();loadTop30();restoreRejoin();}if(ok&&!document.hidden)loadTop30();},30000);
 </script></body></html>
