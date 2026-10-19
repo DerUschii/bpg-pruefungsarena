@@ -1,14 +1,16 @@
 <!doctype html>
 <html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>KANUUT! – Quizzen statt Prüfungsfrust</title>
 <style>body{font-family:system-ui,sans-serif;background:#10162d;color:white;max-width:780px;margin:30px auto;padding:16px}h1{color:#f5ba28}.card{background:#242b4a;border-radius:16px;padding:22px;margin:16px 0}input,button{font:inherit;padding:12px;border-radius:9px;border:0;margin:5px 0;box-sizing:border-box}input{background:#f9fafb;color:#10162d;width:100%;max-width:400px}button{background:#f5ba28;color:#10162d;cursor:pointer;font-weight:700}button:disabled{opacity:.55;cursor:wait}.muted{color:#c4cce3}#options button{display:block;width:100%;text-align:left;background:#2f73ce;color:white}#notice{white-space:pre-wrap}#notice.error{color:#ff9d9d}#notice.ok{color:#80e3b5}code{overflow-wrap:anywhere}#waiting[hidden],#hostControls[hidden],#liveGame[hidden]{display:none}#playerList{list-style:none;padding:0}#playerList li{padding:11px 13px;background:#344064;border-radius:9px;margin:7px 0;display:flex;justify-content:space-between}#waitingStatus{color:#c4cce3}#liveAnswers{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}#liveAnswers button{background:#345da2;color:white;text-align:left;min-height:72px;white-space:normal}#liveAnswers button:disabled{opacity:.75}#liveAnswers button.correct{background:#187b4b}#liveAnswers button.wrong{background:#9a333b}#liveBoard{list-style:none;padding:0}#liveBoard li{background:#344064;padding:10px;margin:5px 0;border-radius:8px}#liveTimer{font-size:2rem;font-weight:800;color:#f5ba28}@media(max-width:500px){#liveAnswers{grid-template-columns:1fr}}.top30-list{list-style:none;padding:0;margin:12px 0}.top30-list li{display:flex;align-items:center;gap:12px;padding:12px 10px;border-bottom:1px solid #445072}.top30-rank{width:42px;flex-shrink:0;font-weight:800}.top30-name{flex:1;min-width:0;overflow-wrap:anywhere}.top30-score{white-space:nowrap;color:#f5ba28}@media(max-width:500px){.top30-list li{gap:8px}.top30-rank{width:36px}}.brand{text-align:center;padding:25px 8px 18px}.brand-logo{font-size:clamp(2.8rem,11vw,5rem);font-weight:950;letter-spacing:-.06em;color:#ffcb36;text-shadow:0 5px 0 #3d3260}.brand-slogan{font-size:clamp(1.05rem,4vw,1.4rem);font-weight:800;margin:12px 0 5px}.brand-sub{color:#c4cce3;margin:6px 0 0}button:hover:not(:disabled){filter:brightness(1.09)} </style>
-</head><body>
+<style>#kanuutGate{position:fixed;inset:0;z-index:9999;background:#10162d;display:flex;align-items:center;justify-content:center;padding:18px;overflow:auto}#kanuutGate[hidden]{display:none}#kanuutGate .card{width:min(440px,100%);box-sizing:border-box}#kanuutGateError{color:#ff9d9d;white-space:pre-wrap}body.kanuut-locked{overflow:hidden}</style></head><body>
+<div id="kanuutGate" role="dialog" aria-modal="true" aria-label="TF14-Zugang"><section class="card"><h1>🦁 KANUUT!</h1><h2>🔐 Zugang nur für TF14</h2><p>Bitte gib das aktuelle Klassenpasswort ein. Deinen Nickname wählst du anschließend selbst.</p><label for="kanuutPassword">Klassenpasswort</label><input id="kanuutPassword" type="password" autocomplete="off" placeholder="Passwort dieser Woche"><button id="kanuutEnter" type="button">KANUUT! betreten</button><p id="kanuutGateError" role="status"></p><p class="muted"><small>Das Passwort wechselt montags. Nur für TF14 · Alle Angaben ohne Gewähr · Erstellt von DerUschii.</small></p></section></div>
 <header class="brand"><div class="brand-logo">⚡ KANUUT!</div><p class="brand-slogan">Lieber hier verkacken als in der Prüfung!</p><p class="brand-sub">🚂 Lernen · Quizzen · Gewinnen</p></header>
+<section class="card" aria-label="Hinweis zur Nutzung" style="border:1px solid #68769e;background:#1b2645;padding:16px 20px"><strong>🦁 Hinweis zur Nutzung · TF14</strong><p>KANUUT! ist ein privates, nicht kommerzielles Lernprojekt und ausschließlich für die Lerngruppen der Klasse TF14 bestimmt.</p><p>Alle Fragen, Antworten und sonstigen Angaben erfolgen ohne Gewähr auf Richtigkeit, Vollständigkeit und Aktualität. Maßgeblich sind die jeweils gültigen Vorschriften und offiziellen Ausbildungsunterlagen.</p><p class="muted" style="margin-bottom:0"><small>Keine offizielle Anwendung der Loklöwenakademie · Erstellt von <strong>DerUschii</strong></small></p></section>
 <section class="card"><h2>🌐 Online-Spiel beitreten</h2><p>Du brauchst nur eine sechsstellige PIN und einen Spitznamen.</p>
 <label for="pin">Sechsstelliger Spielcode</label><input id="pin" inputmode="numeric" maxlength="6" placeholder="z. B. 402365"><br>
 <label for="nickname">Dein Spitzname</label><input id="nickname" maxlength="24" placeholder="z. B. Loklöwe"><br>
 <button id="join">Spiel beitreten</button><p id="notice" role="status" aria-live="polite"></p>
 <p class="muted"><small>Der Raum wird automatisch verbunden. Die Spielerliste aktualisiert sich alle 3 Sekunden.</small></p></section>
-<section class="card" id="hostPanel"><h2>🎮 Eigenen Spielraum erstellen</h2><p>Jeder kann kostenlos einen Raum erstellen und sein Quiz starten – ganz ohne Anmeldung.</p></section>
+<section class="card" id="hostPanel"><h2>🎮 Eigenen Spielraum erstellen</h2><p>Mit gültigem TF14-Klassenpasswort kannst du einen Raum erstellen.</p></section>
 <section class="card" id="hostControls"><h2>🎮 Gastgeber-Steuerung</h2><p class="muted">Wähle ein Quiz. Nur du kannst den von dir erstellten Raum starten.</p><label for="quizSelect">Quiz auswählen</label><select id="quizSelect" style="display:block;width:100%;max-width:480px;padding:12px;border-radius:9px;margin:8px 0 14px;font:inherit"></select><br><button id="reloadQuizzes" type="button">Quizze aktualisieren</button> <button id="createRoom" type="button">Neuen Spielraum erstellen</button><p id="roomInfo" role="status" aria-live="polite"></p><button id="startGame" type="button" hidden>▶ Spiel starten</button><p id="hostActionNotice" role="status" aria-live="polite"></p><p class="muted"><small>Das Starten setzt den Spielstatus in Supabase auf „playing“. Die Fragen laufen nach dem Start automatisch weiter. Bestehende alte Testräume können nicht über diesen Button gestartet werden.</small></p></section>
 <section class="card" id="waiting" hidden><h2>👥 Live-Warteraum</h2><p>Spielcode: <strong id="roomPin"></strong></p><p id="waitingStatus" role="status">Spieler werden geladen ...</p><ul id="playerList"></ul><button id="refreshPlayers" type="button">Spielerliste aktualisieren</button><p class="muted"><small>Spieler und Punkte werden automatisch aktualisiert.</small></p></section>
 <section class="card" id="liveGame" hidden><h2>🏁 Live-Quiz</h2><p id="liveStatus" aria-live="polite"></p><p><strong id="liveProgress"></strong> · <span id="liveTimer"></span></p><h3 id="liveQuestion"></h3><div id="liveAnswers"></div><p id="liveFeedback" aria-live="polite"></p><ol id="liveBoard"></ol><p class="muted"><small>Serverzeit entscheidet über Antworten und Punkte. Die Anzeige aktualisiert sich jede Sekunde; bei schlechter Verbindung kann sie verzögert sein.</small></p></section>
@@ -19,11 +21,18 @@
 <ol id="top30List" class="top30-list"></ol>
 <button id="refreshTop30" type="button">🔄 Rangliste aktualisieren</button>
 </section>
+
+<footer style="margin:30px auto 18px;padding:20px 12px;text-align:center;border-top:1px solid #445072;color:#c4cce3;font-size:.9rem">
+<p><strong>Jede Aufgabe ohne Gewähr auf Richtigkeit.</strong> KANUUT! ist eine private Lernhilfe und keine offizielle Prüfungssoftware. Maßgeblich sind die gültigen Vorschriften und Ausbildungsunterlagen.</p>
+<p>Erstellt von <strong>DerUschii</strong></p>
+<p><a style="color:#f5ba28" href="datenschutz.html">Datenschutzerklärung</a> · <a style="color:#f5ba28" href="impressum.html">Impressum</a></p>
+</footer>
 <script type="module">
 import {createClient} from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
 const URL='https://fhgozciqheeuscwvscvx.supabase.co';
 const PUBLIC_KEY='sb_publishable_rj6xSl9aYiY83A8UoFpeYA_j8kBEwbF';
 const $=id=>document.getElementById(id);
+let kanuutUnlocked=false;
 let activeClient=null,activePin='',pollTimer=null,loadingPlayers=false;
 let client=null,hostRoomId=null,hostPin='',livePin='',liveTimerHandle=null,liveBusy=false,liveLastKey='',liveLastPhase='',localAnswered=false;
 async function getConnectedClient(){
@@ -33,6 +42,22 @@ async function getConnectedClient(){
  return client;
 }
 
+async function checkKanuutAccess(){
+ try {const sb=await getConnectedClient();const {data,error}=await sb.rpc('kanuut_access_ok');if(error)throw error;
+ kanuutUnlocked=data===true;$('kanuutGate').hidden=kanuutUnlocked;document.body.classList.toggle('kanuut-locked',!kanuutUnlocked);
+ if(!kanuutUnlocked){$('liveGame').hidden=true;$('waiting').hidden=true;}
+ return kanuutUnlocked;
+ }catch(e){kanuutUnlocked=false;$('kanuutGate').hidden=false;document.body.classList.add('kanuut-locked');$('kanuutGateError').textContent='Zugangsprüfung fehlgeschlagen: '+(e.message||e);return false;}
+}
+async function submitKanuutPassword(){
+ const btn=$('kanuutEnter');btn.disabled=true;$('kanuutGateError').textContent='Prüfe Passwort …';
+ try {const sb=await getConnectedClient();const {data,error}=await sb.rpc('kanuut_login',{p_password:$('kanuutPassword').value});if(error)throw error;
+ if(data!==true)throw Error('Passwort nicht gültig.');$('kanuutPassword').value='';$('kanuutGateError').textContent='';
+ if(await checkKanuutAccess()){await loadQuizzes();await loadTop30();}
+ }catch(e){$('kanuutGateError').textContent=e.message||String(e);}finally{btn.disabled=false;}
+}
+$('kanuutEnter').onclick=submitKanuutPassword;
+$('kanuutPassword').addEventListener('keydown',e=>{if(e.key==='Enter')submitKanuutPassword()});
 async function loadQuizzes(){
  const info=$('hostActionNotice');info.textContent='Quizze werden geladen ...';info.className='';
  try{const sb=await getConnectedClient();const {data,error}=await sb.rpc('arena_list_quizzes');if(error)throw error;
@@ -170,7 +195,6 @@ async function loadTop30(){
  }
 }
 $('refreshTop30').addEventListener('click',loadTop30);
-loadTop30();
-setInterval(()=>{if(!document.hidden)loadTop30()},30000);
-loadQuizzes();
+checkKanuutAccess().then(ok=>{if(ok){loadQuizzes();loadTop30();}});
+setInterval(async()=>{const was=kanuutUnlocked;const ok=await checkKanuutAccess();if(ok&&!was){loadQuizzes();loadTop30();}if(ok&&!document.hidden)loadTop30();},30000);
 </script></body></html>
