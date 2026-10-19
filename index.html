@@ -1,13 +1,21 @@
 <!doctype html>
 <html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>KANUUT! – Quizzen statt Prüfungsfrust</title>
-<style>body{font-family:system-ui,sans-serif;background:#10162d;color:white;max-width:780px;margin:30px auto;padding:16px}h1{color:#f5ba28}.card{background:#242b4a;border-radius:16px;padding:22px;margin:16px 0}input,button{font:inherit;padding:12px;border-radius:9px;border:0;margin:5px 0;box-sizing:border-box}input{background:#f9fafb;color:#10162d;width:100%;max-width:400px}button{background:#f5ba28;color:#10162d;cursor:pointer;font-weight:700}button:disabled{opacity:.55;cursor:wait}.muted{color:#c4cce3}#options button{display:block;width:100%;text-align:left;background:#2f73ce;color:white}#notice{white-space:pre-wrap}#notice.error{color:#ff9d9d}#notice.ok{color:#80e3b5}code{overflow-wrap:anywhere}#waiting[hidden],#hostControls[hidden],#liveGame[hidden]{display:none}#playerList{list-style:none;padding:0}#playerList li{padding:11px 13px;background:#344064;border-radius:9px;margin:7px 0;display:flex;justify-content:space-between}#waitingStatus{color:#c4cce3}#liveAnswers{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}#liveAnswers button{background:#345da2;color:white;text-align:left;min-height:72px;white-space:normal}#liveAnswers button:disabled{opacity:.75}#liveAnswers button.correct{background:#187b4b}#liveAnswers button.wrong{background:#9a333b}#liveBoard{list-style:none;padding:0}#liveBoard li{background:#344064;padding:10px;margin:5px 0;border-radius:8px}#liveTimer{font-size:2rem;font-weight:800;color:#f5ba28}@media(max-width:500px){#liveAnswers{grid-template-columns:1fr}}.top30-list{list-style:none;padding:0;margin:12px 0}.top30-list li{display:flex;align-items:center;gap:12px;padding:12px 10px;border-bottom:1px solid #445072}.top30-rank{width:42px;flex-shrink:0;font-weight:800}.top30-name{flex:1;min-width:0;overflow-wrap:anywhere}.top30-score{white-space:nowrap;color:#f5ba28}@media(max-width:500px){.top30-list li{gap:8px}.top30-rank{width:36px}}.brand{text-align:center;padding:25px 8px 18px}.brand-logo{font-size:clamp(2.8rem,11vw,5rem);font-weight:950;letter-spacing:-.06em;color:#ffcb36;text-shadow:0 5px 0 #3d3260}.brand-slogan{font-size:clamp(1.05rem,4vw,1.4rem);font-weight:800;margin:12px 0 5px}.brand-sub{color:#c4cce3;margin:6px 0 0}button:hover:not(:disabled){filter:brightness(1.09)} </style>
+<style>body{font-family:system-ui,sans-serif;background:#10162d;color:white;max-width:780px;margin:30px auto;padding:16px}h1{color:#f5ba28}.card{background:#242b4a;border-radius:16px;padding:22px;margin:16px 0}input,button{font:inherit;padding:12px;border-radius:9px;border:0;margin:5px 0;box-sizing:border-box}input{background:#f9fafb;color:#10162d;width:100%;max-width:400px}button{background:#f5ba28;color:#10162d;cursor:pointer;font-weight:700}button:disabled{opacity:.55;cursor:wait}.muted{color:#c4cce3}#options button{display:block;width:100%;text-align:left;background:#2f73ce;color:white}#notice{white-space:pre-wrap}#notice.error{color:#ff9d9d}#notice.ok{color:#80e3b5}code{overflow-wrap:anywhere}#waiting[hidden],#hostControls[hidden],#liveGame[hidden]{display:none}#playerList{list-style:none;padding:0}#playerList li{padding:11px 13px;background:#344064;border-radius:9px;margin:7px 0;display:flex;justify-content:space-between}#waitingStatus{color:#c4cce3}#liveAnswers{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}#liveAnswers button{background:#345da2;color:white;text-align:left;min-height:72px;white-space:normal}#liveAnswers button:disabled{opacity:.75}#liveAnswers button.correct{background:#187b4b}#liveAnswers button.wrong{background:#9a333b}#liveBoard{list-style:none;padding:0}#liveBoard li{background:#344064;padding:10px;margin:5px 0;border-radius:8px}#liveTimer{font-size:2rem;font-weight:800;color:#f5ba28}@media(max-width:500px){#liveAnswers{grid-template-columns:1fr}}.top30-list{list-style:none;padding:0;margin:12px 0}.top30-list li{display:flex;align-items:center;gap:12px;padding:12px 10px;border-bottom:1px solid #445072}.top30-rank{width:42px;flex-shrink:0;font-weight:800}.top30-name{flex:1;min-width:0;overflow-wrap:anywhere}.top30-score{white-space:nowrap;color:#f5ba28}@media(max-width:500px){.top30-list li{gap:8px}.top30-rank{width:36px}}.brand{text-align:center;padding:25px 8px 18px}.brand-logo{font-size:clamp(2.8rem,11vw,5rem);font-weight:950;letter-spacing:-.06em;color:#ffcb36;text-shadow:0 5px 0 #3d3260}.brand-slogan{font-size:clamp(1.05rem,4vw,1.4rem);font-weight:800;margin:12px 0 5px}.brand-sub{color:#c4cce3;margin:6px 0 0}[hidden]{display:none!important}button:hover:not(:disabled){filter:brightness(1.09)} </style>
 <style>#kanuutGate{position:fixed;inset:0;z-index:9999;background:#10162d;display:flex;align-items:center;justify-content:center;padding:18px;overflow:auto}#kanuutGate[hidden]{display:none}#kanuutGate .card{width:min(440px,100%);box-sizing:border-box}#kanuutGateError{color:#ff9d9d;white-space:pre-wrap}body.kanuut-locked{overflow:hidden}</style></head><body>
-<div id="kanuutGate" role="dialog" aria-modal="true" aria-label="TF14-Zugang"><section class="card"><h1>🦁 KANUUT!</h1><h2>🔐 Zugang nur für TF14</h2><p>Bitte gib das aktuelle Klassenpasswort ein. Deinen Nickname wählst du anschließend selbst.</p><label for="kanuutPassword">Klassenpasswort</label><input id="kanuutPassword" type="password" autocomplete="off" placeholder="Passwort dieser Woche"><button id="kanuutEnter" type="button">KANUUT! betreten</button><p id="kanuutGateError" role="status"></p><p class="muted"><small>Das Passwort wechselt montags. Nur für TF14 · Alle Angaben ohne Gewähr · Erstellt von DerUschii.</small></p></section></div>
+<div id="kanuutGate" hidden role="dialog" aria-modal="true" aria-label="TF14-Zugang"><section class="card"><h1>🦁 KANUUT!</h1><h2>🔐 Zugang nur für TF14</h2><p>Bitte gib das aktuelle Klassenpasswort ein. Deinen Nickname hast du bei der Registrierung festgelegt.</p><label for="kanuutPassword">Klassenpasswort</label><input id="kanuutPassword" type="password" autocomplete="off" placeholder="Passwort dieser Woche"><button id="kanuutEnter" type="button">KANUUT! betreten</button><p id="kanuutGateError" role="status"></p><p class="muted"><small>Das Passwort wechselt montags. Nur für TF14 · Alle Angaben ohne Gewähr · Erstellt von DerUschii.</small></p></section></div>
+<section class="card" id="accountPanel"><h2>🔐 Dein KANUUT!-Spieleraccount</h2>
+<p class="muted">Registriere dich selbst. Dein Nickname ist einmalig. Deine E-Mail bleibt privat und dient zum Anmelden und Zurücksetzen des Passworts.</p>
+<div id="accountForms"><label for="accountEmail">E-Mail-Adresse</label><input id="accountEmail" type="email" autocomplete="email" placeholder="deine@email.de">
+<label for="accountPassword">Persönliches Passwort</label><input id="accountPassword" type="password" autocomplete="current-password" minlength="8" placeholder="Mindestens 8 Zeichen">
+<div id="registerFields" hidden><label for="accountNick">Dein einmaliger Nickname</label><input id="accountNick" maxlength="24" autocomplete="nickname" placeholder="z. B. LokMattis"></div>
+<p><button type="button" id="accountLogin">Anmelden</button> <button type="button" id="accountRegister">Registrieren</button> <button type="button" id="accountReset">Passwort vergessen?</button></p></div>
+<div id="accountLoggedIn" hidden><strong id="accountWho"></strong> <button type="button" id="accountLogout">Abmelden</button></div>
+<p id="accountNotice" role="status" aria-live="polite"></p></section>
 <header class="brand"><div class="brand-logo">⚡ KANUUT!</div><p class="brand-slogan">Lieber hier verkacken als in der Prüfung!</p><p class="brand-sub">🚂 Lernen · Quizzen · Gewinnen</p></header>
 <section class="card" aria-label="Hinweis zur Nutzung" style="border:1px solid #68769e;background:#1b2645;padding:16px 20px"><strong>🦁 Hinweis zur Nutzung · TF14</strong><p>KANUUT! ist ein privates, nicht kommerzielles Lernprojekt und ausschließlich für die Lerngruppen der Klasse TF14 bestimmt.</p><p>Alle Fragen, Antworten und sonstigen Angaben erfolgen ohne Gewähr auf Richtigkeit, Vollständigkeit und Aktualität. Maßgeblich sind die jeweils gültigen Vorschriften und offiziellen Ausbildungsunterlagen.</p><p class="muted" style="margin-bottom:0"><small>Keine offizielle Anwendung der Loklöwenakademie · Erstellt von <strong>DerUschii</strong></small></p></section>
-<section class="card"><h2>🌐 Online-Spiel beitreten</h2><p>Du brauchst nur eine sechsstellige PIN und einen Spitznamen.</p>
+<section class="card"><h2>🌐 Online-Spiel beitreten</h2><p>Du brauchst nur die sechsstellige PIN. Dein Nickname kommt aus deinem Account.</p>
 <label for="pin">Sechsstelliger Spielcode</label><input id="pin" inputmode="numeric" maxlength="6" placeholder="z. B. 402365"><br>
-<label for="nickname">Dein Spitzname</label><input id="nickname" maxlength="24" placeholder="z. B. Loklöwe"><br>
+<label for="nickname">Dein registrierter Nickname</label><input id="nickname" maxlength="24" readonly placeholder="Bitte zuerst anmelden"><br>
 <button id="join">Spiel beitreten</button><p id="notice" role="status" aria-live="polite"></p>
 <p class="muted"><small>Der Raum wird automatisch verbunden. Die Spielerliste aktualisiert sich alle 3 Sekunden.</small></p></section>
 <section class="card" id="hostPanel"><h2>🎮 Eigenen Spielraum erstellen</h2><p>Mit gültigem TF14-Klassenpasswort kannst du einen Raum erstellen.</p></section>
@@ -36,7 +44,8 @@ let kanuutUnlocked=false;
 let activeClient=null,activePin='',pollTimer=null,loadingPlayers=false;
 let client=null,hostRoomId=null,hostPin='',livePin='',liveTimerHandle=null,liveBusy=false,liveLastKey='',liveLastPhase='',localAnswered=false;
 let smoothTimerHandle=null,smoothDeadline=0,smoothPhase='waiting';
-const REJOIN_KEY='kanuut_tf14_last_room_v1';
+let accountProfile=null;
+const REJOIN_KEY='kanuut_tf14_last_room_accounts_v2';
 let restoringRoom=false;
 function saveRejoin(pin,nickname){try{localStorage.setItem(REJOIN_KEY,JSON.stringify({pin,nickname,at:Date.now()}));}catch(e){}}
 function forgetRejoin(){try{localStorage.removeItem(REJOIN_KEY);}catch(e){}}
@@ -46,7 +55,7 @@ async function restoreRejoin(){
  if(!saved||!/^[0-9]{6}$/.test(saved.pin)||!saved.nickname)return;
  restoringRoom=true;
  try{
-  const sb=await getConnectedClient();
+  const sb=await requireAccount();
   // Read-only check: never call join_game again, which could create a duplicate player.
   const {data:s,error}=await sb.rpc('live_game_state',{p_pin:saved.pin});
   if(error)throw error;
@@ -80,21 +89,66 @@ function syncSmoothTimer(phase,remaining){
 }
 async function getConnectedClient(){
  if(!client)client=createClient(URL,PUBLIC_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:false}});
- let {data:{user},error}=await client.auth.getUser();
- if(error||!user){const result=await client.auth.signInAnonymously();if(result.error)throw result.error;}
  return client;
 }
+async function requireAccount(){
+ const sb=await getConnectedClient();const {data:{user},error}=await sb.auth.getUser();
+ if(error||!user||user.is_anonymous)throw Error('Bitte zuerst mit deinem Spieleraccount anmelden.');
+ const {data:profile,error:pe}=await sb.from('kanuut_profiles').select('nickname').eq('user_id',user.id).single();
+ if(pe||!profile)throw Error('Spielerprofil fehlt. Bitte Registrierung überprüfen.');
+ accountProfile=profile;$('nickname').value=profile.nickname;
+ return sb;
+}
+async function refreshAccountUI(){
+ try{await requireAccount();$('accountForms').hidden=true;$('accountLoggedIn').hidden=false;
+ $('accountWho').textContent='Angemeldet als '+accountProfile.nickname;
+ $('accountPanel').hidden=false;
+ if(await checkKanuutAccess()){await loadQuizzes();await loadTop30();await restoreRejoin();}
+ }catch(e){accountProfile=null;$('accountForms').hidden=false;$('accountLoggedIn').hidden=true;
+ kanuutUnlocked=false;$('kanuutGate').hidden=true;document.body.classList.remove('kanuut-locked');
+ $('waiting').hidden=true;$('liveGame').hidden=true;$('hostControls').hidden=true;
+ $('accountPanel').hidden=false;}
+}
+$('accountRegister').onclick=async()=>{
+ const fields=$('registerFields'),note=$('accountNotice');
+ if(fields.hidden){fields.hidden=false;note.textContent='Wähle jetzt einen Nicknamen und klicke erneut auf Registrieren.';return;}
+ const email=$('accountEmail').value.trim(),password=$('accountPassword').value,nickname=$('accountNick').value.trim();
+ if(!email.includes('@')||password.length<8||nickname.length<2||nickname.length>24){note.textContent='Bitte gültige E-Mail, mindestens 8 Zeichen Passwort und Nickname (2–24 Zeichen) eingeben.';return;}
+ const b=$('accountRegister');b.disabled=true;note.textContent='Account wird erstellt …';
+ try{const sb=await getConnectedClient();const check=await sb.rpc('kanuut_nickname_available',{p_nickname:nickname});
+ if(check.error)throw check.error;if(!check.data)throw Error('Nickname bereits vergeben oder ungültig.');
+ const {data,error}=await sb.auth.signUp({email,password,options:{data:{nickname},emailRedirectTo:location.origin+location.pathname}});
+ if(error)throw error;
+ note.textContent=data.session?'Account erstellt und angemeldet!':'Registrierung eingegangen. Bitte bestätige die E-Mail, falls Supabase eine Bestätigung verlangt. Danach anmelden.';
+ if(data.session)await refreshAccountUI();
+ }catch(e){note.textContent='Registrierung fehlgeschlagen: '+(e.message||e)+' (Bei bereits vergebenem Nicknamen bitte anderen wählen.)';}
+ finally{b.disabled=false;}
+};
+$('accountLogin').onclick=async()=>{
+ const b=$('accountLogin'),note=$('accountNotice');b.disabled=true;note.textContent='Anmeldung läuft …';
+ try{const sb=await getConnectedClient();const {error}=await sb.auth.signInWithPassword({email:$('accountEmail').value.trim(),password:$('accountPassword').value});if(error)throw error;
+ $('accountPassword').value='';note.textContent='Angemeldet!';await refreshAccountUI();
+ }catch(e){note.textContent='Anmeldung fehlgeschlagen: '+(e.message||e);}finally{b.disabled=false;}
+};
+$('accountReset').onclick=async()=>{
+ const email=$('accountEmail').value.trim();if(!email.includes('@')){$('accountNotice').textContent='Bitte zuerst deine E-Mail eingeben.';return;}
+ try{const sb=await getConnectedClient();const {error}=await sb.auth.resetPasswordForEmail(email,{redirectTo:location.origin+location.pathname});if(error)throw error;
+ $('accountNotice').textContent='Falls die E-Mail registriert ist, erhältst du einen Link zum Zurücksetzen.';
+ }catch(e){$('accountNotice').textContent=e.message||String(e);}
+};
+$('accountLogout').onclick=async()=>{const sb=await getConnectedClient();await sb.auth.signOut();forgetRejoin();location.reload();};
+
 
 async function checkKanuutAccess(){
- try {const sb=await getConnectedClient();const {data,error}=await sb.rpc('kanuut_access_ok');if(error)throw error;
+ try {const sb=await requireAccount();const {data,error}=await sb.rpc('kanuut_access_ok');if(error)throw error;
  kanuutUnlocked=data===true;$('kanuutGate').hidden=kanuutUnlocked;document.body.classList.toggle('kanuut-locked',!kanuutUnlocked);
  if(!kanuutUnlocked){$('liveGame').hidden=true;$('waiting').hidden=true;}
  return kanuutUnlocked;
- }catch(e){kanuutUnlocked=false;$('kanuutGate').hidden=false;document.body.classList.add('kanuut-locked');$('kanuutGateError').textContent='Zugangsprüfung fehlgeschlagen: '+(e.message||e);return false;}
+ }catch(e){kanuutUnlocked=false;$('kanuutGate').hidden=!accountProfile;document.body.classList.toggle('kanuut-locked',!!accountProfile);$('kanuutGateError').textContent='Zugangsprüfung fehlgeschlagen: '+(e.message||e);return false;}
 }
 async function submitKanuutPassword(){
  const btn=$('kanuutEnter');btn.disabled=true;$('kanuutGateError').textContent='Prüfe Passwort …';
- try {const sb=await getConnectedClient();const {data,error}=await sb.rpc('kanuut_login',{p_password:$('kanuutPassword').value});if(error)throw error;
+ try {const sb=await requireAccount();const {data,error}=await sb.rpc('kanuut_login',{p_password:$('kanuutPassword').value});if(error)throw error;
  if(data!==true)throw Error('Passwort nicht gültig.');$('kanuutPassword').value='';$('kanuutGateError').textContent='';
  if(await checkKanuutAccess()){await loadQuizzes();await loadTop30();await restoreRejoin();}
  }catch(e){$('kanuutGateError').textContent=e.message||String(e);}finally{btn.disabled=false;}
@@ -141,13 +195,13 @@ async function loadPlayers(){
 }
 $('refreshPlayers').onclick=loadPlayers;
 $('join').onclick=async()=>{
- const pin=$('pin').value.trim(),nickname=$('nickname').value.trim();
+ const pin=$('pin').value.trim(),nickname=accountProfile?.nickname||'';
  const note=$('notice');note.className='';note.textContent='';
  if(!/^\d{6}$/.test(pin)){note.className='error';note.textContent='Bitte einen sechsstelligen Spielcode eingeben.';return}
  if(nickname.length<2||nickname.length>24){note.className='error';note.textContent='Spitzname: 2 bis 24 Zeichen.';return}
  $('join').disabled=true;note.textContent='Verbindung wird aufgebaut ...';
  try{
-  const supabase=await getConnectedClient();
+  const supabase=await requireAccount();
   // Existing players must resume via the authenticated session, not join_game.
   // live_game_state validates room membership server-side, even after the game starts.
   let resumed=false;
@@ -251,6 +305,12 @@ async function loadTop30(){
  }
 }
 $('refreshTop30').addEventListener('click',loadTop30);
-checkKanuutAccess().then(ok=>{if(ok){loadQuizzes();loadTop30();restoreRejoin();}});
-setInterval(async()=>{const was=kanuutUnlocked;const ok=await checkKanuutAccess();if(ok&&!was){loadQuizzes();loadTop30();restoreRejoin();}if(ok&&!document.hidden)loadTop30();},30000);
+getConnectedClient().then(sb=>sb.auth.onAuthStateChange(async(event)=>{
+ if(event==='PASSWORD_RECOVERY'){
+  const password=prompt('Neues KANUUT!-Passwort eingeben (mindestens 8 Zeichen):');
+  if(password&&password.length>=8){const {error}=await sb.auth.updateUser({password});alert(error?error.message:'Passwort geändert.');}
+ }
+}));
+refreshAccountUI();
+setInterval(async()=>{if(!accountProfile)return;const was=kanuutUnlocked;const ok=await checkKanuutAccess();if(ok&&!was){loadQuizzes();loadTop30();restoreRejoin();}if(ok&&!document.hidden)loadTop30();},30000);
 </script></body></html>
