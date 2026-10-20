@@ -1,46 +1,349 @@
--- KANUUT! Gastzugang: Nur join_game ersetzen. Keine Tabellen oder Accounts löschen.
--- ZUERST Datenbank-Backup erstellen. Nach Ausführung mit Testgast prüfen.
-BEGIN;
-CREATE OR REPLACE FUNCTION public.join_game(p_pin text,p_nickname text)
-RETURNS TABLE(player_id uuid,room_id uuid,nickname text)
-LANGUAGE plpgsql SECURITY DEFINER SET search_path TO '' AS $body$
-#variable_conflict use_column
-DECLARE r public.game_rooms%ROWTYPE; pid uuid; nick text; guest boolean;
-BEGIN
- PERFORM public.kanuut_require_access();
- SELECT nickname INTO nick FROM public.kanuut_profiles WHERE user_id=auth.uid();
- guest := nick IS NULL;
- IF guest THEN
-   IF NOT EXISTS (SELECT 1 FROM auth.users u WHERE u.id=auth.uid() AND u.is_anonymous IS TRUE) THEN
-     RAISE EXCEPTION 'Bitte zuerst mit deinem Spieleraccount anmelden';
-   END IF;
-   nick := btrim(p_nickname);
-   IF nick IS NULL OR char_length(nick) NOT BETWEEN 2 AND 24
-      OR nick !~ '^[[:alnum:]ÄÖÜäöüß][[:alnum:]ÄÖÜäöüß _.-]*$' THEN
-     RAISE EXCEPTION 'Gast-Nickname muss 2–24 Zeichen haben (Buchstaben, Zahlen, Leerzeichen, _, . oder -)';
-   END IF;
-   IF EXISTS (SELECT 1 FROM public.kanuut_profiles pr WHERE lower(btrim(pr.nickname))=lower(nick)) THEN
-     RAISE EXCEPTION 'Dieser Nickname gehört einem registrierten Account. Bitte anderen wählen';
-   END IF;
- END IF;
- SELECT * INTO r FROM public.game_rooms WHERE pin=p_pin;
- IF NOT FOUND THEN RAISE EXCEPTION 'Spielcode ungültig'; END IF;
- SELECT id INTO pid FROM public.players WHERE room_id=r.id AND user_id=auth.uid();
- IF pid IS NOT NULL THEN
-   -- Beim Wiedereinstieg denselben Namen beibehalten; Accounts behalten Profilnamen.
-   IF NOT guest THEN
-     UPDATE public.players SET nickname=nick WHERE id=pid AND nickname IS DISTINCT FROM nick;
-   END IF;
-   RETURN QUERY SELECT p.id,r.id,p.nickname::text FROM public.players p WHERE p.id=pid;
-   RETURN;
- END IF;
- IF r.status <> 'waiting' THEN RAISE EXCEPTION 'Spiel bereits gestartet. Nur bestehende Spieler können wieder beitreten'; END IF;
- IF EXISTS (SELECT 1 FROM public.players p WHERE p.room_id=r.id AND lower(btrim(p.nickname))=lower(nick)) THEN
-   RAISE EXCEPTION 'Nickname in diesem Raum bereits vergeben';
- END IF;
- INSERT INTO public.players(room_id,user_id,nickname) VALUES(r.id,auth.uid(),nick)
- ON CONFLICT (room_id,user_id) DO UPDATE SET nickname=excluded.nickname
- RETURNING id INTO pid;
- RETURN QUERY SELECT pid,r.id,nick;
-END $body$;
-COMMIT;
+<!doctype html>
+<html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>KANUUT! – Quizzen statt Prüfungsfrust</title>
+<style>body{font-family:system-ui,sans-serif;background:#10162d;color:white;max-width:780px;margin:30px auto;padding:16px}h1{color:#f5ba28}.card{background:#242b4a;border-radius:16px;padding:22px;margin:16px 0}input,button{font:inherit;padding:12px;border-radius:9px;border:0;margin:5px 0;box-sizing:border-box}input{background:#f9fafb;color:#10162d;width:100%;max-width:400px}button{background:#f5ba28;color:#10162d;cursor:pointer;font-weight:700}button:disabled{opacity:.55;cursor:wait}.muted{color:#c4cce3}#options button{display:block;width:100%;text-align:left;background:#2f73ce;color:white}#notice{white-space:pre-wrap}#notice.error{color:#ff9d9d}#notice.ok{color:#80e3b5}code{overflow-wrap:anywhere}#waiting[hidden],#hostControls[hidden],#liveGame[hidden]{display:none}#playerList{list-style:none;padding:0}#playerList li{padding:11px 13px;background:#344064;border-radius:9px;margin:7px 0;display:flex;justify-content:space-between}#waitingStatus{color:#c4cce3}#liveAnswers{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}#liveAnswers button{background:#345da2;color:white;text-align:left;min-height:72px;white-space:normal}#liveAnswers button:disabled{opacity:.75}#liveAnswers button.correct{background:#187b4b}#liveAnswers button.wrong{background:#9a333b}#liveBoard{list-style:none;padding:0}#liveBoard li{background:#344064;padding:10px;margin:5px 0;border-radius:8px}#liveTimer{font-size:2rem;font-weight:800;color:#f5ba28}@media(max-width:500px){#liveAnswers{grid-template-columns:1fr}}.top30-list{list-style:none;padding:0;margin:12px 0}.top30-list li{display:flex;align-items:center;gap:12px;padding:12px 10px;border-bottom:1px solid #445072}.top30-rank{width:42px;flex-shrink:0;font-weight:800}.top30-name{flex:1;min-width:0;overflow-wrap:anywhere}.top30-score{white-space:nowrap;color:#f5ba28}@media(max-width:500px){.top30-list li{gap:8px}.top30-rank{width:36px}}.brand{text-align:center;padding:25px 8px 18px}.brand-logo{font-size:clamp(2.8rem,11vw,5rem);font-weight:950;letter-spacing:-.06em;color:#ffcb36;text-shadow:0 5px 0 #3d3260}.brand-slogan{font-size:clamp(1.05rem,4vw,1.4rem);font-weight:800;margin:12px 0 5px}.brand-sub{color:#c4cce3;margin:6px 0 0}[hidden]{display:none!important}button:hover:not(:disabled){filter:brightness(1.09)} </style>
+<style>#kanuutGate{position:fixed;inset:0;z-index:9999;background:#10162d;display:flex;align-items:center;justify-content:center;padding:18px;overflow:auto}#kanuutGate[hidden]{display:none}#kanuutGate .card{width:min(440px,100%);box-sizing:border-box}#kanuutGateError{color:#ff9d9d;white-space:pre-wrap}body.kanuut-locked{overflow:hidden}</style></head><body>
+<div id="kanuutGate" hidden role="dialog" aria-modal="true" aria-label="TF14-Zugang"><section class="card"><h1>🦁 KANUUT!</h1><h2>🔐 Zugang nur für TF14</h2><p>Bitte gib das aktuelle Klassenpasswort ein. Mit bestehendem Account oder Gast-Nickname kannst du teilnehmen.</p><label for="kanuutPassword">Klassenpasswort</label><input id="kanuutPassword" type="password" autocomplete="off" placeholder="Passwort dieser Woche"><button id="kanuutEnter" type="button">KANUUT! betreten</button><p id="kanuutGateError" role="status"></p><p class="muted"><small>Das Passwort wechselt montags. Nur für TF14 · Alle Angaben ohne Gewähr · Erstellt von DerUschii.</small></p></section></div>
+<section class="card" id="accountPanel"><h2>🔐 Dein KANUUT!-Spieleraccount</h2>
+<p class="muted">Bestehende Spieler melden sich wie gewohnt an. Neue Spieler können ohne E-Mail als Gast mitspielen.</p>
+<div id="accountForms"><label for="accountEmail">E-Mail-Adresse</label><input id="accountEmail" type="email" autocomplete="email" placeholder="deine@email.de">
+<label for="accountPassword">Persönliches Passwort</label><input id="accountPassword" type="password" autocomplete="current-password" minlength="8" placeholder="Mindestens 8 Zeichen">
+<div id="registerFields" hidden><label for="accountNick">Dein einmaliger Nickname</label><input id="accountNick" maxlength="24" autocomplete="nickname" placeholder="z. B. LokMattis"></div>
+<p><button type="button" id="accountLogin">Anmelden</button> <button type="button" id="accountRegister">Registrieren</button> <button type="button" id="accountReset">Passwort vergessen?</button></p></div>
+<div id="guestEntry"><label for="guestNick">Gast-Nickname</label><input id="guestNick" maxlength="24" placeholder="z. B. Loklöwe"><button type="button" id="guestStart">Als Gast spielen</button><p class="muted"><small>Gäste benötigen keine E-Mail. Der Zugang gilt nur für dieses Gerät; nach dem Löschen der Browserdaten kann er verloren gehen.</small></p></div><div id="accountLoggedIn" hidden><strong id="accountWho"></strong> <button type="button" id="accountLogout">Abmelden</button></div>
+<p id="accountNotice" role="status" aria-live="polite"></p></section>
+<header class="brand"><div class="brand-logo">⚡ KANUUT!</div><p class="brand-slogan">Lieber hier verkacken als in der Prüfung!</p><p class="brand-sub">🚂 Lernen · Quizzen · Gewinnen</p></header>
+<section class="card" aria-label="Hinweis zur Nutzung" style="border:1px solid #68769e;background:#1b2645;padding:16px 20px"><strong>🦁 Hinweis zur Nutzung · TF14</strong><p>KANUUT! ist ein privates, nicht kommerzielles Lernprojekt und ausschließlich für die Lerngruppen der Klasse TF14 bestimmt.</p><p>Alle Fragen, Antworten und sonstigen Angaben erfolgen ohne Gewähr auf Richtigkeit, Vollständigkeit und Aktualität. Maßgeblich sind die jeweils gültigen Vorschriften und offiziellen Ausbildungsunterlagen.</p><p class="muted" style="margin-bottom:0"><small>Keine offizielle Anwendung der Loklöwenakademie · Erstellt von <strong>DerUschii</strong></small></p></section>
+<section class="card"><h2>🌐 Online-Spiel beitreten</h2><p>Du brauchst nur die sechsstellige PIN. Mit Account oder als Gast. Das Klassenpasswort bleibt erforderlich.</p>
+<label for="pin">Sechsstelliger Spielcode</label><input id="pin" inputmode="numeric" maxlength="6" placeholder="z. B. 402365"><br>
+<label for="nickname">Dein Spielername</label><input id="nickname" maxlength="24" readonly placeholder="Bitte zuerst anmelden"><br>
+<button id="join">Spiel beitreten</button><p id="notice" role="status" aria-live="polite"></p>
+<p class="muted"><small>Der Raum wird automatisch verbunden. Die Spielerliste aktualisiert sich alle 3 Sekunden.</small></p></section>
+<section class="card" id="hostPanel"><h2>🎮 Eigenen Spielraum erstellen</h2><p>Mit gültigem TF14-Klassenpasswort kannst du einen Raum erstellen.</p></section>
+<section class="card" id="hostControls"><h2>🎮 Gastgeber-Steuerung</h2><p class="muted">Wähle ein Quiz. Nur du kannst den von dir erstellten Raum starten.</p><label for="quizSelect">Quiz auswählen</label><select id="quizSelect" style="display:block;width:100%;max-width:480px;padding:12px;border-radius:9px;margin:8px 0 14px;font:inherit"></select><br><button id="reloadQuizzes" type="button">Quizze aktualisieren</button> <button id="createRoom" type="button">Neuen Spielraum erstellen</button><p id="roomInfo" role="status" aria-live="polite"></p><button id="startGame" type="button" hidden>▶ Spiel starten</button><p id="hostActionNotice" role="status" aria-live="polite"></p><p class="muted"><small>Das Starten setzt den Spielstatus in Supabase auf „playing“. Die Fragen laufen nach dem Start automatisch weiter. Bestehende alte Testräume können nicht über diesen Button gestartet werden.</small></p></section>
+<section class="card" id="waiting" hidden><h2>👥 Live-Warteraum</h2><p>Spielcode: <strong id="roomPin"></strong></p><p id="waitingStatus" role="status">Spieler werden geladen ...</p><ul id="playerList"></ul><button id="refreshPlayers" type="button">Spielerliste aktualisieren</button><p class="muted"><small>Spieler und Punkte werden automatisch aktualisiert.</small></p></section>
+<section class="card" id="liveGame" hidden><h2>🏁 Live-Quiz</h2><p id="liveStatus" aria-live="polite"></p><p><strong id="liveProgress"></strong> · <span id="liveTimer"></span></p><h3 id="liveQuestion"></h3><div id="liveAnswers"></div><p id="liveFeedback" aria-live="polite"></p><ol id="liveBoard"></ol><p class="muted"><small>Serverzeit entscheidet über Antworten und Punkte. Die Anzeige aktualisiert sich jede Sekunde; bei schlechter Verbindung kann sie verzögert sein.</small></p></section>
+<section class="card" id="top30Section">
+<h2>🏆 Top 30 – Bestenliste</h2>
+<p class="muted"><small>Die besten Ergebnisse aus abgeschlossenen Online-Spielen. Pro Spieler zählt das beste Ergebnis.</small></p>
+<p id="top30Status" role="status" aria-live="polite">Rangliste wird geladen …</p>
+<ol id="top30List" class="top30-list"></ol>
+<button id="refreshTop30" type="button">🔄 Rangliste aktualisieren</button>
+</section>
+
+<footer style="margin:30px auto 18px;padding:20px 12px;text-align:center;border-top:1px solid #445072;color:#c4cce3;font-size:.9rem">
+<p><strong>Jede Aufgabe ohne Gewähr auf Richtigkeit.</strong> KANUUT! ist eine private Lernhilfe und keine offizielle Prüfungssoftware. Maßgeblich sind die gültigen Vorschriften und Ausbildungsunterlagen.</p>
+<p>Erstellt von <strong>DerUschii</strong></p>
+<p><a style="color:#f5ba28" href="datenschutz.html">Datenschutzerklärung</a> · <a style="color:#f5ba28" href="impressum.html">Impressum</a></p>
+</footer>
+<script type="module">
+import {createClient} from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+const URL='https://fhgozciqheeuscwvscvx.supabase.co';
+const PUBLIC_KEY='sb_publishable_rj6xSl9aYiY83A8UoFpeYA_j8kBEwbF';
+const $=id=>document.getElementById(id);
+let kanuutUnlocked=false;
+let activeClient=null,activePin='',pollTimer=null,loadingPlayers=false;
+let client=null,hostRoomId=null,hostPin='',livePin='',liveTimerHandle=null,liveBusy=false,liveLastKey='',liveLastPhase='',localAnswered=false;
+let smoothTimerHandle=null,smoothDeadline=0,smoothPhase='waiting';
+let accountProfile=null;
+let guestMode=false, guestNickname="";
+const REJOIN_KEY='kanuut_tf14_last_room_accounts_v2';
+let restoringRoom=false;
+function saveRejoin(pin,nickname){try{localStorage.setItem(REJOIN_KEY,JSON.stringify({pin,nickname,at:Date.now()}));}catch(e){}}
+function forgetRejoin(){try{localStorage.removeItem(REJOIN_KEY);}catch(e){}}
+async function restoreRejoin(){
+ if(restoringRoom||activePin||!kanuutUnlocked)return;
+ let saved;try{saved=JSON.parse(localStorage.getItem(REJOIN_KEY)||'null');}catch(e){forgetRejoin();return;}
+ if(!saved||!/^[0-9]{6}$/.test(saved.pin)||!saved.nickname)return;
+ restoringRoom=true;
+ try{
+  const sb=await requirePlayer();
+  // Read-only check: never call join_game again, which could create a duplicate player.
+  const {data:s,error}=await sb.rpc('live_game_state',{p_pin:saved.pin});
+  if(error)throw error;
+  if(!s||!['waiting','question','reveal','leaderboard','finished'].includes(s.phase))throw Error('Raum nicht mehr erreichbar');
+  // A retained Supabase session is required for room rejoin.
+  // If the server no longer recognizes this player, do not silently create another.
+  activeClient=sb;activePin=saved.pin;
+  $('pin').value=saved.pin;$('nickname').value=saved.nickname;
+  $('roomPin').textContent=saved.pin;$('waiting').hidden=false;
+  $('notice').className='ok';$('notice').textContent='🔄 Wieder verbunden: '+saved.nickname+' · Raum '+saved.pin;
+  if(pollTimer)clearInterval(pollTimer);
+  await loadPlayers();pollTimer=setInterval(loadPlayers,3000);
+  beginLive(saved.pin);
+ }catch(e){
+  $('pin').value=saved.pin;$('nickname').value=saved.nickname;
+  $('notice').textContent='Letzten Spielraum erkannt ('+saved.pin+'). Automatische Rückkehr derzeit nicht möglich: '+(e.message||String(e));
+ }finally{restoringRoom=false;}
+}
+function paintSmoothTimer(){
+ const el=$('liveTimer');if(!el)return;
+ el.textContent=(smoothPhase==='waiting'||smoothPhase==='finished')?'':Math.max(0,Math.ceil((smoothDeadline-performance.now())/1000))+' s';
+}
+function syncSmoothTimer(phase,remaining){
+ smoothPhase=phase;
+ if(phase==='waiting'||phase==='finished'){paintSmoothTimer();return;}
+ const seconds=Math.max(0,Number(remaining)||0);
+ const candidate=performance.now()+seconds*1000;
+ // Only correct meaningful drift; small network jitter must not make the display jump.
+ if(!smoothDeadline||Math.abs(candidate-smoothDeadline)>1100||phase!==syncSmoothTimer.lastPhase) smoothDeadline=candidate;
+ syncSmoothTimer.lastPhase=phase;paintSmoothTimer();
+}
+async function getConnectedClient(){
+ if(!client)client=createClient(URL,PUBLIC_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:false}});
+ return client;
+}
+async function requireAccount(){
+ const sb=await getConnectedClient();const {data:{user},error}=await sb.auth.getUser();
+ if(error||!user||user.is_anonymous)throw Error('Bitte zuerst mit deinem Spieleraccount anmelden.');
+ const {data:profile,error:pe}=await sb.from('kanuut_profiles').select('nickname').eq('user_id',user.id).single();
+ if(pe||!profile)throw Error('Spielerprofil fehlt. Bitte Registrierung überprüfen.');
+ accountProfile=profile;$('nickname').value=profile.nickname;
+ return sb;
+}
+async function requirePlayer(){
+ if(!guestMode)return requireAccount();
+ const sb=await getConnectedClient();
+ const {data:{user}}=await sb.auth.getUser();
+ if(!user||!user.is_anonymous)throw Error('Gast-Sitzung fehlt. Bitte erneut als Gast starten.');
+ if(!guestNickname)throw Error('Gast-Nickname fehlt.');
+ $('nickname').value=guestNickname;
+ return sb;
+}
+$('guestStart').onclick=async()=>{
+ const note=$('accountNotice'),nick=$('guestNick').value.trim();
+ if(nick.length<2||nick.length>24){note.textContent='Bitte einen Gast-Nicknamen mit 2–24 Zeichen eingeben.';return;}
+ const btn=$('guestStart');btn.disabled=true;note.textContent='Gastzugang wird vorbereitet …';
+ try{
+  const sb=await getConnectedClient();
+  const {data:{user}}=await sb.auth.getUser();
+  if(user&&!user.is_anonymous)throw Error('Du bist bereits angemeldet. Bitte nutze deinen bestehenden Account.');
+  if(!user){const {error}=await sb.auth.signInAnonymously();if(error)throw error;}
+  guestMode=true;guestNickname=nick;sessionStorage.setItem('kanuut_guest_nick',nick);
+  $('accountForms').hidden=true;$('guestEntry').hidden=true;$('accountLoggedIn').hidden=false;
+  $('accountWho').textContent='Gast: '+nick;$('nickname').value=nick;
+  note.textContent='Gastzugang bereit. Bitte Klassenpasswort eingeben.';
+  await checkKanuutAccess();
+ }catch(e){note.textContent='Gastzugang fehlgeschlagen: '+(e.message||String(e));}
+ finally{btn.disabled=false;}
+};
+async function refreshAccountUI(){
+ try{await requireAccount();$('accountForms').hidden=true;$('guestEntry').hidden=true;$('accountLoggedIn').hidden=false;
+ $('accountWho').textContent='Angemeldet als '+accountProfile.nickname;
+ $('accountPanel').hidden=false;
+ if(await checkKanuutAccess()){await loadQuizzes();await loadTop30();await restoreRejoin();}
+ }catch(e){accountProfile=null;if(guestMode)return; $('guestEntry').hidden=false;$('accountForms').hidden=false;$('accountLoggedIn').hidden=true;
+ kanuutUnlocked=false;$('kanuutGate').hidden=true;document.body.classList.remove('kanuut-locked');
+ $('waiting').hidden=true;$('liveGame').hidden=true;$('hostControls').hidden=true;
+ $('accountPanel').hidden=false;}
+}
+$('accountRegister').onclick=async()=>{
+ const fields=$('registerFields'),note=$('accountNotice');
+ if(fields.hidden){fields.hidden=false;note.textContent='Wähle jetzt einen Nicknamen und klicke erneut auf Registrieren.';return;}
+ const email=$('accountEmail').value.trim(),password=$('accountPassword').value,nickname=$('accountNick').value.trim();
+ if(!email.includes('@')||password.length<8||nickname.length<2||nickname.length>24){note.textContent='Bitte gültige E-Mail, mindestens 8 Zeichen Passwort und Nickname (2–24 Zeichen) eingeben.';return;}
+ const b=$('accountRegister');b.disabled=true;note.textContent='Account wird erstellt …';
+ try{const sb=await getConnectedClient();const check=await sb.rpc('kanuut_nickname_available',{p_nickname:nickname});
+ if(check.error)throw check.error;if(!check.data)throw Error('Nickname bereits vergeben oder ungültig.');
+ const {data,error}=await sb.auth.signUp({email,password,options:{data:{nickname},emailRedirectTo:location.origin+location.pathname}});
+ if(error)throw error;
+ note.textContent=data.session?'Account erstellt und angemeldet!':'Registrierung eingegangen. Bitte bestätige die E-Mail, falls Supabase eine Bestätigung verlangt. Danach anmelden.';
+ if(data.session)await refreshAccountUI();
+ }catch(e){note.textContent='Registrierung fehlgeschlagen: '+(e.message||e)+' (Bei bereits vergebenem Nicknamen bitte anderen wählen.)';}
+ finally{b.disabled=false;}
+};
+$('accountLogin').onclick=async()=>{guestMode=false;guestNickname='';sessionStorage.removeItem('kanuut_guest_nick');
+ const b=$('accountLogin'),note=$('accountNotice');b.disabled=true;note.textContent='Anmeldung läuft …';
+ try{const sb=await getConnectedClient();const {error}=await sb.auth.signInWithPassword({email:$('accountEmail').value.trim(),password:$('accountPassword').value});if(error)throw error;
+ $('accountPassword').value='';note.textContent='Angemeldet!';await refreshAccountUI();
+ }catch(e){note.textContent='Anmeldung fehlgeschlagen: '+(e.message||e);}finally{b.disabled=false;}
+};
+$('accountReset').onclick=async()=>{
+ const email=$('accountEmail').value.trim();if(!email.includes('@')){$('accountNotice').textContent='Bitte zuerst deine E-Mail eingeben.';return;}
+ try{const sb=await getConnectedClient();const {error}=await sb.auth.resetPasswordForEmail(email,{redirectTo:location.origin+location.pathname});if(error)throw error;
+ $('accountNotice').textContent='Falls die E-Mail registriert ist, erhältst du einen Link zum Zurücksetzen.';
+ }catch(e){$('accountNotice').textContent=e.message||String(e);}
+};
+$('accountLogout').onclick=async()=>{const sb=await getConnectedClient();await sb.auth.signOut();sessionStorage.removeItem('kanuut_guest_nick');guestMode=false;forgetRejoin();location.reload();};
+
+
+async function checkKanuutAccess(){
+ try {const sb=await requirePlayer();const {data,error}=await sb.rpc('kanuut_access_ok');if(error)throw error;
+ kanuutUnlocked=data===true;$('kanuutGate').hidden=kanuutUnlocked;document.body.classList.toggle('kanuut-locked',!kanuutUnlocked);
+ if(!kanuutUnlocked){$('liveGame').hidden=true;$('waiting').hidden=true;}
+ return kanuutUnlocked;
+ }catch(e){kanuutUnlocked=false;$('kanuutGate').hidden=!(accountProfile||guestMode);document.body.classList.toggle('kanuut-locked',!!(accountProfile||guestMode));$('kanuutGateError').textContent='Zugangsprüfung fehlgeschlagen: '+(e.message||e);return false;}
+}
+async function submitKanuutPassword(){
+ const btn=$('kanuutEnter');btn.disabled=true;$('kanuutGateError').textContent='Prüfe Passwort …';
+ try {const sb=await requirePlayer();const {data,error}=await sb.rpc('kanuut_login',{p_password:$('kanuutPassword').value});if(error)throw error;
+ if(data!==true)throw Error('Passwort nicht gültig.');$('kanuutPassword').value='';$('kanuutGateError').textContent='';
+ if(await checkKanuutAccess()){await loadQuizzes();await loadTop30();await restoreRejoin();}
+ }catch(e){$('kanuutGateError').textContent=e.message||String(e);}finally{btn.disabled=false;}
+}
+$('kanuutEnter').onclick=submitKanuutPassword;
+$('kanuutPassword').addEventListener('keydown',e=>{if(e.key==='Enter')submitKanuutPassword()});
+async function loadQuizzes(){
+ const info=$('hostActionNotice');info.textContent='Quizze werden geladen ...';info.className='';
+ try{const sb=await getConnectedClient();const {data,error}=await sb.rpc('arena_list_quizzes');if(error)throw error;
+ const sel=$('quizSelect');sel.replaceChildren();for(const q of data||[]){const opt=document.createElement('option');opt.value=q.quiz_id;opt.textContent=q.quiz_title+' ('+q.question_count+' Fragen)';opt.disabled=Number(q.question_count)===0;sel.append(opt)}
+ $('createRoom').disabled=!(data||[]).some(q=>Number(q.question_count)>0);info.textContent=(data||[]).length+' Quizze gefunden.';
+ }catch(e){info.className='error';info.textContent='Quiz-Auswahl fehlgeschlagen: '+(e.message||String(e));}
+}
+$('reloadQuizzes').onclick=loadQuizzes;
+$('createRoom').onclick=async()=>{
+ const b=$('createRoom'),note=$('hostActionNotice'),quiz=$('quizSelect').value;if(!quiz)return;
+ b.disabled=true;note.className='';note.textContent='Spielraum wird erstellt ...';
+ try{const sb=await getConnectedClient();const {data,error}=await sb.rpc('arena_create_room',{p_quiz_id:quiz});if(error)throw error;
+ if(!data?.[0]?.room_id)throw Error('Kein Spielraum zurückgegeben.');hostRoomId=data[0].room_id;
+ hostPin=data[0].game_pin;$('roomInfo').textContent='Deine neue Spiel-PIN: '+hostPin+' – gib sie deinen Mitspielern.';activeClient=sb;activePin=hostPin;$('roomPin').textContent=hostPin;$('waiting').hidden=false;if(pollTimer)clearInterval(pollTimer);await loadPlayers();pollTimer=setInterval(loadPlayers,3000);beginLive(hostPin);
+ $('startGame').hidden=false;note.className='ok';note.textContent='Spielraum erstellt. Die Mitspieler können jetzt über die PIN beitreten.';
+ }catch(e){note.className='error';note.textContent='Erstellung fehlgeschlagen: '+(e.message||String(e));}
+ finally{b.disabled=false;}
+};
+$('startGame').onclick=async()=>{
+ const b=$('startGame'),note=$('hostActionNotice');if(!hostRoomId)return;
+ if(!confirm('Spiel jetzt starten? Die Spieler können danach nicht mehr über die Wartelobby beitreten.'))return;
+ b.disabled=true;note.className='';note.textContent='Spiel wird gestartet ...';
+ try{const sb=await getConnectedClient();const {data,error}=await sb.rpc('arena_start_game',{p_room_id:hostRoomId});if(error)throw error;
+ if(data!==true)throw Error('Spielstart nicht bestätigt.');note.className='ok';note.textContent='Spiel gestartet! Die Fragen laufen jetzt automatisch.';beginLive(hostPin);
+ }catch(e){b.disabled=false;note.className='error';note.textContent='Spielstart fehlgeschlagen: '+(e.message||String(e));}
+};
+async function loadPlayers(){
+ if(!activeClient||!activePin||loadingPlayers)return;
+ loadingPlayers=true;
+ try{
+  const {data,error}=await activeClient.rpc('arena_room_players',{p_pin:activePin});
+  if(error)throw error;
+  const list=$('playerList');list.replaceChildren();
+  for(const p of data||[]){const li=document.createElement('li');const name=document.createElement('span');name.textContent=p.player_name;const score=document.createElement('span');score.textContent=String(p.player_score??0)+' Punkte';li.append(name,score);list.append(li)}
+  $('waitingStatus').textContent=(data?.length||0)+' Spieler im Raum · zuletzt aktualisiert: '+new Date().toLocaleTimeString('de-DE');
+ }catch(e){$('waitingStatus').textContent='Spielerliste konnte nicht geladen werden: '+(e.message||String(e))}
+ finally{loadingPlayers=false}
+}
+$('refreshPlayers').onclick=loadPlayers;
+$('join').onclick=async()=>{
+ const pin=$('pin').value.trim(),nickname=guestMode?guestNickname:(accountProfile?.nickname||'');
+ const note=$('notice');note.className='';note.textContent='';
+ if(!/^\d{6}$/.test(pin)){note.className='error';note.textContent='Bitte einen sechsstelligen Spielcode eingeben.';return}
+ if(nickname.length<2||nickname.length>24){note.className='error';note.textContent='Spitzname: 2 bis 24 Zeichen.';return}
+ $('join').disabled=true;note.textContent='Verbindung wird aufgebaut ...';
+ try{
+  const supabase=await requirePlayer();
+  // Existing players must resume via the authenticated session, not join_game.
+  // live_game_state validates room membership server-side, even after the game starts.
+  let resumed=false;
+  const {data:existing,error:resumeError}=await supabase.rpc('live_game_state',{p_pin:pin});
+  if(!resumeError && existing && ['waiting','question','reveal','leaderboard','finished'].includes(existing.phase)){
+    resumed=true;
+  } else {
+    // Only new participants use join_game. It may legitimately reject a started room.
+    const {data,error}=await supabase.rpc('join_game',{p_pin:pin,p_nickname:nickname});
+    if(error)throw error;
+    if(!data?.length)throw Error('Keine Bestätigung vom Server erhalten.');
+  }
+  note.className='ok';note.textContent=(resumed?'🔄 Erfolgreich wieder verbunden!':'Erfolgreich beigetreten!')+' Spieler: '+nickname+' | Spielcode: '+pin;
+  saveRejoin(pin,nickname);activeClient=supabase;activePin=pin;$('roomPin').textContent=pin;$('waiting').hidden=false;
+  if(pollTimer)clearInterval(pollTimer);await loadPlayers();pollTimer=setInterval(loadPlayers,3000);beginLive(pin);
+ }catch(e){note.className='error';note.textContent='Beitritt fehlgeschlagen: '+(e.message||String(e))+' Falls du vorher in diesem Raum warst, muss dieselbe Supabase-Spielersitzung auf diesem Gerät erhalten bleiben.';}
+ finally{$('join').disabled=false;}
+};
+function beginLive(pin){
+ if(!pin)return;livePin=pin;liveLastKey='';liveLastPhase='';localAnswered=false;
+ $('liveGame').hidden=false;
+ if(liveTimerHandle)clearInterval(liveTimerHandle);
+ if(smoothTimerHandle)clearInterval(smoothTimerHandle);
+ smoothDeadline=0;smoothPhase='waiting';
+ smoothTimerHandle=setInterval(paintSmoothTimer,150);
+ refreshLive();liveTimerHandle=setInterval(()=>{if(!document.hidden)refreshLive()},1500);
+}
+async function refreshLive(){
+ if(!livePin||liveBusy)return;liveBusy=true;
+ try{
+  const sb=await getConnectedClient();
+  const {data:s,error}=await sb.rpc('live_game_state',{p_pin:livePin});
+  if(error)throw error;
+  const phase=s.phase||'waiting',key=String(s.question_number||0);
+  $('liveStatus').textContent=({waiting:'Warte auf den Spielstart …',question:'Jetzt antworten!',reveal:'Richtige Antwort',leaderboard:'Zwischenstand',finished:'Quiz beendet – Endrangliste'})[phase]||phase;
+  $('liveProgress').textContent=(s.question_number||0)+' / '+(s.question_count||0);
+  syncSmoothTimer(phase,s.remaining_seconds);
+  if(key!==liveLastKey){localAnswered=false;liveLastKey=key;}
+  if(s.my_answer!==null&&s.my_answer!==undefined)localAnswered=true;
+  $('liveQuestion').textContent=s.question||'';
+  const opts=$('liveAnswers');
+  if(key+'|'+phase!==liveLastPhase){opts.replaceChildren();
+   if(Array.isArray(s.options))s.options.forEach((label,i)=>{
+    const b=document.createElement('button');b.textContent=String.fromCharCode(65+i)+': '+String(label);
+    b.dataset.index=String(i);b.onclick=()=>sendLiveAnswer(i);opts.append(b);
+   });
+   liveLastPhase=key+'|'+phase;
+  }
+  for(const b of opts.children){
+   const i=Number(b.dataset.index);
+   b.disabled=phase!=='question'||localAnswered||s.is_host;
+   b.classList.toggle('correct',s.correct_index!==undefined&&i===s.correct_index);
+   b.classList.toggle('wrong',s.correct_index!==undefined&&s.my_answer===i&&i!==s.correct_index);
+  }
+  $('liveFeedback').textContent=phase==='question'?(s.is_host?'Du schaust als Spielleiter zu.':localAnswered?'Antwort abgegeben – bitte warten.':'Wähle eine Antwort.'):
+   (phase==='reveal'||phase==='leaderboard')?(s.correct_index!==undefined?'Richtig: '+String.fromCharCode(65+Number(s.correct_index))+(s.explanation?' · '+s.explanation:''):'') :'';
+  const board=$('liveBoard');board.replaceChildren();
+  if(Array.isArray(s.leaderboard))s.leaderboard.forEach((p,i)=>{
+   const li=document.createElement('li');li.textContent=(i+1)+'. '+p.name+' – '+p.score+' Punkte';board.append(li);
+  });
+  if(phase==='finished'&&liveTimerHandle){clearInterval(liveTimerHandle);liveTimerHandle=null;}
+  if(phase==='finished'&&smoothTimerHandle){clearInterval(smoothTimerHandle);smoothTimerHandle=null;}
+ }catch(e){$('liveStatus').textContent='Verbindungsproblem: '+(e.message||String(e));}
+ finally{liveBusy=false;}
+}
+async function sendLiveAnswer(index){
+ if(localAnswered||!livePin)return;
+ localAnswered=true;for(const b of $('liveAnswers').children)b.disabled=true;
+ $('liveFeedback').textContent='Antwort wird übermittelt …';
+ try{const sb=await getConnectedClient();const {error}=await sb.rpc('live_submit_answer',{p_pin:livePin,p_selected_index:index});if(error)throw error;
+ $('liveFeedback').textContent='Antwort angenommen!';
+ }catch(e){$('liveFeedback').textContent='Antwort nicht angenommen: '+(e.message||String(e));}
+ await refreshLive();
+}
+async function loadTop30(){
+ const status=$('top30Status'),list=$('top30List');
+ status.textContent='Rangliste wird geladen …';
+ try{
+  const sb=await getConnectedClient();
+  const {data,error}=await sb.rpc('arena_top30');
+  if(error)throw error;
+  list.replaceChildren();
+  const entries=Array.isArray(data)?data:[];
+  entries.forEach((p,i)=>{
+   const li=document.createElement('li');
+   const place=document.createElement('span');
+   place.className='top30-rank';
+   place.textContent=i===0?'🥇':i===1?'🥈':i===2?'🥉':String(i+1)+'.';
+   const name=document.createElement('span');
+   name.className='top30-name';
+   name.textContent=p.player_name||'Unbekannt';
+   const score=document.createElement('strong');
+   score.className='top30-score';
+   score.textContent=Number(p.player_score||0).toLocaleString('de-DE')+' Pkt.';
+   li.append(place,name,score);
+   list.append(li);
+  });
+  status.textContent=entries.length?('Stand: '+new Date().toLocaleTimeString('de-DE')):'Noch keine abgeschlossenen Spielrunden vorhanden.';
+ }catch(e){
+  status.textContent='Rangliste konnte nicht geladen werden: '+(e.message||String(e));
+ }
+}
+$('refreshTop30').addEventListener('click',loadTop30);
+getConnectedClient().then(sb=>sb.auth.onAuthStateChange(async(event)=>{
+ if(event==='PASSWORD_RECOVERY'){
+  const password=prompt('Neues KANUUT!-Passwort eingeben (mindestens 8 Zeichen):');
+  if(password&&password.length>=8){const {error}=await sb.auth.updateUser({password});alert(error?error.message:'Passwort geändert.');}
+ }
+}));
+(async()=>{
+ const sb=await getConnectedClient();
+ const {data:{user}}=await sb.auth.getUser();
+ const saved=sessionStorage.getItem('kanuut_guest_nick');
+ if(user?.is_anonymous&&saved){guestMode=true;guestNickname=saved;$('guestEntry').hidden=true;$('accountForms').hidden=true;$('accountLoggedIn').hidden=false;$('accountWho').textContent='Gast: '+saved;$('nickname').value=saved;if(await checkKanuutAccess()){await loadQuizzes();await loadTop30();await restoreRejoin();}}
+ else await refreshAccountUI();
+})();
+setInterval(async()=>{if(!accountProfile&&!guestMode)return;const was=kanuutUnlocked;const ok=await checkKanuutAccess();if(ok&&!was){loadQuizzes();loadTop30();restoreRejoin();}if(ok&&!document.hidden)loadTop30();},30000);
+</script></body></html>
