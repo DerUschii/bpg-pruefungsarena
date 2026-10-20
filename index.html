@@ -4,11 +4,11 @@
 <style>#kanuutGate{position:fixed;inset:0;z-index:9999;background:#10162d;display:flex;align-items:center;justify-content:center;padding:18px;overflow:auto}#kanuutGate[hidden]{display:none}#kanuutGate .card{width:min(440px,100%);box-sizing:border-box}#kanuutGateError{color:#ff9d9d;white-space:pre-wrap}body.kanuut-locked{overflow:hidden}</style></head><body>
 <div id="kanuutGate" hidden role="dialog" aria-modal="true" aria-label="TF14-Zugang"><section class="card"><h1>🦁 KANUUT!</h1><h2>🔐 Zugang nur für TF14</h2><p>Bitte gib das aktuelle Klassenpasswort ein. Mit bestehendem Account oder Gast-Nickname kannst du teilnehmen.</p><label for="kanuutPassword">Klassenpasswort</label><input id="kanuutPassword" type="password" autocomplete="off" placeholder="Passwort dieser Woche"><button id="kanuutEnter" type="button">KANUUT! betreten</button><p id="kanuutGateError" role="status"></p><p class="muted"><small>Das Passwort wechselt montags. Nur für TF14 · Alle Angaben ohne Gewähr · Erstellt von DerUschii.</small></p></section></div>
 <section class="card" id="accountPanel"><h2>🔐 Dein KANUUT!-Spieleraccount</h2>
-<p class="muted">Bestehende Spieler melden sich wie gewohnt an. Neue Spieler können ohne E-Mail als Gast mitspielen.</p>
+<p class="muted">Melde dich mit deinem bestehenden Account an oder registriere dich mit deinem eigenen Spielernamen. Ohne E-Mail kannst du als Gast mitspielen.</p>
 <div id="accountForms"><label for="accountEmail">E-Mail-Adresse</label><input id="accountEmail" type="email" autocomplete="email" placeholder="deine@email.de">
 <label for="accountPassword">Persönliches Passwort</label><input id="accountPassword" type="password" autocomplete="current-password" minlength="8" placeholder="Mindestens 8 Zeichen">
-<div id="registerFields" hidden><label for="accountNick">Dein einmaliger Nickname</label><input id="accountNick" maxlength="24" autocomplete="nickname" placeholder="z. B. LokMattis"></div>
-<p><button type="button" id="accountLogin">Anmelden</button> <button type="button" id="accountRegister">Registrieren</button> </p><p class="muted"><small>🔐 Zugang verloren? Bitte wende dich direkt an den KANUUT!-Administrator. Es werden keine automatischen E-Mails zur Passwortwiederherstellung verschickt.</small></p></div>
+<div id="registerFields"><label for="accountNick">Dein einmaliger Nickname</label><input id="accountNick" maxlength="24" autocomplete="nickname" placeholder="z. B. LokMattis"><p class="muted" style="margin:2px 0 8px"><small>Nur bei der Registrierung erforderlich. Beim Anmelden bleibt dein gespeicherter Nickname erhalten.</small></p></div>
+<p><button type="button" id="accountLogin">Anmelden</button> <button type="button" id="accountRegister">Registrieren</button> <button type="button" id="accountReset">Passwort vergessen?</button></p></div>
 <div id="guestEntry"><label for="guestNick">Gast-Nickname</label><input id="guestNick" maxlength="24" placeholder="z. B. Loklöwe"><button type="button" id="guestStart">Als Gast spielen</button><p class="muted"><small>Gäste benötigen keine E-Mail. Der Zugang gilt nur für dieses Gerät; nach dem Löschen der Browserdaten kann er verloren gehen.</small></p></div><div id="accountLoggedIn" hidden><strong id="accountWho"></strong> <button type="button" id="accountLogout">Abmelden</button></div>
 <p id="accountNotice" role="status" aria-live="polite"></p></section>
 <header class="brand"><div class="brand-logo">⚡ KANUUT!</div><p class="brand-slogan">Lieber hier verkacken als in der Prüfung!</p><p class="brand-sub">🚂 Lernen · Quizzen · Gewinnen</p></header>
@@ -137,8 +137,7 @@ async function refreshAccountUI(){
  $('accountPanel').hidden=false;}
 }
 $('accountRegister').onclick=async()=>{
- const fields=$('registerFields'),note=$('accountNotice');
- if(fields.hidden){fields.hidden=false;note.textContent='Wähle jetzt einen Nicknamen und klicke erneut auf Registrieren.';return;}
+ const note=$('accountNotice');
  const email=$('accountEmail').value.trim(),password=$('accountPassword').value,nickname=$('accountNick').value.trim();
  if(!email.includes('@')||password.length<8||nickname.length<2||nickname.length>24){note.textContent='Bitte gültige E-Mail, mindestens 8 Zeichen Passwort und Nickname (2–24 Zeichen) eingeben.';return;}
  const b=$('accountRegister');b.disabled=true;note.textContent='Account wird erstellt …';
@@ -146,7 +145,7 @@ $('accountRegister').onclick=async()=>{
  if(check.error)throw check.error;if(!check.data)throw Error('Nickname bereits vergeben oder ungültig.');
  const {data,error}=await sb.auth.signUp({email,password,options:{data:{nickname},emailRedirectTo:location.origin+location.pathname}});
  if(error)throw error;
- note.textContent=data.session?'Account erstellt und angemeldet!':'Registrierung eingegangen. Falls keine direkte Anmeldung erfolgt, bitte erneut mit E-Mail und Passwort anmelden.';
+ note.textContent=data.session?'Account erstellt und angemeldet!':'Registrierung eingegangen. Bitte bestätige die E-Mail, falls Supabase eine Bestätigung verlangt. Danach anmelden.';
  if(data.session)await refreshAccountUI();
  }catch(e){note.textContent='Registrierung fehlgeschlagen: '+(e.message||e)+' (Bei bereits vergebenem Nicknamen bitte anderen wählen.)';}
  finally{b.disabled=false;}
@@ -156,6 +155,12 @@ $('accountLogin').onclick=async()=>{guestMode=false;guestNickname='';sessionStor
  try{const sb=await getConnectedClient();const {error}=await sb.auth.signInWithPassword({email:$('accountEmail').value.trim(),password:$('accountPassword').value});if(error)throw error;
  $('accountPassword').value='';note.textContent='Angemeldet!';await refreshAccountUI();
  }catch(e){note.textContent='Anmeldung fehlgeschlagen: '+(e.message||e);}finally{b.disabled=false;}
+};
+$('accountReset').onclick=async()=>{
+ const email=$('accountEmail').value.trim();if(!email.includes('@')){$('accountNotice').textContent='Bitte zuerst deine E-Mail eingeben.';return;}
+ try{const sb=await getConnectedClient();const {error}=await sb.auth.resetPasswordForEmail(email,{redirectTo:location.origin+location.pathname});if(error)throw error;
+ $('accountNotice').textContent='Falls die E-Mail registriert ist, erhältst du einen Link zum Zurücksetzen.';
+ }catch(e){$('accountNotice').textContent=e.message||String(e);}
 };
 $('accountLogout').onclick=async()=>{const sb=await getConnectedClient();await sb.auth.signOut();sessionStorage.removeItem('kanuut_guest_nick');guestMode=false;forgetRejoin();location.reload();};
 
