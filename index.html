@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>KANUUT! – Quizzen statt Prüfungsfrust</title>
-<style>body{font-family:system-ui,sans-serif;background:#10162d;color:white;max-width:780px;margin:30px auto;padding:16px}h1{color:#f5ba28}.card{background:#242b4a;border-radius:16px;padding:22px;margin:16px 0}input,button{font:inherit;padding:12px;border-radius:9px;border:0;margin:5px 0;box-sizing:border-box}input{background:#f9fafb;color:#10162d;width:100%;max-width:400px}button{background:#f5ba28;color:#10162d;cursor:pointer;font-weight:700}button:disabled{opacity:.55;cursor:wait}.muted{color:#c4cce3}#options button{display:block;width:100%;text-align:left;background:#2f73ce;color:white}#notice{white-space:pre-wrap}#notice.error{color:#ff9d9d}#notice.ok{color:#80e3b5}code{overflow-wrap:anywhere}#waiting[hidden],#hostControls[hidden],#liveGame[hidden]{display:none}#playerList{list-style:none;padding:0}#playerList li{padding:11px 13px;background:#344064;border-radius:9px;margin:7px 0;display:flex;justify-content:space-between}#waitingStatus{color:#c4cce3}#liveAnswers{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}#liveAnswers button{background:#345da2;color:white;text-align:left;min-height:72px;white-space:normal}#liveAnswers button:disabled{opacity:.75}#liveAnswers button.correct{background:#187b4b}#liveAnswers button.wrong{background:#9a333b}#liveBoard{list-style:none;padding:0}#liveBoard li{background:#344064;padding:10px;margin:5px 0;border-radius:8px}#liveTimer{font-size:2rem;font-weight:800;color:#f5ba28}@media(max-width:500px){#liveAnswers{grid-template-columns:1fr}}.top30-list{list-style:none;padding:0;margin:12px 0}.top30-list li{display:flex;align-items:center;gap:12px;padding:12px 10px;border-bottom:1px solid #445072}.top30-rank{width:42px;flex-shrink:0;font-weight:800}.top30-name{flex:1;min-width:0;overflow-wrap:anywhere}.top30-score{white-space:nowrap;color:#f5ba28}@media(max-width:500px){.top30-list li{gap:8px}.top30-rank{width:36px}}.brand{text-align:center;padding:25px 8px 18px}.brand-logo{font-size:clamp(2.8rem,11vw,5rem);font-weight:950;letter-spacing:-.06em;color:#ffcb36;text-shadow:0 5px 0 #3d3260}.brand-slogan{font-size:clamp(1.05rem,4vw,1.4rem);font-weight:800;margin:12px 0 5px}.brand-sub{color:#c4cce3;margin:6px 0 0}[hidden]{display:none!important}button:hover:not(:disabled){filter:brightness(1.09)} .solo-options button{display:block;width:100%;text-align:left;background:#345da2;color:white;margin:8px 0;white-space:normal}.solo-options button:disabled{opacity:.7} </style>
+<style>body{font-family:system-ui,sans-serif;background:#10162d;color:white;max-width:780px;margin:30px auto;padding:16px}h1{color:#f5ba28}.card{background:#242b4a;border-radius:16px;padding:22px;margin:16px 0}input,button{font:inherit;padding:12px;border-radius:9px;border:0;margin:5px 0;box-sizing:border-box}input{background:#f9fafb;color:#10162d;width:100%;max-width:400px}button{background:#f5ba28;color:#10162d;cursor:pointer;font-weight:700}button:disabled{opacity:.55;cursor:wait}.muted{color:#c4cce3}#options button{display:block;width:100%;text-align:left;background:#2f73ce;color:white}#notice{white-space:pre-wrap}#notice.error{color:#ff9d9d}#notice.ok{color:#80e3b5}code{overflow-wrap:anywhere}#waiting[hidden],#hostControls[hidden],#liveGame[hidden]{display:none}#playerList{list-style:none;padding:0}#playerList li{padding:11px 13px;background:#344064;border-radius:9px;margin:7px 0;display:flex;justify-content:space-between}#waitingStatus{color:#c4cce3}#liveAnswers{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}#liveAnswers button{background:#345da2;color:white;text-align:left;min-height:72px;white-space:normal}#liveAnswers button:disabled{opacity:.75}#liveAnswers button.correct{background:#187b4b}#liveAnswers button.wrong{background:#9a333b}#liveBoard{list-style:none;padding:0}#liveBoard li{background:#344064;padding:10px;margin:5px 0;border-radius:8px}#liveTimer{font-size:2rem;font-weight:800;color:#f5ba28}@media(max-width:500px){#liveAnswers{grid-template-columns:1fr}}.top30-list{list-style:none;padding:0;margin:12px 0}.top30-list li{display:flex;align-items:center;gap:12px;padding:12px 10px;border-bottom:1px solid #445072}.top30-rank{width:42px;flex-shrink:0;font-weight:800}.top30-name{flex:1;min-width:0;overflow-wrap:anywhere}.top30-score{white-space:nowrap;color:#f5ba28}@media(max-width:500px){.top30-list li{gap:8px}.top30-rank{width:36px}}.brand{text-align:center;padding:25px 8px 18px}.brand-logo{font-size:clamp(2.8rem,11vw,5rem);font-weight:950;letter-spacing:-.06em;color:#ffcb36;text-shadow:0 5px 0 #3d3260}.brand-slogan{font-size:clamp(1.05rem,4vw,1.4rem);font-weight:800;margin:12px 0 5px}.brand-sub{color:#c4cce3;margin:6px 0 0}[hidden]{display:none!important}button:hover:not(:disabled){filter:brightness(1.09)} .solo-options button{display:block;width:100%;text-align:left;background:#345da2;color:white;margin:8px 0;white-space:normal}.solo-options button:disabled{opacity:.7} #soloTimer{font-size:1.7rem;font-weight:850;color:#ffcb36;margin:10px 0} #soloTimer.urgent{color:#ff8585} </style>
 <style>#kanuutGate{position:fixed;inset:0;z-index:9999;background:#10162d;display:flex;align-items:center;justify-content:center;padding:18px;overflow:auto}#kanuutGate[hidden]{display:none}#kanuutGate .card{width:min(440px,100%);box-sizing:border-box}#kanuutGateError{color:#ff9d9d;white-space:pre-wrap}body.kanuut-locked{overflow:hidden}</style></head><body>
 <div id="kanuutGate" hidden role="dialog" aria-modal="true" aria-label="TF14-Zugang"><section class="card"><h1>🦁 KANUUT!</h1><h2>🔐 Zugang nur für TF14</h2><p>Bitte gib das aktuelle Klassenpasswort ein. Mit bestehendem Account oder Gast-Nickname kannst du teilnehmen.</p><label for="kanuutPassword">Klassenpasswort</label><input id="kanuutPassword" type="password" autocomplete="off" placeholder="Passwort dieser Woche"><button id="kanuutEnter" type="button">KANUUT! betreten</button><p id="kanuutGateError" role="status"></p><p class="muted"><small>Das Passwort wechselt montags. Nur für TF14 · Alle Angaben ohne Gewähr · Erstellt von DerUschii.</small></p></section></div>
 <section class="card" id="accountPanel"><h2>🔐 Dein KANUUT!-Spieleraccount</h2>
@@ -25,7 +25,7 @@
 <section class="card" id="soloSection"><h2>🎯 Solo spielen</h2><p class="muted">Wähle ein Quiz und spiele allein. Nur registrierte Spieler können solo spielen. Die besten Ergebnisse aus allen Quizzen zählen für eine gemeinsame Solo-Top-5.</p>
 <label for="soloQuiz">Quiz auswählen</label><select id="soloQuiz" style="display:block;width:100%;padding:12px;border-radius:9px;margin:8px 0"></select>
 <button type="button" id="soloStart">▶ Solo-Quiz starten</button><button type="button" id="soloRefresh">🏆 Top 5 anzeigen</button><p id="soloStatus" role="status"></p>
-<div id="soloGame" hidden><p id="soloProgress"></p><h3 id="soloQuestion"></h3><div id="soloOptions" class="solo-options"></div><p id="soloFeedback" role="status"></p><button type="button" id="soloNext" hidden>Weiter ▶</button></div>
+<div id="soloGame" hidden><p id="soloProgress"></p><p id="soloTimer" role="timer" aria-live="off">⏱ 30 Sekunden</p><h3 id="soloQuestion"></h3><div id="soloOptions" class="solo-options"></div><p id="soloFeedback" role="status"></p><button type="button" id="soloNext" hidden>Weiter ▶</button></div>
 <h3>🏆 Solo-Top-5 – Gesamtwertung aller Quizze</h3><ol id="soloBoard"></ol></section>
 <section class="card" id="top30Section">
 <h2>🏆 Top 30 – Bestenliste</h2>
@@ -355,6 +355,19 @@ setInterval(async()=>{if(!accountProfile&&!guestMode)return;const was=kanuutUnlo
 
 // Solo-Spiel: serverseitig bewertete Antworten und eigene Rangliste.
 let soloRunId=null,soloAnswered=false,soloBusy=false;
+let soloClock=null,soloDeadline=0,soloTimeoutPending=false,soloTimeoutRetries=0;
+function soloStopClock(){if(soloClock!==null){clearInterval(soloClock);soloClock=null;}}
+function soloStartClock(deadline){
+ soloStopClock();soloDeadline=Date.parse(deadline);soloTimeoutPending=false;soloTimeoutRetries=0;
+ if(!Number.isFinite(soloDeadline))throw Error('Zeitlimit konnte nicht geladen werden');
+ const tick=()=>{
+  if(soloAnswered)return soloStopClock();
+  const remaining=Math.max(0,Math.ceil((soloDeadline-Date.now())/1000));
+  const el=$('soloTimer');el.textContent='⏱ '+remaining+' Sekunden';el.classList.toggle('urgent',remaining<=10);
+  if(remaining===0&&!soloTimeoutPending){soloTimeoutPending=true;soloStopClock();soloAnswer(-1);}
+ };
+ tick();if(!soloTimeoutPending)soloClock=setInterval(tick,200);
+}
 async function soloRpc(name,args){const sb=await requirePlayer();const {data,error}=await sb.rpc(name,args);if(error)throw error;return data;}
 function soloNotice(msg){$('soloStatus').textContent=msg;}
 function soloAccessUI(){const allowed=!!accountProfile&&!guestMode&&kanuutUnlocked;$('soloStart').disabled=!allowed;$('soloQuiz').disabled=!allowed;}
@@ -366,26 +379,27 @@ async function soloTop5(){
 }
 async function soloShowQuestion(){
  const q=await soloRpc('kanuut_solo_question',{p_run_id:soloRunId});
- if(q.finished){$('soloGame').hidden=true;soloNotice('Fertig! '+q.score+'/'+q.total+' Punkte.');await soloTop5();return;}
+ if(q.finished){soloStopClock();$('soloGame').hidden=true;soloNotice('Fertig! '+q.score+'/'+q.total+' Punkte.');await soloTop5();return;}
  soloAnswered=false;$('soloNext').hidden=true;$('soloFeedback').textContent='';$('soloProgress').textContent='Frage '+(q.position+1)+' von '+q.total+' · '+q.score+' Punkte';$('soloQuestion').textContent=q.question;
  const opts=$('soloOptions');opts.replaceChildren();
  let choices=q.options;
  if(typeof choices==='string'){try{choices=JSON.parse(choices)}catch(e){choices=[]}}
  if(!Array.isArray(choices)||choices.length!==4)throw Error('Antwortformat dieser Frage ist ungültig');
  choices.forEach((choice,i)=>{const b=document.createElement('button');b.type='button';b.textContent=typeof choice==='string'?choice:(choice?.text??choice?.label??String(choice));b.onclick=()=>soloAnswer(i);opts.append(b)});
+ soloStartClock(q.deadline_at);
 }
 async function soloAnswer(index){
- if(soloAnswered||soloBusy)return;soloBusy=true;
+ if(soloAnswered||soloBusy)return;soloBusy=true;soloStopClock();
  const buttons=[...$('soloOptions').querySelectorAll('button')];buttons.forEach(b=>b.disabled=true);
  try{const result=await soloRpc('kanuut_solo_answer',{p_run_id:soloRunId,p_selected_index:index});soloAnswered=true;
- buttons[result.correct_index].style.background='#187b4b';if(!result.correct)buttons[index].style.background='#9a333b';
- $('soloFeedback').textContent=(result.correct?'✅ Richtig!':'❌ Leider falsch.')+(result.explanation?' '+result.explanation:'')+' · '+result.score+'/'+result.total+' Punkte';
+ if(buttons[result.correct_index])buttons[result.correct_index].style.background='#187b4b';if(!result.correct&&index>=0&&buttons[index])buttons[index].style.background='#9a333b';
+ $('soloFeedback').textContent=(result.timed_out?'⏰ Zeit abgelaufen – unbeantwortet.':result.correct?'✅ Richtig!':'❌ Leider falsch.')+(result.explanation?' '+result.explanation:'')+' · '+result.score+'/'+result.total+' Punkte';
  $('soloNext').textContent=result.finished?'Ergebnis anzeigen':'Nächste Frage ▶';$('soloNext').hidden=false;
- }catch(e){buttons.forEach(b=>b.disabled=false);soloNotice('Antwort fehlgeschlagen: '+(e.message||e));}finally{soloBusy=false;}
+ }catch(e){soloNotice('Antwort fehlgeschlagen: '+(e.message||e));if(index>=0&&Date.now()<soloDeadline){buttons.forEach(b=>b.disabled=false);soloStartClock(new Date(soloDeadline).toISOString());}else if(soloTimeoutRetries++<3){soloTimeoutPending=false;setTimeout(()=>soloAnswer(-1),1000);}else{soloNotice('Zeitablauf konnte nicht gespeichert werden. Bitte Seite neu laden oder Verbindung prüfen.');}}finally{soloBusy=false;}
 }
 $('soloStart').onclick=async()=>{if(soloBusy)return;soloBusy=true;const b=$('soloStart');b.disabled=true;
  try{if(!accountProfile||guestMode)throw Error('Solo-Modus ist nur für registrierte Spieler verfügbar.');if(!kanuutUnlocked)throw Error('Bitte zuerst Klassenpasswort eingeben.');const q=$('soloQuiz').value;if(!q)throw Error('Bitte Quiz wählen');
- const r=await soloRpc('kanuut_solo_start',{p_quiz_id:q});soloRunId=r.run_id;$('soloGame').hidden=false;soloNotice('Solo-Spiel gestartet!');await soloShowQuestion();
+ soloStopClock();const r=await soloRpc('kanuut_solo_start',{p_quiz_id:q});soloRunId=r.run_id;$('soloGame').hidden=false;soloNotice('Solo-Spiel gestartet!');await soloShowQuestion();
  }catch(e){soloNotice('Solo-Start fehlgeschlagen: '+(e.message||e));}finally{soloBusy=false;b.disabled=false;}
 };
 $('soloNext').onclick=async()=>{try{await soloShowQuestion()}catch(e){soloNotice('Frage konnte nicht geladen werden: '+(e.message||e))}};
