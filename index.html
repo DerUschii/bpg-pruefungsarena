@@ -1,11 +1,7 @@
 <!doctype html>
 <html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>KANUUT! – Quizzen statt Prüfungsfrust</title>
-<style>body{font-family:system-ui,sans-serif;background:#10162d;color:white;max-width:780px;margin:30px auto;padding:16px}h1{color:#f5ba28}.card{background:#242b4a;border-radius:16px;padding:22px;margin:16px 0}input,button{font:inherit;padding:12px;border-radius:9px;border:0;margin:5px 0;box-sizing:border-box}input{background:#f9fafb;color:#10162d;width:100%;max-width:400px}button{background:#f5ba28;color:#10162d;cursor:pointer;font-weight:700}button:disabled{opacity:.55;cursor:wait}.muted{color:#c4cce3}#options button{display:block;width:100%;text-align:left;background:#2f73ce;color:white}#notice{white-space:pre-wrap}#notice.error{color:#ff9d9d}#notice.ok{color:#80e3b5}code{overflow-wrap:anywhere}#waiting[hidden],#hostControls[hidden],#liveGame[hidden]{display:none}#playerList{list-style:none;padding:0}#playerList li{padding:11px 13px;background:#344064;border-radius:9px;margin:7px 0;display:flex;justify-content:space-between}#waitingStatus{color:#c4cce3}#liveAnswers{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}#liveAnswers button{background:#345da2;color:white;text-align:left;min-height:72px;white-space:normal}#liveAnswers button:disabled{opacity:.75}#liveAnswers button.correct{background:#187b4b}#liveAnswers button.wrong{background:#9a333b}#liveBoard{list-style:none;padding:0}#liveBoard li{background:#344064;padding:10px;margin:5px 0;border-radius:8px}#liveTimer{font-size:2rem;font-weight:800;color:#f5ba28}@media(max-width:500px){#liveAnswers{grid-template-columns:1fr}}.top30-list{list-style:none;padding:0;margin:12px 0}.top30-list li{display:flex;align-items:center;gap:12px;padding:12px 10px;border-bottom:1px solid #445072}.top30-rank{width:42px;flex-shrink:0;font-weight:800}.top30-name{flex:1;min-width:0;overflow-wrap:anywhere}.top30-score{white-space:nowrap;color:#f5ba28}@media(max-width:500px){.top30-list li{gap:8px}.top30-rank{width:36px}}.brand{text-align:center;padding:25px 8px 18px}.brand-logo{font-size:clamp(2.8rem,11vw,5rem);font-weight:950;letter-spacing:-.06em;color:#ffcb36;text-shadow:0 5px 0 #3d3260}.brand-slogan{font-size:clamp(1.05rem,4vw,1.4rem);font-weight:800;margin:12px 0 5px}.brand-sub{color:#c4cce3;margin:6px 0 0}[hidden]{display:none!important}button:hover:not(:disabled){filter:brightness(1.09)} </style>
-<style>#kanuutGate{position:fixed;inset:0;z-index:9999;background:#10162d;display:flex;align-items:center;justify-content:center;padding:18px;overflow:auto}#kanuutGate[hidden]{display:none}#kanuutGate .card{width:min(440px,100%);box-sizing:border-box}#kanuutGateError{color:#ff9d9d;white-space:pre-wrap}body.kanuut-locked{overflow:hidden}</style><style>
-#flashcardsPanel select{display:block;width:100%;max-width:520px;padding:12px;border-radius:9px;background:#f9fafb;color:#10162d;font:inherit}
-#flashcardFace{display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;gap:12px;min-height:230px;background:#344064;border:2px solid #6377aa;border-radius:16px;padding:22px;cursor:pointer;white-space:pre-wrap;overflow-wrap:anywhere}
-#flashcardFace:focus-visible{outline:3px solid #f5ba28}#flashcardContent{font-size:clamp(1.05rem,3vw,1.4rem);font-weight:750}#flashcardExplanation{font-size:.92rem;color:#d6ddf4}#flashcardControls{display:flex;gap:9px;flex-wrap:wrap}#flashcardControls button{flex:1;min-width:115px}
-</style></head><body>
+<style>body{font-family:system-ui,sans-serif;background:#10162d;color:white;max-width:780px;margin:30px auto;padding:16px}h1{color:#f5ba28}.card{background:#242b4a;border-radius:16px;padding:22px;margin:16px 0}input,button{font:inherit;padding:12px;border-radius:9px;border:0;margin:5px 0;box-sizing:border-box}input{background:#f9fafb;color:#10162d;width:100%;max-width:400px}button{background:#f5ba28;color:#10162d;cursor:pointer;font-weight:700}button:disabled{opacity:.55;cursor:wait}.muted{color:#c4cce3}#options button{display:block;width:100%;text-align:left;background:#2f73ce;color:white}#notice{white-space:pre-wrap}#notice.error{color:#ff9d9d}#notice.ok{color:#80e3b5}code{overflow-wrap:anywhere}#waiting[hidden],#hostControls[hidden],#liveGame[hidden]{display:none}#playerList{list-style:none;padding:0}#playerList li{padding:11px 13px;background:#344064;border-radius:9px;margin:7px 0;display:flex;justify-content:space-between}#waitingStatus{color:#c4cce3}#liveAnswers{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}#liveAnswers button{background:#345da2;color:white;text-align:left;min-height:72px;white-space:normal}#liveAnswers button:disabled{opacity:.75}#liveAnswers button.correct{background:#187b4b}#liveAnswers button.wrong{background:#9a333b}#liveBoard{list-style:none;padding:0}#liveBoard li{background:#344064;padding:10px;margin:5px 0;border-radius:8px}#liveTimer{font-size:2rem;font-weight:800;color:#f5ba28}@media(max-width:500px){#liveAnswers{grid-template-columns:1fr}}.top30-list{list-style:none;padding:0;margin:12px 0}.top30-list li{display:flex;align-items:center;gap:12px;padding:12px 10px;border-bottom:1px solid #445072}.top30-rank{width:42px;flex-shrink:0;font-weight:800}.top30-name{flex:1;min-width:0;overflow-wrap:anywhere}.top30-score{white-space:nowrap;color:#f5ba28}@media(max-width:500px){.top30-list li{gap:8px}.top30-rank{width:36px}}.brand{text-align:center;padding:25px 8px 18px}.brand-logo{font-size:clamp(2.8rem,11vw,5rem);font-weight:950;letter-spacing:-.06em;color:#ffcb36;text-shadow:0 5px 0 #3d3260}.brand-slogan{font-size:clamp(1.05rem,4vw,1.4rem);font-weight:800;margin:12px 0 5px}.brand-sub{color:#c4cce3;margin:6px 0 0}[hidden]{display:none!important}button:hover:not(:disabled){filter:brightness(1.09)} .solo-options button{display:block;width:100%;text-align:left;background:#345da2;color:white;margin:8px 0;white-space:normal}.solo-options button:disabled{opacity:.7} </style>
+<style>#kanuutGate{position:fixed;inset:0;z-index:9999;background:#10162d;display:flex;align-items:center;justify-content:center;padding:18px;overflow:auto}#kanuutGate[hidden]{display:none}#kanuutGate .card{width:min(440px,100%);box-sizing:border-box}#kanuutGateError{color:#ff9d9d;white-space:pre-wrap}body.kanuut-locked{overflow:hidden}</style></head><body>
 <div id="kanuutGate" hidden role="dialog" aria-modal="true" aria-label="TF14-Zugang"><section class="card"><h1>🦁 KANUUT!</h1><h2>🔐 Zugang nur für TF14</h2><p>Bitte gib das aktuelle Klassenpasswort ein. Mit bestehendem Account oder Gast-Nickname kannst du teilnehmen.</p><label for="kanuutPassword">Klassenpasswort</label><input id="kanuutPassword" type="password" autocomplete="off" placeholder="Passwort dieser Woche"><button id="kanuutEnter" type="button">KANUUT! betreten</button><p id="kanuutGateError" role="status"></p><p class="muted"><small>Das Passwort wechselt montags. Nur für TF14 · Alle Angaben ohne Gewähr · Erstellt von DerUschii.</small></p></section></div>
 <section class="card" id="accountPanel"><h2>🔐 Dein KANUUT!-Spieleraccount</h2>
 <p class="muted">Melde dich mit deinem bestehenden Account an oder registriere dich mit deinem eigenen Spielernamen. Ohne E-Mail kannst du als Gast mitspielen.</p>
@@ -16,7 +12,7 @@
 <div id="guestEntry"><label for="guestNick">Gast-Nickname</label><input id="guestNick" maxlength="24" placeholder="z. B. Loklöwe"><button type="button" id="guestStart">Als Gast spielen</button><p class="muted"><small>Gäste benötigen keine E-Mail. Der Zugang gilt nur für dieses Gerät; nach dem Löschen der Browserdaten kann er verloren gehen.</small></p></div><div id="accountLoggedIn" hidden><strong id="accountWho"></strong> <button type="button" id="accountLogout">Abmelden</button></div>
 <p id="accountNotice" role="status" aria-live="polite"></p></section>
 <header class="brand"><div class="brand-logo">⚡ KANUUT!</div><p class="brand-slogan">Lieber hier verkacken als in der Prüfung!</p><p class="brand-sub">🚂 Lernen · Quizzen · Gewinnen</p></header>
-<section class="card" aria-label="Hinweis zur Nutzung" style="border:1px solid #68769e;background:#1b2645;padding:16px 20px"><strong>🦁 Hinweis zur Nutzung · KANUUT!</strong><p>KANUUT! ist ein privates, nicht kommerzielles und unabhängiges Lernprojekt für angehende Triebfahrzeugführer und alle, die sich im Eisenbahnbereich weiterbilden oder ihr Wissen spielerisch vertiefen möchten.</p><p>Alle Fragen, Antworten und sonstigen Angaben erfolgen ohne Gewähr auf Richtigkeit, Vollständigkeit und Aktualität. Maßgeblich sind die jeweils gültigen Vorschriften und offiziellen Ausbildungsunterlagen.</p><p>KANUUT! steht in keiner offiziellen Verbindung zu Bildungsträgern, Eisenbahnverkehrsunternehmen oder Prüfungsorganisationen.</p><p class="muted" style="margin-bottom:0"><small>Entwickelt und erstellt von <strong>DerUschii</strong></small></p></section>
+<section class="card" aria-label="Hinweis zur Nutzung" style="border:1px solid #68769e;background:#1b2645;padding:16px 20px"><strong>🦁 Hinweis zur Nutzung · TF14</strong><p>KANUUT! ist ein privates, nicht kommerzielles Lernprojekt und ausschließlich für die Lerngruppen der Klasse TF14 bestimmt.</p><p>Alle Fragen, Antworten und sonstigen Angaben erfolgen ohne Gewähr auf Richtigkeit, Vollständigkeit und Aktualität. Maßgeblich sind die jeweils gültigen Vorschriften und offiziellen Ausbildungsunterlagen.</p><p class="muted" style="margin-bottom:0"><small>Keine offizielle Anwendung der Loklöwenakademie · Erstellt von <strong>DerUschii</strong></small></p></section>
 <section class="card"><h2>🌐 Online-Spiel beitreten</h2><p>Du brauchst nur die sechsstellige PIN. Mit Account oder als Gast. Das Klassenpasswort bleibt erforderlich.</p>
 <label for="pin">Sechsstelliger Spielcode</label><input id="pin" inputmode="numeric" maxlength="6" placeholder="z. B. 402365"><br>
 <label for="nickname">Dein Spielername</label><input id="nickname" maxlength="24" readonly placeholder="Bitte zuerst anmelden"><br>
@@ -26,20 +22,11 @@
 <section class="card" id="hostControls"><h2>🎮 Gastgeber-Steuerung</h2><p class="muted">Wähle ein Quiz. Nur du kannst den von dir erstellten Raum starten.</p><label for="quizSelect">Quiz auswählen</label><select id="quizSelect" style="display:block;width:100%;max-width:480px;padding:12px;border-radius:9px;margin:8px 0 14px;font:inherit"></select><br><button id="reloadQuizzes" type="button">Quizze aktualisieren</button> <button id="createRoom" type="button">Neuen Spielraum erstellen</button><p id="roomInfo" role="status" aria-live="polite"></p><button id="startGame" type="button" hidden>▶ Spiel starten</button><p id="hostActionNotice" role="status" aria-live="polite"></p><p class="muted"><small>Das Starten setzt den Spielstatus in Supabase auf „playing“. Die Fragen laufen nach dem Start automatisch weiter. Bestehende alte Testräume können nicht über diesen Button gestartet werden.</small></p></section>
 <section class="card" id="waiting" hidden><h2>👥 Live-Warteraum</h2><p>Spielcode: <strong id="roomPin"></strong></p><p id="waitingStatus" role="status">Spieler werden geladen ...</p><ul id="playerList"></ul><button id="refreshPlayers" type="button">Spielerliste aktualisieren</button><p class="muted"><small>Spieler und Punkte werden automatisch aktualisiert.</small></p></section>
 <section class="card" id="liveGame" hidden><h2>🏁 Live-Quiz</h2><p id="liveStatus" aria-live="polite"></p><p><strong id="liveProgress"></strong> · <span id="liveTimer"></span></p><h3 id="liveQuestion"></h3><div id="liveAnswers"></div><p id="liveFeedback" aria-live="polite"></p><ol id="liveBoard"></ol><p class="muted"><small>Serverzeit entscheidet über Antworten und Punkte. Die Anzeige aktualisiert sich jede Sekunde; bei schlechter Verbindung kann sie verzögert sein.</small></p></section>
-<section class="card" id="flashcardsPanel" hidden>
-<h2>📚 Lernkarten – allein üben</h2>
-<p class="muted">Lerne mit den vorhandenen KANUUT!-Quizfragen ohne Zeitdruck. Nur mit gültiger Freischaltung.</p>
-<label for="flashcardQuiz">Lerngebiet auswählen</label>
-<select id="flashcardQuiz"><option value="">Bitte Lerngebiet auswählen</option></select>
-<p><button id="flashcardLoad" type="button">📖 Lernkarten laden</button> <button id="flashcardShuffle" type="button" disabled>🎲 Neu mischen</button></p>
-<p id="flashcardStatus" role="status" aria-live="polite"></p>
-<div id="flashcardStudy" hidden>
-<p><strong id="flashcardProgress"></strong></p>
-<div id="flashcardFace" role="button" tabindex="0" aria-label="Lernkarte umdrehen"><small id="flashcardSide">FRAGE</small><div id="flashcardContent"></div><div id="flashcardExplanation" hidden></div><small class="muted">Antippen zum Umdrehen</small></div>
-<div id="flashcardControls"><button id="flashcardPrev" type="button">◀ Zurück</button><button id="flashcardFlip" type="button">🔄 Umdrehen</button><button id="flashcardNext" type="button">Weiter ▶</button></div>
-</div>
-<p class="muted"><small>Alle Inhalte ohne Gewähr. Maßgeblich sind die gültigen Vorschriften und Ausbildungsunterlagen.</small></p>
-</section>
+<section class="card" id="soloSection"><h2>🎯 Solo spielen</h2><p class="muted">Wähle ein Quiz und spiele allein. Nur registrierte Spieler können solo spielen. Die besten Ergebnisse aus allen Quizzen zählen für eine gemeinsame Solo-Top-5.</p>
+<label for="soloQuiz">Quiz auswählen</label><select id="soloQuiz" style="display:block;width:100%;padding:12px;border-radius:9px;margin:8px 0"></select>
+<button type="button" id="soloStart">▶ Solo-Quiz starten</button><button type="button" id="soloRefresh">🏆 Top 5 anzeigen</button><p id="soloStatus" role="status"></p>
+<div id="soloGame" hidden><p id="soloProgress"></p><h3 id="soloQuestion"></h3><div id="soloOptions" class="solo-options"></div><p id="soloFeedback" role="status"></p><button type="button" id="soloNext" hidden>Weiter ▶</button></div>
+<h3>🏆 Solo-Top-5 – Gesamtwertung aller Quizze</h3><ol id="soloBoard"></ol></section>
 <section class="card" id="top30Section">
 <h2>🏆 Top 30 – Bestenliste</h2>
 <p class="muted"><small>Die besten Ergebnisse aus abgeschlossenen Online-Spielen. Pro Spieler zählt das beste Ergebnis.</small></p>
@@ -150,7 +137,7 @@ async function refreshAccountUI(){
  $('accountPanel').hidden=false;
  if(await checkKanuutAccess()){await loadQuizzes();await loadTop30();await restoreRejoin();}
  }catch(e){accountProfile=null;if(guestMode)return; $('guestEntry').hidden=false;$('accountForms').hidden=false;$('accountLoggedIn').hidden=true;
- kanuutUnlocked=false;$('flashcardsPanel').hidden=true;$('flashcardStudy').hidden=true;flashcards=[];$('kanuutGate').hidden=true;document.body.classList.remove('kanuut-locked');
+ kanuutUnlocked=false;$('kanuutGate').hidden=true;document.body.classList.remove('kanuut-locked');
  $('waiting').hidden=true;$('liveGame').hidden=true;$('hostControls').hidden=true;
  $('accountPanel').hidden=false;}
 }
@@ -185,7 +172,7 @@ $('accountLogout').onclick=async()=>{const sb=await getConnectedClient();await s
 
 async function checkKanuutAccess(){
  try {const sb=await requirePlayer();const {data,error}=await sb.rpc('kanuut_access_ok');if(error)throw error;
- kanuutUnlocked=data===true;$('flashcardsPanel').hidden=!kanuutUnlocked;if(!kanuutUnlocked){$('flashcardStudy').hidden=true;flashcards=[];}$('kanuutGate').hidden=kanuutUnlocked;document.body.classList.toggle('kanuut-locked',!kanuutUnlocked);
+ kanuutUnlocked=data===true;$('kanuutGate').hidden=kanuutUnlocked;document.body.classList.toggle('kanuut-locked',!kanuutUnlocked);
  if(!kanuutUnlocked){$('liveGame').hidden=true;$('waiting').hidden=true;}
  return kanuutUnlocked;
  }catch(e){kanuutUnlocked=false;$('kanuutGate').hidden=!(accountProfile||guestMode);document.body.classList.toggle('kanuut-locked',!!(accountProfile||guestMode));$('kanuutGateError').textContent='Zugangsprüfung fehlgeschlagen: '+(e.message||e);return false;}
@@ -202,8 +189,10 @@ $('kanuutPassword').addEventListener('keydown',e=>{if(e.key==='Enter')submitKanu
 async function loadQuizzes(){
  const info=$('hostActionNotice');info.textContent='Quizze werden geladen ...';info.className='';
  try{const sb=await getConnectedClient();const {data,error}=await sb.rpc('arena_list_quizzes');if(error)throw error;
- const sel=$('quizSelect');sel.replaceChildren();const fsel=$('flashcardQuiz');const previous=fsel.value;fsel.replaceChildren();for(const q of data||[]){const fopt=document.createElement('option');fopt.value=q.quiz_id;fopt.textContent=q.quiz_title+' ('+q.question_count+' Fragen)';fopt.disabled=Number(q.question_count)===0;fsel.append(fopt);const opt=document.createElement('option');opt.value=q.quiz_id;opt.textContent=q.quiz_title+' ('+q.question_count+' Fragen)';opt.disabled=Number(q.question_count)===0;sel.append(opt)}
- if([...fsel.options].some(o=>o.value===previous))fsel.value=previous;$('createRoom').disabled=!(data||[]).some(q=>Number(q.question_count)>0);info.textContent=(data||[]).length+' Quizze gefunden.';
+ const sel=$('quizSelect');sel.replaceChildren();for(const q of data||[]){const opt=document.createElement('option');opt.value=q.quiz_id;opt.textContent=q.quiz_title+' ('+q.question_count+' Fragen)';opt.disabled=Number(q.question_count)===0;sel.append(opt)}
+ const soloSel=$('soloQuiz');soloSel.replaceChildren();for(const q of data||[]){const o=document.createElement('option');o.value=q.quiz_id;o.textContent=q.quiz_title+' ('+q.question_count+' Fragen)';o.disabled=Number(q.question_count)===0;soloSel.append(o)}
+ $('soloStart').disabled=!(data||[]).some(q=>Number(q.question_count)>0);
+ $('createRoom').disabled=!(data||[]).some(q=>Number(q.question_count)>0);info.textContent=(data||[]).length+' Quizze gefunden.';
  }catch(e){info.className='error';info.textContent='Quiz-Auswahl fehlgeschlagen: '+(e.message||String(e));}
 }
 $('reloadQuizzes').onclick=loadQuizzes;
@@ -364,43 +353,44 @@ getConnectedClient().then(sb=>sb.auth.onAuthStateChange(async(event)=>{
 })();
 setInterval(async()=>{if(!accountProfile&&!guestMode)return;const was=kanuutUnlocked;const ok=await checkKanuutAccess();if(ok&&!was){loadQuizzes();loadTop30();restoreRejoin();}if(ok&&!document.hidden)loadTop30();},30000);
 
-// KANUUT! Lernkarten – ausschließlich über serverseitig geschützte RPC.
-let flashcards=[], flashcardAt=0, flashcardBack=false;
-function showFlashcard(){
- const c=flashcards[flashcardAt];if(!c)return;
- $('flashcardProgress').textContent=`Karte ${flashcardAt+1} von ${flashcards.length}`;
- $('flashcardSide').textContent=flashcardBack?'ANTWORT':'FRAGE';
- $('flashcardContent').textContent=flashcardBack?c.answer:c.question;
- $('flashcardExplanation').hidden=!flashcardBack||!c.explanation;
- $('flashcardExplanation').textContent=flashcardBack&&c.explanation?'Erklärung: '+c.explanation:'';
- $('flashcardPrev').disabled=flashcardAt===0;
- $('flashcardNext').disabled=flashcardAt===flashcards.length-1;
+// Solo-Spiel: serverseitig bewertete Antworten und eigene Rangliste.
+let soloRunId=null,soloAnswered=false,soloBusy=false;
+async function soloRpc(name,args){const sb=await requirePlayer();const {data,error}=await sb.rpc(name,args);if(error)throw error;return data;}
+function soloNotice(msg){$('soloStatus').textContent=msg;}
+function soloAccessUI(){const allowed=!!accountProfile&&!guestMode&&kanuutUnlocked;$('soloStart').disabled=!allowed;$('soloQuiz').disabled=!allowed;}
+async function soloTop5(){
+ try{const rows=await soloRpc('kanuut_solo_top5',{});const list=$('soloBoard');list.replaceChildren();
+ if(!rows?.length){const li=document.createElement('li');li.textContent='Noch keine Ergebnisse';list.append(li);return;}
+ for(const x of rows){const li=document.createElement('li');li.textContent=x.nickname+' — '+x.points+' Punkte · '+x.quizzes_played+' Quizze';list.append(li);}
+ }catch(e){soloNotice('Top 5: '+(e.message||e));}
 }
-function flipFlashcard(){if(!flashcards.length)return;flashcardBack=!flashcardBack;showFlashcard();}
-$('flashcardFace').onclick=flipFlashcard;
-$('flashcardFace').onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();flipFlashcard();}};
-$('flashcardFlip').onclick=flipFlashcard;
-$('flashcardPrev').onclick=()=>{if(flashcardAt>0){flashcardAt--;flashcardBack=false;showFlashcard();}};
-$('flashcardNext').onclick=()=>{if(flashcardAt<flashcards.length-1){flashcardAt++;flashcardBack=false;showFlashcard();}};
-$('flashcardQuiz').onchange=()=>{flashcards=[];$('flashcardStudy').hidden=true;$('flashcardShuffle').disabled=true;$('flashcardStatus').textContent='';};
-$('flashcardLoad').onclick=async()=>{
- const btn=$('flashcardLoad');const status=$('flashcardStatus');
- const id=$('flashcardQuiz').value;if(!id){status.textContent='Bitte Lerngebiet auswählen.';return;}
- btn.disabled=true;status.textContent='Lernkarten werden geladen …';
- try{
-  if(!await checkKanuutAccess())throw Error('Bitte zuerst mit gültigem Klassenpasswort freischalten.');
-  const sb=await requirePlayer();
-  const {data,error}=await sb.rpc('kanuut_flashcards',{p_quiz_id:id});if(error)throw error;
-  flashcards=(data||[]).map(c=>({question:c.question,answer:c.answer,explanation:c.explanation}));
-  flashcardAt=0;flashcardBack=false;$('flashcardStudy').hidden=!flashcards.length;
-  $('flashcardShuffle').disabled=!flashcards.length;
-  status.textContent=flashcards.length?`${flashcards.length} Lernkarten geladen.`:'Keine Lernkarten gefunden.';
-  if(flashcards.length)showFlashcard();
- }catch(e){flashcards=[];$('flashcardStudy').hidden=true;status.textContent='Laden fehlgeschlagen: '+(e.message||e);}
- finally{btn.disabled=false;}
+async function soloShowQuestion(){
+ const q=await soloRpc('kanuut_solo_question',{p_run_id:soloRunId});
+ if(q.finished){$('soloGame').hidden=true;soloNotice('Fertig! '+q.score+'/'+q.total+' Punkte.');await soloTop5();return;}
+ soloAnswered=false;$('soloNext').hidden=true;$('soloFeedback').textContent='';$('soloProgress').textContent='Frage '+(q.position+1)+' von '+q.total+' · '+q.score+' Punkte';$('soloQuestion').textContent=q.question;
+ const opts=$('soloOptions');opts.replaceChildren();
+ let choices=q.options;
+ if(typeof choices==='string'){try{choices=JSON.parse(choices)}catch(e){choices=[]}}
+ if(!Array.isArray(choices)||choices.length!==4)throw Error('Antwortformat dieser Frage ist ungültig');
+ choices.forEach((choice,i)=>{const b=document.createElement('button');b.type='button';b.textContent=typeof choice==='string'?choice:(choice?.text??choice?.label??String(choice));b.onclick=()=>soloAnswer(i);opts.append(b)});
+}
+async function soloAnswer(index){
+ if(soloAnswered||soloBusy)return;soloBusy=true;
+ const buttons=[...$('soloOptions').querySelectorAll('button')];buttons.forEach(b=>b.disabled=true);
+ try{const result=await soloRpc('kanuut_solo_answer',{p_run_id:soloRunId,p_selected_index:index});soloAnswered=true;
+ buttons[result.correct_index].style.background='#187b4b';if(!result.correct)buttons[index].style.background='#9a333b';
+ $('soloFeedback').textContent=(result.correct?'✅ Richtig!':'❌ Leider falsch.')+(result.explanation?' '+result.explanation:'')+' · '+result.score+'/'+result.total+' Punkte';
+ $('soloNext').textContent=result.finished?'Ergebnis anzeigen':'Nächste Frage ▶';$('soloNext').hidden=false;
+ }catch(e){buttons.forEach(b=>b.disabled=false);soloNotice('Antwort fehlgeschlagen: '+(e.message||e));}finally{soloBusy=false;}
+}
+$('soloStart').onclick=async()=>{if(soloBusy)return;soloBusy=true;const b=$('soloStart');b.disabled=true;
+ try{if(!accountProfile||guestMode)throw Error('Solo-Modus ist nur für registrierte Spieler verfügbar.');if(!kanuutUnlocked)throw Error('Bitte zuerst Klassenpasswort eingeben.');const q=$('soloQuiz').value;if(!q)throw Error('Bitte Quiz wählen');
+ const r=await soloRpc('kanuut_solo_start',{p_quiz_id:q});soloRunId=r.run_id;$('soloGame').hidden=false;soloNotice('Solo-Spiel gestartet!');await soloShowQuestion();
+ }catch(e){soloNotice('Solo-Start fehlgeschlagen: '+(e.message||e));}finally{soloBusy=false;b.disabled=false;}
 };
-$('flashcardShuffle').onclick=()=>{
- for(let i=flashcards.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[flashcards[i],flashcards[j]]=[flashcards[j],flashcards[i]];}
- flashcardAt=0;flashcardBack=false;showFlashcard();
-};
+$('soloNext').onclick=async()=>{try{await soloShowQuestion()}catch(e){soloNotice('Frage konnte nicht geladen werden: '+(e.message||e))}};
+$('soloRefresh').onclick=soloTop5;
+setInterval(soloAccessUI,1000);soloAccessUI();
+// Die globale Solo-Rangliste ist unabhängig vom gewählten Quiz.
+$('soloQuiz').onchange=()=>{};
 </script></body></html>
