@@ -1,7 +1,9 @@
 <!doctype html>
 <html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>KANUUT! – Quizzen statt Prüfungsfrust</title>
 <style>body{font-family:system-ui,sans-serif;background:#10162d;color:white;max-width:780px;margin:30px auto;padding:16px}h1{color:#f5ba28}.card{background:#242b4a;border-radius:16px;padding:22px;margin:16px 0}input,button{font:inherit;padding:12px;border-radius:9px;border:0;margin:5px 0;box-sizing:border-box}input{background:#f9fafb;color:#10162d;width:100%;max-width:400px}button{background:#f5ba28;color:#10162d;cursor:pointer;font-weight:700}button:disabled{opacity:.55;cursor:wait}.muted{color:#c4cce3}#options button{display:block;width:100%;text-align:left;background:#2f73ce;color:white}#notice{white-space:pre-wrap}#notice.error{color:#ff9d9d}#notice.ok{color:#80e3b5}code{overflow-wrap:anywhere}#waiting[hidden],#hostControls[hidden],#liveGame[hidden]{display:none}#playerList{list-style:none;padding:0}#playerList li{padding:11px 13px;background:#344064;border-radius:9px;margin:7px 0;display:flex;justify-content:space-between}#waitingStatus{color:#c4cce3}#liveAnswers{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}#liveAnswers button{background:#345da2;color:white;text-align:left;min-height:72px;white-space:normal}#liveAnswers button:disabled{opacity:.75}#liveAnswers button.correct{background:#187b4b}#liveAnswers button.wrong{background:#9a333b}#liveBoard{list-style:none;padding:0}#liveBoard li{background:#344064;padding:10px;margin:5px 0;border-radius:8px}#liveTimer{font-size:2rem;font-weight:800;color:#f5ba28}@media(max-width:500px){#liveAnswers{grid-template-columns:1fr}}.top30-list{list-style:none;padding:0;margin:12px 0}.top30-list li{display:flex;align-items:center;gap:12px;padding:12px 10px;border-bottom:1px solid #445072}.top30-rank{width:42px;flex-shrink:0;font-weight:800}.top30-name{flex:1;min-width:0;overflow-wrap:anywhere}.top30-score{white-space:nowrap;color:#f5ba28}@media(max-width:500px){.top30-list li{gap:8px}.top30-rank{width:36px}}.brand{text-align:center;padding:25px 8px 18px}.brand-logo{font-size:clamp(2.8rem,11vw,5rem);font-weight:950;letter-spacing:-.06em;color:#ffcb36;text-shadow:0 5px 0 #3d3260}.brand-slogan{font-size:clamp(1.05rem,4vw,1.4rem);font-weight:800;margin:12px 0 5px}.brand-sub{color:#c4cce3;margin:6px 0 0}[hidden]{display:none!important}button:hover:not(:disabled){filter:brightness(1.09)} .solo-options button{display:block;width:100%;text-align:left;background:#345da2;color:white;margin:8px 0;white-space:normal}.solo-options button:disabled{opacity:.7} #soloTimer{font-size:1.7rem;font-weight:850;color:#ffcb36;margin:10px 0} #soloTimer.urgent{color:#ff8585} </style>
-<style>#kanuutGate{position:fixed;inset:0;z-index:9999;background:#10162d;display:flex;align-items:center;justify-content:center;padding:18px;overflow:auto}#kanuutGate[hidden]{display:none}#kanuutGate .card{width:min(440px,100%);box-sizing:border-box}#kanuutGateError{color:#ff9d9d;white-space:pre-wrap}body.kanuut-locked{overflow:hidden}</style></head><body>
+<style>#kanuutGate{position:fixed;inset:0;z-index:9999;background:#10162d;display:flex;align-items:center;justify-content:center;padding:18px;overflow:auto}#kanuutGate[hidden]{display:none}#kanuutGate .card{width:min(440px,100%);box-sizing:border-box}#kanuutGateError{color:#ff9d9d;white-space:pre-wrap}body.kanuut-locked{overflow:hidden}</style><style>
+#flashcardSection select{display:block;width:100%;padding:12px;border-radius:9px;background:#f9fafb;color:#10162d;font:inherit;margin:8px 0 12px}#flashcardBox{min-height:190px;border:2px solid #5e75a8;border-radius:15px;padding:20px;background:#182344;cursor:pointer;display:flex;flex-direction:column;justify-content:center;gap:14px;white-space:pre-wrap;overflow-wrap:anywhere}#flashcardBox:focus{outline:3px solid #f5ba28}#flashcardText{font-size:1.12rem;line-height:1.55}#flashcardBadges{display:flex;gap:8px;flex-wrap:wrap}#flashcardBadges span{border-radius:7px;padding:5px 10px;font-weight:800;font-size:.8rem}#flashcardNav{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}#flashcardStatus{white-space:pre-wrap}#flashcardBox[hidden]{display:none}
+</style></head><body>
 <div id="kanuutGate" hidden role="dialog" aria-modal="true" aria-label="TF14-Zugang"><section class="card"><h1>🦁 KANUUT!</h1><h2>🔐 Zugang nur für TF14</h2><p>Bitte gib das aktuelle Klassenpasswort ein. Mit bestehendem Account oder Gast-Nickname kannst du teilnehmen.</p><label for="kanuutPassword">Klassenpasswort</label><input id="kanuutPassword" type="password" autocomplete="off" placeholder="Passwort dieser Woche"><button id="kanuutEnter" type="button">KANUUT! betreten</button><p id="kanuutGateError" role="status"></p><p class="muted"><small>Das Passwort wechselt montags. Nur für TF14 · Alle Angaben ohne Gewähr · Erstellt von DerUschii.</small></p></section></div>
 <section class="card" id="accountPanel"><h2>🔐 Dein KANUUT!-Spieleraccount</h2>
 <p class="muted">Melde dich mit deinem bestehenden Account an oder registriere dich mit deinem eigenen Spielernamen. Ohne E-Mail kannst du als Gast mitspielen.</p>
@@ -22,6 +24,7 @@
 <section class="card" id="hostControls"><h2>🎮 Gastgeber-Steuerung</h2><p class="muted">Wähle ein Quiz. Nur du kannst den von dir erstellten Raum starten.</p><label for="quizSelect">Quiz auswählen</label><select id="quizSelect" style="display:block;width:100%;max-width:480px;padding:12px;border-radius:9px;margin:8px 0 14px;font:inherit"></select><br><button id="reloadQuizzes" type="button">Quizze aktualisieren</button> <button id="createRoom" type="button">Neuen Spielraum erstellen</button><p id="roomInfo" role="status" aria-live="polite"></p><button id="startGame" type="button" hidden>▶ Spiel starten</button><p id="hostActionNotice" role="status" aria-live="polite"></p><p class="muted"><small>Das Starten setzt den Spielstatus in Supabase auf „playing“. Die Fragen laufen nach dem Start automatisch weiter. Bestehende alte Testräume können nicht über diesen Button gestartet werden.</small></p></section>
 <section class="card" id="waiting" hidden><h2>👥 Live-Warteraum</h2><p>Spielcode: <strong id="roomPin"></strong></p><p id="waitingStatus" role="status">Spieler werden geladen ...</p><ul id="playerList"></ul><button id="refreshPlayers" type="button">Spielerliste aktualisieren</button><p class="muted"><small>Spieler und Punkte werden automatisch aktualisiert.</small></p></section>
 <section class="card" id="liveGame" hidden><h2>🏁 Live-Quiz</h2><p id="liveStatus" aria-live="polite"></p><p><strong id="liveProgress"></strong> · <span id="liveTimer"></span></p><h3 id="liveQuestion"></h3><div id="liveAnswers"></div><p id="liveFeedback" aria-live="polite"></p><ol id="liveBoard"></ol><p class="muted"><small>Serverzeit entscheidet über Antworten und Punkte. Die Anzeige aktualisiert sich jede Sekunde; bei schlechter Verbindung kann sie verzögert sein.</small></p></section>
+<section class="card" id="flashcardSection"><h2>📚 Lernkarten</h2><p class="muted">Fragen und Antworten lernen – Karte anklicken, um die Antwort zu sehen. BG-Themen sind rot, Good to Know blau markiert.</p><label for="flashcardDeck">Lernkartenset auswählen</label><select id="flashcardDeck"><option value="">Lernkarten werden geladen …</option></select><button type="button" id="flashcardReload">🔄 Lernkarten aktualisieren</button><p id="flashcardStatus" role="status" aria-live="polite"></p><div id="flashcardBox" role="button" tabindex="0" aria-label="Lernkarte umdrehen" hidden><div id="flashcardBadges"></div><strong id="flashcardSide">FRAGE</strong><div id="flashcardText"></div><small id="flashcardSource" class="muted"></small></div><div id="flashcardNav"><button type="button" id="flashcardPrev">◀ Zurück</button><button type="button" id="flashcardFlip">🔁 Antwort anzeigen</button><button type="button" id="flashcardNext">Weiter ▶</button></div></section>
 <section class="card" id="soloSection"><h2>🎯 Solo spielen</h2><p class="muted">Wähle ein Quiz und spiele allein. Nur registrierte Spieler können solo spielen. Die besten Ergebnisse aus allen Quizzen zählen für eine gemeinsame Solo-Top-5.</p>
 <label for="soloQuiz">Quiz auswählen</label><select id="soloQuiz" style="display:block;width:100%;padding:12px;border-radius:9px;margin:8px 0"></select>
 <button type="button" id="soloStart">▶ Solo-Quiz starten</button><button type="button" id="soloRefresh">🏆 Top 5 anzeigen</button><p id="soloStatus" role="status"></p>
@@ -135,7 +138,7 @@ async function refreshAccountUI(){
  try{await requireAccount();$('accountForms').hidden=true;$('guestEntry').hidden=true;$('accountLoggedIn').hidden=false;
  $('accountWho').textContent='Angemeldet als '+accountProfile.nickname;
  $('accountPanel').hidden=false;
- if(await checkKanuutAccess()){await loadQuizzes();await loadTop30();await restoreRejoin();}
+ if(await checkKanuutAccess()){await loadQuizzes();await flashcardLoadDecks();await loadTop30();await restoreRejoin();}
  }catch(e){accountProfile=null;if(guestMode)return; $('guestEntry').hidden=false;$('accountForms').hidden=false;$('accountLoggedIn').hidden=true;
  kanuutUnlocked=false;$('kanuutGate').hidden=true;document.body.classList.remove('kanuut-locked');
  $('waiting').hidden=true;$('liveGame').hidden=true;$('hostControls').hidden=true;
@@ -181,11 +184,67 @@ async function submitKanuutPassword(){
  const btn=$('kanuutEnter');btn.disabled=true;$('kanuutGateError').textContent='Prüfe Passwort …';
  try {const sb=await requirePlayer();const {data,error}=await sb.rpc('kanuut_login',{p_password:$('kanuutPassword').value});if(error)throw error;
  if(data!==true)throw Error('Passwort nicht gültig.');$('kanuutPassword').value='';$('kanuutGateError').textContent='';
- if(await checkKanuutAccess()){await loadQuizzes();await loadTop30();await restoreRejoin();}
+ if(await checkKanuutAccess()){await loadQuizzes();await flashcardLoadDecks();await loadTop30();await restoreRejoin();}
  }catch(e){$('kanuutGateError').textContent=e.message||String(e);}finally{btn.disabled=false;}
 }
 $('kanuutEnter').onclick=submitKanuutPassword;
 $('kanuutPassword').addEventListener('keydown',e=>{if(e.key==='Enter')submitKanuutPassword()});
+
+// Lernkarten: bestehende Supabase-Tabellen lesen, ohne Daten oder Quizräume zu verändern.
+let flashcards=[],flashcardIndex=0,flashcardShowingAnswer=false;
+function flashcardPaint(){
+ const card=flashcards[flashcardIndex],box=$('flashcardBox'),badges=$('flashcardBadges');
+ box.hidden=!card;badges.replaceChildren();
+ $('flashcardPrev').disabled=!card||flashcardIndex===0;
+ $('flashcardNext').disabled=!card||flashcardIndex===flashcards.length-1;
+ $('flashcardFlip').disabled=!card;
+ if(!card)return;
+ for(const [show,label,color] of [[card.is_bg,'⚠ BG-THEMA','#b32736'],[card.is_good_to_know,'GOOD TO KNOW','#2268b5']]){
+  if(show){const badge=document.createElement('span');badge.textContent=label;badge.style.background=color;badges.append(badge)}
+ }
+ $('flashcardSide').textContent=flashcardShowingAnswer?'ANTWORT':'FRAGE';
+ $('flashcardText').textContent=flashcardShowingAnswer?card.answer:card.question;
+ $('flashcardSource').textContent='Karte '+(flashcardIndex+1)+' / '+flashcards.length+(card.source_page?' · Skriptseite '+card.source_page:'');
+ $('flashcardFlip').textContent=flashcardShowingAnswer?'🔁 Frage anzeigen':'🔁 Antwort anzeigen';
+}
+function flashcardFlip(){if(!flashcards.length)return;flashcardShowingAnswer=!flashcardShowingAnswer;flashcardPaint()}
+$('flashcardBox').onclick=flashcardFlip;
+$('flashcardBox').onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();flashcardFlip()}};
+$('flashcardFlip').onclick=flashcardFlip;
+$('flashcardPrev').onclick=()=>{if(flashcardIndex>0){flashcardIndex--;flashcardShowingAnswer=false;flashcardPaint()}};
+$('flashcardNext').onclick=()=>{if(flashcardIndex<flashcards.length-1){flashcardIndex++;flashcardShowingAnswer=false;flashcardPaint()}};
+async function flashcardLoadDeck(){
+ const status=$('flashcardStatus'),slug=$('flashcardDeck').value;
+ flashcards=[];flashcardIndex=0;flashcardShowingAnswer=false;flashcardPaint();
+ if(!slug){status.textContent='Bitte ein Lernkartenset auswählen.';return}
+ status.textContent='Lernkarten werden geladen …';
+ try{
+  const sb=await getConnectedClient();
+  const {data,error}=await sb.from('kanuut_flashcards').select('question,answer,source_page,is_bg,is_good_to_know,position').eq('deck_slug',slug).order('position',{ascending:true});
+  if(error)throw error;
+  flashcards=data||[];
+  status.textContent=flashcards.length?flashcards.length+' Lernkarten geladen.':'Dieses Set enthält keine für deinen Account sichtbaren Lernkarten.';
+  flashcardPaint();
+ }catch(e){status.textContent='Lernkarten konnten nicht geladen werden: '+(e.message||String(e))+'\nBitte in Supabase Tabellen und Lese-Berechtigungen (RLS) prüfen.'}
+}
+async function flashcardLoadDecks(){
+ const status=$('flashcardStatus'),sel=$('flashcardDeck'),old=sel.value;
+ if(!kanuutUnlocked){status.textContent='Bitte zuerst anmelden und den TF14-Zugang freischalten.';return}
+ status.textContent='Lernkartensets werden gesucht …';
+ try{
+  const sb=await getConnectedClient();
+  const {data,error}=await sb.from('kanuut_flashcard_decks').select('slug,title').order('title');
+  if(error)throw error;
+  sel.replaceChildren();
+  for(const d of data||[]){const o=document.createElement('option');o.value=d.slug;o.textContent=d.title;sel.append(o)}
+  if(old&&[...sel.options].some(o=>o.value===old))sel.value=old;
+  if(!sel.options.length){status.textContent='Keine Lernkartensets gefunden. Prüfe, ob die alten Sets in anderen Tabellen liegen oder ob RLS den Zugriff verhindert.';flashcards=[];flashcardPaint();return}
+  await flashcardLoadDeck();
+ }catch(e){status.textContent='Lernkartensets konnten nicht geladen werden: '+(e.message||String(e))+'\nDie bisherige Lernkartenfunktion ist in der hochgeladenen HTML-Version nicht enthalten. Eventuell liegen ältere Karten in anderen Tabellen.'}
+}
+$('flashcardReload').onclick=flashcardLoadDecks;
+$('flashcardDeck').onchange=flashcardLoadDeck;
+
 async function loadQuizzes(){
  const info=$('hostActionNotice');info.textContent='Quizze werden geladen ...';info.className='';
  try{const sb=await getConnectedClient();const {data,error}=await sb.rpc('arena_list_quizzes');if(error)throw error;
@@ -348,10 +407,10 @@ getConnectedClient().then(sb=>sb.auth.onAuthStateChange(async(event)=>{
  const sb=await getConnectedClient();
  const {data:{user}}=await sb.auth.getUser();
  const saved=sessionStorage.getItem('kanuut_guest_nick');
- if(user?.is_anonymous&&saved){guestMode=true;guestNickname=saved;$('guestEntry').hidden=true;$('accountForms').hidden=true;$('accountLoggedIn').hidden=false;$('accountWho').textContent='Gast: '+saved;$('nickname').value=saved;if(await checkKanuutAccess()){await loadQuizzes();await loadTop30();await restoreRejoin();}}
+ if(user?.is_anonymous&&saved){guestMode=true;guestNickname=saved;$('guestEntry').hidden=true;$('accountForms').hidden=true;$('accountLoggedIn').hidden=false;$('accountWho').textContent='Gast: '+saved;$('nickname').value=saved;if(await checkKanuutAccess()){await loadQuizzes();await flashcardLoadDecks();await loadTop30();await restoreRejoin();}}
  else await refreshAccountUI();
 })();
-setInterval(async()=>{if(!accountProfile&&!guestMode)return;const was=kanuutUnlocked;const ok=await checkKanuutAccess();if(ok&&!was){loadQuizzes();loadTop30();restoreRejoin();}if(ok&&!document.hidden)loadTop30();},30000);
+setInterval(async()=>{if(!accountProfile&&!guestMode)return;const was=kanuutUnlocked;const ok=await checkKanuutAccess();if(ok&&!was){loadQuizzes();flashcardLoadDecks();loadTop30();restoreRejoin();}if(ok&&!document.hidden)loadTop30();},30000);
 
 // Solo-Spiel: serverseitig bewertete Antworten und eigene Rangliste.
 let soloRunId=null,soloAnswered=false,soloBusy=false;
