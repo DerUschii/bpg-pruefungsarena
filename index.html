@@ -252,7 +252,7 @@ async function flashcardLoadDeck(){
 async function flashcardLoadDecks(){
  const status=$('flashcardStatus'),sel=$('flashcardDeck'),old=sel.value;
  if(!kanuutUnlocked){status.textContent='Bitte zuerst anmelden und den TF14-Zugang freischalten.';return}
- status.textContent='Lernkartensets werden gesucht …';
+ status.textContent='Alle Quizze und Lernkartensets werden geladen …';
  try{
   const sb=await getConnectedClient();
   const [quizResult,deckResult]=await Promise.all([
@@ -260,22 +260,28 @@ async function flashcardLoadDecks(){
    sb.from('kanuut_flashcard_decks').select('slug,title').order('title')
   ]);
   sel.replaceChildren();
-  const warnings=[];
+  const warnings=[];let quizCount=0,deckCount=0;
   if(quizResult.error)warnings.push('Quizliste: '+quizResult.error.message);
   else for(const q of quizResult.data||[]){
-   if(Number(q.question_count)<=0)continue;
-   const o=document.createElement('option');o.value='quiz:'+q.quiz_id;
-   o.textContent=q.quiz_title+' ('+q.question_count+' Karten · Quiz)';sel.append(o);
+   // Auch Quizze ohne übermittelte Anzahl anzeigen, statt sie stillschweigend zu verstecken.
+   const id=q.quiz_id??q.id, title=q.quiz_title??q.title;
+   if(!id||!title)continue;
+   const o=document.createElement('option');o.value='quiz:'+id;
+   const count=Number(q.question_count);
+   o.textContent=title+(Number.isFinite(count)?' ('+count+' Fragen · Quiz)':' (Quiz)');
+   sel.append(o);quizCount++;
   }
-  if(deckResult.error)warnings.push('Lernkartensets: '+deckResult.error.message);
+  if(deckResult.error)warnings.push('Zusätzliche Lernkarten: '+deckResult.error.message);
   else for(const d of deckResult.data||[]){
-   const o=document.createElement('option');o.value='deck:'+d.slug;o.textContent=d.title+' (Lernkartenset)';sel.append(o);
+   const o=document.createElement('option');o.value='deck:'+d.slug;
+   o.textContent=d.title+' (zusätzliche Lernkarten)';sel.append(o);deckCount++;
   }
   if(old&&[...sel.options].some(o=>o.value===old))sel.value=old;
-  if(!sel.options.length){status.textContent='Keine Lernkartensets sichtbar. '+warnings.join(' | ');flashcards=[];flashcardPaint();return}
+  if(!sel.options.length){status.textContent='Keine Quizze oder Lernkartensets sichtbar. '+warnings.join(' | ');flashcards=[];flashcardPaint();return}
   await flashcardLoadDeck();
-  if(warnings.length)status.textContent+='\nHinweis: '+warnings.join(' | ');
- }catch(e){status.textContent='Lernkartensets konnten nicht geladen werden: '+(e.message||String(e))}
+  const loaded=status.textContent;
+  status.textContent=quizCount+' Quizze und '+deckCount+' zusätzliche Lernkartensets gefunden. '+loaded+(warnings.length?'\nHinweis: '+warnings.join(' | '):'');
+ }catch(e){status.textContent='Quizze/Lernkartensets konnten nicht geladen werden: '+(e.message||String(e))}
 }
 $('flashcardReload').onclick=flashcardLoadDecks;
 $('flashcardDeck').onchange=flashcardLoadDeck;
