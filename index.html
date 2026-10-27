@@ -24,7 +24,7 @@
 <section class="card" id="hostControls"><h2>🎮 Gastgeber-Steuerung</h2><p class="muted">Wähle ein Quiz. Nur du kannst den von dir erstellten Raum starten.</p><label for="quizSelect">Quiz auswählen</label><select id="quizSelect" style="display:block;width:100%;max-width:480px;padding:12px;border-radius:9px;margin:8px 0 14px;font:inherit"></select><br><button id="reloadQuizzes" type="button">Quizze aktualisieren</button> <button id="createRoom" type="button">Neuen Spielraum erstellen</button><p id="roomInfo" role="status" aria-live="polite"></p><button id="startGame" type="button" hidden>▶ Spiel starten</button><p id="hostActionNotice" role="status" aria-live="polite"></p><p class="muted"><small>Das Starten setzt den Spielstatus in Supabase auf „playing“. Die Fragen laufen nach dem Start automatisch weiter. Bestehende alte Testräume können nicht über diesen Button gestartet werden.</small></p></section>
 <section class="card" id="waiting" hidden><h2>👥 Live-Warteraum</h2><p>Spielcode: <strong id="roomPin"></strong></p><p id="waitingStatus" role="status">Spieler werden geladen ...</p><ul id="playerList"></ul><button id="refreshPlayers" type="button">Spielerliste aktualisieren</button><p class="muted"><small>Spieler und Punkte werden automatisch aktualisiert.</small></p></section>
 <section class="card" id="liveGame" hidden><h2>🏁 Live-Quiz</h2><p id="liveStatus" aria-live="polite"></p><p><strong id="liveProgress"></strong> · <span id="liveTimer"></span></p><h3 id="liveQuestion"></h3><div id="liveAnswers"></div><p id="liveFeedback" aria-live="polite"></p><ol id="liveBoard"></ol><p class="muted"><small>Serverzeit entscheidet über Antworten und Punkte. Die Anzeige aktualisiert sich jede Sekunde; bei schlechter Verbindung kann sie verzögert sein.</small></p></section>
-<section class="card" id="flashcardSection"><h2>📚 Lernkarten</h2><p class="muted">Fragen und Antworten lernen – Karte anklicken, um die Antwort zu sehen. BG-Themen sind rot, Good to Know blau markiert.</p><label for="flashcardDeck">Lernkartenset auswählen</label><select id="flashcardDeck"><option value="">Lernkarten werden geladen …</option></select><button type="button" id="flashcardReload">🔄 Lernkarten aktualisieren</button><p id="flashcardStatus" role="status" aria-live="polite"></p><div id="flashcardBox" role="button" tabindex="0" aria-label="Lernkarte umdrehen" hidden><div id="flashcardBadges"></div><strong id="flashcardSide">FRAGE</strong><div id="flashcardText"></div><small id="flashcardSource" class="muted"></small></div><div id="flashcardNav"><button type="button" id="flashcardPrev">◀ Zurück</button><button type="button" id="flashcardFlip">🔁 Antwort anzeigen</button><button type="button" id="flashcardNext">Weiter ▶</button></div></section>
+<section class="card" id="flashcardSection"><h2>📚 Lernkarten</h2><p class="muted">Alle freigeschalteten Quizfragen und zusätzlichen Lernkartensets an einem Ort. Karte anklicken, um die Antwort zu sehen. BG-Themen sind rot, Good to Know blau markiert.</p><label for="flashcardDeck">Lernkartenset auswählen</label><select id="flashcardDeck"><option value="">Lernkarten werden geladen …</option></select><button type="button" id="flashcardReload">🔄 Lernkarten aktualisieren</button><p id="flashcardStatus" role="status" aria-live="polite"></p><div id="flashcardBox" role="button" tabindex="0" aria-label="Lernkarte umdrehen" hidden><div id="flashcardBadges"></div><strong id="flashcardSide">FRAGE</strong><div id="flashcardText"></div><small id="flashcardSource" class="muted"></small></div><div id="flashcardNav"><button type="button" id="flashcardPrev">◀ Zurück</button><button type="button" id="flashcardFlip">🔁 Antwort anzeigen</button><button type="button" id="flashcardNext">Weiter ▶</button></div></section>
 <section class="card" id="soloSection"><h2>🎯 Solo spielen</h2><p class="muted">Wähle ein Quiz und spiele allein. Nur registrierte Spieler können solo spielen. Die besten Ergebnisse aus allen Quizzen zählen für eine gemeinsame Solo-Top-5.</p>
 <label for="soloQuiz">Quiz auswählen</label><select id="soloQuiz" style="display:block;width:100%;padding:12px;border-radius:9px;margin:8px 0"></select>
 <button type="button" id="soloStart">▶ Solo-Quiz starten</button><button type="button" id="soloRefresh">🏆 Top 5 anzeigen</button><p id="soloStatus" role="status"></p>
@@ -213,19 +213,41 @@ $('flashcardBox').onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefaul
 $('flashcardFlip').onclick=flashcardFlip;
 $('flashcardPrev').onclick=()=>{if(flashcardIndex>0){flashcardIndex--;flashcardShowingAnswer=false;flashcardPaint()}};
 $('flashcardNext').onclick=()=>{if(flashcardIndex<flashcards.length-1){flashcardIndex++;flashcardShowingAnswer=false;flashcardPaint()}};
+// Ein gemeinsamer Lernkartenbereich: freigeschaltete Quizze + separate Lernkartensets.
+function flashcardChoiceText(choice){
+ if(typeof choice==='string')return choice;
+ if(choice&&typeof choice==='object')return String(choice.text??choice.label??choice.answer??'');
+ return String(choice??'');
+}
 async function flashcardLoadDeck(){
- const status=$('flashcardStatus'),slug=$('flashcardDeck').value;
+ const status=$('flashcardStatus'),value=$('flashcardDeck').value;
  flashcards=[];flashcardIndex=0;flashcardShowingAnswer=false;flashcardPaint();
- if(!slug){status.textContent='Bitte ein Lernkartenset auswählen.';return}
+ if(!value){status.textContent='Bitte ein Lernkartenset auswählen.';return}
  status.textContent='Lernkarten werden geladen …';
  try{
   const sb=await getConnectedClient();
-  const {data,error}=await sb.from('kanuut_flashcards').select('question,answer,source_page,is_bg,is_good_to_know,position').eq('deck_slug',slug).order('position',{ascending:true});
-  if(error)throw error;
-  flashcards=data||[];
+  if(value.startsWith('deck:')){
+   const slug=value.slice(5);
+   const {data,error}=await sb.from('kanuut_flashcards').select('question,answer,source_page,is_bg,is_good_to_know,position').eq('deck_slug',slug).order('position',{ascending:true});
+   if(error)throw error;
+   flashcards=data||[];
+  }else if(value.startsWith('quiz:')){
+   const quizId=value.slice(5);
+   // Nur Quizze, die arena_list_quizzes freigibt, sind im Auswahlfeld.
+   const {data,error}=await sb.from('questions').select('question,options,correct_index,explanation,position').eq('quiz_id',quizId).order('position',{ascending:true});
+   if(error)throw error;
+   flashcards=(data||[]).map(q=>{
+    let options=q.options;
+    if(typeof options==='string'){try{options=JSON.parse(options)}catch(_){options=[]}}
+    const idx=Number(q.correct_index);
+    const valid=Array.isArray(options)&&Number.isInteger(idx)&&idx>=0&&idx<options.length;
+    const answer=valid?flashcardChoiceText(options[idx]):'Für diese Frage ist keine gültige Antwort hinterlegt.';
+    return {question:q.question,answer:answer+(q.explanation?'\n\nErklärung: '+q.explanation:''),source_page:null,is_bg:false,is_good_to_know:false};
+   });
+  }
   status.textContent=flashcards.length?flashcards.length+' Lernkarten geladen.':'Dieses Set enthält keine für deinen Account sichtbaren Lernkarten.';
   flashcardPaint();
- }catch(e){status.textContent='Lernkarten konnten nicht geladen werden: '+(e.message||String(e))+'\nBitte in Supabase Tabellen und Lese-Berechtigungen (RLS) prüfen.'}
+ }catch(e){status.textContent='Lernkarten konnten nicht geladen werden: '+(e.message||String(e))+'\nBei Quizfragen bitte die SELECT-Berechtigungen für die Tabelle questions prüfen.'}
 }
 async function flashcardLoadDecks(){
  const status=$('flashcardStatus'),sel=$('flashcardDeck'),old=sel.value;
@@ -233,14 +255,27 @@ async function flashcardLoadDecks(){
  status.textContent='Lernkartensets werden gesucht …';
  try{
   const sb=await getConnectedClient();
-  const {data,error}=await sb.from('kanuut_flashcard_decks').select('slug,title').order('title');
-  if(error)throw error;
+  const [quizResult,deckResult]=await Promise.all([
+   sb.rpc('arena_list_quizzes'),
+   sb.from('kanuut_flashcard_decks').select('slug,title').order('title')
+  ]);
   sel.replaceChildren();
-  for(const d of data||[]){const o=document.createElement('option');o.value=d.slug;o.textContent=d.title;sel.append(o)}
+  const warnings=[];
+  if(quizResult.error)warnings.push('Quizliste: '+quizResult.error.message);
+  else for(const q of quizResult.data||[]){
+   if(Number(q.question_count)<=0)continue;
+   const o=document.createElement('option');o.value='quiz:'+q.quiz_id;
+   o.textContent=q.quiz_title+' ('+q.question_count+' Karten · Quiz)';sel.append(o);
+  }
+  if(deckResult.error)warnings.push('Lernkartensets: '+deckResult.error.message);
+  else for(const d of deckResult.data||[]){
+   const o=document.createElement('option');o.value='deck:'+d.slug;o.textContent=d.title+' (Lernkartenset)';sel.append(o);
+  }
   if(old&&[...sel.options].some(o=>o.value===old))sel.value=old;
-  if(!sel.options.length){status.textContent='Keine Lernkartensets gefunden. Prüfe, ob die alten Sets in anderen Tabellen liegen oder ob RLS den Zugriff verhindert.';flashcards=[];flashcardPaint();return}
+  if(!sel.options.length){status.textContent='Keine Lernkartensets sichtbar. '+warnings.join(' | ');flashcards=[];flashcardPaint();return}
   await flashcardLoadDeck();
- }catch(e){status.textContent='Lernkartensets konnten nicht geladen werden: '+(e.message||String(e))+'\nDie bisherige Lernkartenfunktion ist in der hochgeladenen HTML-Version nicht enthalten. Eventuell liegen ältere Karten in anderen Tabellen.'}
+  if(warnings.length)status.textContent+='\nHinweis: '+warnings.join(' | ');
+ }catch(e){status.textContent='Lernkartensets konnten nicht geladen werden: '+(e.message||String(e))}
 }
 $('flashcardReload').onclick=flashcardLoadDecks;
 $('flashcardDeck').onchange=flashcardLoadDeck;
