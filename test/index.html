@@ -240,8 +240,13 @@ async function flashcardLoadDeck(){
   }else if(value.startsWith('quiz:')){
    const quizId=value.slice(5);
    // Nur Quizze, die arena_list_quizzes freigibt, sind im Auswahlfeld.
-   const {data,error}=await sb.from('questions').select('question,options,correct_index,explanation,position').eq('quiz_id',quizId).order('position',{ascending:true});
-   if(error)throw error;
+   // Lernkarten nutzen eine eigene, serverseitig zugriffsgeschützte RPC.
+   // Keine Änderungen an RLS, APK, Solo-Quiz oder bestehenden Tabellen nötig.
+   const {data,error}=await sb.rpc('kanuut_flashcards_for_quiz',{p_quiz_id:quizId});
+   if(error){
+    if(error.code==='PGRST202'||error.code==='42883')throw Error('Die neue Lernkarten-Funktion fehlt noch in Supabase. Bitte zuerst die mitgelieferte SQL-Datei ausführen.');
+    throw error;
+   }
    flashcards=(data||[]).map(q=>{
     let options=q.options;
     if(typeof options==='string'){try{options=JSON.parse(options)}catch(_){options=[]}}
@@ -251,9 +256,9 @@ async function flashcardLoadDeck(){
     return {question:q.question,answer:answer+(q.explanation?'\n\nErklärung: '+q.explanation:''),source_page:null,is_bg:false,is_good_to_know:false};
    });
   }
-  status.textContent=flashcards.length?flashcards.length+' Lernkarten geladen.':'Dieses Set enthält keine für deinen Account sichtbaren Lernkarten.';
+  status.textContent=flashcards.length?flashcards.length+' Lernkarten geladen.':'Dieses Set enthält keine verfügbaren Lernkarten. Bitte prüfen, ob der Quiz-Zugang freigeschaltet ist.';
   flashcardPaint();
- }catch(e){status.textContent='Lernkarten konnten nicht geladen werden: '+(e.message||String(e))+'\nBei Quizfragen bitte die SELECT-Berechtigungen für die Tabelle questions prüfen.'}
+ }catch(e){status.textContent='Lernkarten konnten nicht geladen werden: '+(e.message||String(e))}
 }
 async function flashcardLoadDecks(){
  const status=$('flashcardStatus'),sel=$('flashcardDeck'),old=sel.value;
