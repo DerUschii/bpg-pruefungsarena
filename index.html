@@ -234,6 +234,7 @@ let kanuutUnlocked=false;
 let activeClient=null,activePin='',pollTimer=null,loadingPlayers=false;
 let client=null,hostRoomId=null,hostPin='',livePin='',liveTimerHandle=null,liveBusy=false,liveLastKey='',liveLastPhase='',localAnswered=false,liveSelectedIndex=-1;
 let smoothTimerHandle=null,smoothDeadline=0,smoothPhase='waiting';
+let knLiveType='single',knLiveMulti=new Set(),knLiveText='';
 let accountProfile=null;
 let guestMode=false, guestNickname=""; // Gastmodus dauerhaft deaktiviert
 // QR-Einladungen verwenden den vorhandenen Spielcode und den bestehenden Beitrittsweg.
@@ -284,7 +285,7 @@ async function restoreRejoin(){
  try{
   const sb=await requirePlayer();
   // Read-only check: never call join_game again, which could create a duplicate player.
-  const {data:s,error}=await sb.rpc('live_game_state',{p_pin:saved.pin});
+  const {data:s,error}=await sb.rpc('kanuut_live_state_mixed',{p_pin:saved.pin});
   if(error)throw error;
   if(!s||!['waiting','question','reveal','leaderboard','finished'].includes(s.phase))throw Error('Raum nicht mehr erreichbar');
   // A retained Supabase session is required for room rejoin.
@@ -618,7 +619,7 @@ async function refreshLive(){
  if(!livePin||liveBusy)return;liveBusy=true;
  try{
   const sb=await getConnectedClient();
-  const {data:s,error}=await sb.rpc('live_game_state',{p_pin:livePin});
+  const {data:s,error}=await sb.rpc('kanuut_live_state_mixed',{p_pin:livePin});
   if(error)throw error;
   const phase=s.phase||'waiting',key=String(s.question_number||0);
    document.getElementById('page-multiplayer').classList.toggle('kn-room-waiting',phase==='waiting');
@@ -627,15 +628,22 @@ async function refreshLive(){
   $('liveStatus').textContent=({waiting:'Warte auf den Spielstart …',question:'Jetzt antworten!',reveal:'Richtige Antwort',leaderboard:'Zwischenstand',finished:'Quiz beendet – Endrangliste'})[phase]||phase;
   $('liveProgress').textContent=(s.question_number||0)+' / '+(s.question_count||0);
   syncSmoothTimer(phase,s.remaining_seconds);
-  if(key!==liveLastKey){localAnswered=false;liveSelectedIndex=-1;liveLastKey=key;knLiveDisplayOrder=[];}
-  if(s.my_answer!==null&&s.my_answer!==undefined){localAnswered=true;liveSelectedIndex=Number(s.my_answer);}
+  if(key!==liveLastKey){localAnswered=false;liveSelectedIndex=-1;liveLastKey=key;knLiveDisplayOrder=[];knLiveMulti=new Set();knLiveText='';}
+  knLiveType=s.question_type||'single';
+  if(s.my_answer!==null&&s.my_answer!==undefined){localAnswered=true;liveSelectedIndex=Number(s.my_answer);}if(Array.isArray(s.my_answer_indices)){localAnswered=true;knLiveMulti=new Set(s.my_answer_indices);}if(s.my_text_answer!==null&&s.my_text_answer!==undefined){localAnswered=true;knLiveText=s.my_text_answer;}
   $('liveQuestion').textContent=s.question||'';
   const opts=$('liveAnswers');
   if(key+'|'+phase!==liveLastPhase){opts.replaceChildren();
-   if(Array.isArray(s.options)){if(knLiveDisplayOrder.length!==s.options.length)knLiveDisplayOrder=knShuffleIndices(s.options.length);knLiveDisplayOrder.forEach((i,position)=>{const label=s.options[i];
-    const b=document.createElement('button');b.textContent=String.fromCharCode(65+position)+': '+String(label);
-    b.dataset.index=String(i);b.onclick=()=>sendLiveAnswer(i);opts.append(b);
-   });}
+   if(knLiveType==='text'){
+    const field=document.createElement('textarea');field.id='knLiveTyped';field.rows=3;field.placeholder='Deine Antwort …';field.style.cssText='width:100%;box-sizing:border-box;background:#292126;color:white;padding:14px;border:1px solid #65404a;border-radius:12px;font:inherit';field.value=knLiveText;field.disabled=phase!=='question'||localAnswered||s.is_host;
+    const send=document.createElement('button');send.textContent='Antwort abgeben';send.disabled=field.disabled;send.onclick=()=>sendLiveAnswer({text:field.value});opts.append(field,send);
+   }else if(Array.isArray(s.options)){
+    if(knLiveDisplayOrder.length!==s.options.length)knLiveDisplayOrder=knShuffleIndices(s.options.length);
+    knLiveDisplayOrder.forEach((i,position)=>{const b=document.createElement('button');b.textContent=String.fromCharCode(65+position)+': '+String(s.options[i]);b.dataset.index=String(i);
+     b.onclick=()=>{if(knLiveType==='multiple'){knLiveMulti.has(i)?knLiveMulti.delete(i):knLiveMulti.add(i);b.classList.toggle('kn-selected',knLiveMulti.has(i));}else sendLiveAnswer(i)};opts.append(b);
+    });
+    if(knLiveType==='multiple'){const send=document.createElement('button');send.textContent='✓ Auswahl abgeben';send.className='kn-multi-submit';send.onclick=()=>sendLiveAnswer({indices:[...knLiveMulti]});opts.append(send);}
+   }
    liveLastPhase=key+'|'+phase;
   }
    // Nur in der Auflösung färben; Supabase kann Indizes als Strings liefern.
@@ -646,14 +654,15 @@ async function refreshLive(){
    const myIndex=hasAnswer?Number(s.my_answer):-1;
    const validCorrect=showingResult&&hasCorrect&&Number.isInteger(correctIndex)&&correctIndex>=0;
    for(const b of opts.children){
+    if(b.dataset.index===undefined){b.disabled=phase!=='question'||localAnswered||s.is_host;continue;}
     const i=Number(b.dataset.index);
     b.disabled=phase!=='question'||localAnswered||s.is_host;
-    b.classList.toggle('kn-selected',phase==='question'&&localAnswered&&i===liveSelectedIndex);
-    b.classList.toggle('correct',validCorrect&&i===correctIndex);
-    b.classList.toggle('wrong',validCorrect&&hasAnswer&&i===myIndex&&i!==correctIndex);
+    b.classList.toggle('kn-selected',phase==='question'&&(knLiveType==='multiple'?knLiveMulti.has(i):localAnswered&&i===liveSelectedIndex));
+    b.classList.toggle('correct',showingResult&&(knLiveType==='multiple'?(s.correct_indices||[]).includes(i):validCorrect&&i===correctIndex));
+    b.classList.toggle('wrong',showingResult&&(knLiveType==='multiple'?knLiveMulti.has(i)&&!(s.correct_indices||[]).includes(i):validCorrect&&hasAnswer&&i===myIndex&&i!==correctIndex));
    }
    $('liveFeedback').textContent=phase==='question'?(s.is_host?'Du schaust als Spielleiter zu.':localAnswered?'Antwort abgegeben – bitte warten.':'Wähle eine Antwort.'):
-    showingResult&&validCorrect?'Richtig: '+String.fromCharCode(65+knLiveDisplayOrder.indexOf(correctIndex))+(s.explanation?' · '+s.explanation:''):'';
+    showingResult?(knLiveType==='multiple'?'Richtige Auswahl: '+(s.correct_indices||[]).map(i=>String.fromCharCode(65+knLiveDisplayOrder.indexOf(i))).join(', '):knLiveType==='text'?'Akzeptierte Antworten: '+(s.accepted_answers||[]).join(' / '):validCorrect?'Richtig: '+String.fromCharCode(65+knLiveDisplayOrder.indexOf(correctIndex)):'')+(s.explanation?' · '+s.explanation:''):'';
   const board=$('liveBoard');board.replaceChildren();
   if(phase==='finished'){
    if(!liveResultsLoadedFor || liveResultsLoadedFor!==livePin){
@@ -678,9 +687,9 @@ async function refreshLive(){
 }
 async function sendLiveAnswer(index){
  if(localAnswered||!livePin)return;
- localAnswered=true;liveSelectedIndex=index;for(const b of $('liveAnswers').children){b.disabled=true;b.classList.toggle('kn-selected',Number(b.dataset.index)===index);}
+ localAnswered=true;liveSelectedIndex=typeof index==='number'?index:-1;for(const b of $('liveAnswers').children){b.disabled=true;if(typeof index==='number')b.classList.toggle('kn-selected',Number(b.dataset.index)===index);}
  $('liveFeedback').textContent='Antwort wird übermittelt …';
- try{const sb=await getConnectedClient();const {error}=await sb.rpc('live_submit_answer',{p_pin:livePin,p_selected_index:index});if(error)throw error;
+ try{const sb=await getConnectedClient();const {error}=await sb.rpc('kanuut_live_submit_mixed',{p_pin:livePin,p_selected_index:typeof index==='number'?index:-1,p_selected_indices:index&&typeof index==='object'&&index.indices?index.indices:null,p_text_answer:index&&typeof index==='object'&&typeof index.text==='string'?index.text:null});if(error)throw error;
  $('liveFeedback').textContent='Antwort angenommen!';
  }catch(e){localAnswered=false;liveSelectedIndex=-1;for(const b of $('liveAnswers').children){b.classList.remove('kn-selected');b.disabled=false;}$('liveFeedback').textContent='Antwort nicht angenommen: '+(e.message||String(e));}
  await refreshLive();
@@ -765,8 +774,8 @@ async function knSaveSoloProgress(){
  if(error)throw error;
  knSoloStats.recorded=true;
 }
-let knSoloDisplayOrder=[],knSoloChoices=[],knSoloFreeText=false,knSoloStrict=false,knSoloQuestionCount=0;
-function knSoloTypedAnswer(){const field=$('knSoloTyped');if(!field||soloAnswered||soloBusy)return;const idx=knMatchFreeText(field.value,knSoloChoices,knSoloStrict);soloAnswer(idx);}
+let knSoloDisplayOrder=[],knSoloChoices=[],knSoloFreeText=false,knSoloStrict=false,knSoloQuestionCount=0,knSoloType='single',knSoloMulti=new Set();
+function knSoloTypedAnswer(){const field=$('knSoloTyped');if(!field||soloAnswered||soloBusy)return;soloAnswer({text:field.value});}
 let soloRunId=null,soloAnswered=false,soloBusy=false;
 let soloClock=null,soloDeadline=0,soloTimeoutPending=false,soloTimeoutRetries=0;
 function soloStopClock(){if(soloClock!==null){clearInterval(soloClock);soloClock=null;}}
@@ -804,28 +813,28 @@ async function soloTop5(){
  }catch(e){soloNotice('Top 5: '+(e.message||e));}
 }
 async function soloShowQuestion(){
- const q=await soloRpc('kanuut_solo_question',{p_run_id:soloRunId});
+ const q=await soloRpc('kanuut_solo_question_mixed',{p_run_id:soloRunId});
  if(q.finished){soloStopClock();$('soloGame').hidden=true;try{await knSaveSoloProgress();}catch(e){soloNotice('Fortschritt konnte nicht gespeichert werden: '+(e.message||e));return;}const pct=knSoloStats.total?Math.round(100*knSoloStats.correct/knSoloStats.total):0;soloNotice('Fertig! '+knSoloStats.correct+'/'+knSoloStats.total+' richtig ('+pct+' %). '+(pct>=70?'Glückwunsch! 70-%-Grenze erreicht. BG muss gesondert geprüft werden.':'70-%-Grenze noch nicht erreicht.') );await soloTop5();return;}
  soloAnswered=false;$('soloNext').hidden=true;$('soloFeedback').textContent='';$('soloProgress').textContent='Frage '+(q.position+1)+' von '+q.total+' · '+q.score+' Punkte';$('soloQuestion').textContent=q.question;
  const opts=$('soloOptions');opts.replaceChildren();
  let choices=q.options;
  if(typeof choices==='string'){try{choices=JSON.parse(choices)}catch(e){choices=[]}}
- if(!Array.isArray(choices)||choices.length!==4)throw Error('Antwortformat dieser Frage ist ungültig');
+ if(!Array.isArray(choices)||choices.length>6)throw Error('Antwortformat dieser Frage ist ungültig');
  knSoloChoices=choices;knSoloDisplayOrder=knShuffleIndices(choices.length);knSoloQuestionCount++;
  // Every third question is free text; a strict flag, when provided by the RPC, disables fuzzy matching.
- knSoloFreeText=knSoloQuestionCount%3===0;knSoloStrict=!!(q.is_bg||q.bg||q.is_safety_critical);
+ knSoloType=q.question_type||'single';knSoloFreeText=knSoloType==='text';knSoloStrict=!!q.strict_text;knSoloMulti=new Set();
  if(knSoloFreeText){const label=document.createElement('label');label.textContent='Antwort selbst eingeben (ohne Auswahlmöglichkeiten):';label.htmlFor='knSoloTyped';const input=document.createElement('textarea');input.id='knSoloTyped';input.rows=3;input.style.cssText='width:100%;box-sizing:border-box;background:#2b2d34;color:white;border:1px solid #666;border-radius:9px;padding:12px;font:inherit';input.placeholder='Deine Antwort …';input.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();knSoloTypedAnswer();}});const submit=document.createElement('button');submit.type='button';submit.textContent='Antwort abgeben';submit.onclick=knSoloTypedAnswer;opts.append(label,input,submit);}
- else knSoloDisplayOrder.forEach((i,position)=>{const b=document.createElement('button');b.type='button';b.dataset.index=String(i);b.textContent=String.fromCharCode(65+position)+': '+knOptionText(choices[i]);b.onclick=()=>soloAnswer(i);opts.append(b)});
+ else {knSoloDisplayOrder.forEach((i,position)=>{const b=document.createElement('button');b.type='button';b.dataset.index=String(i);b.textContent=String.fromCharCode(65+position)+': '+knOptionText(choices[i]);b.onclick=()=>{if(knSoloType==='multiple'){knSoloMulti.has(i)?knSoloMulti.delete(i):knSoloMulti.add(i);b.classList.toggle('kn-selected',knSoloMulti.has(i));}else soloAnswer(i)};opts.append(b)});if(knSoloType==='multiple'){const send=document.createElement('button');send.type='button';send.textContent='✓ Auswahl abgeben';send.onclick=()=>soloAnswer({indices:[...knSoloMulti]});opts.append(send);}}
  soloStartClock(q.deadline_at);
 }
 async function soloAnswer(index){
  if(soloAnswered||soloBusy)return;soloBusy=true;soloStopClock();
- const buttons=[...$('soloOptions').querySelectorAll('button')];buttons.forEach(b=>{b.disabled=true;b.classList.toggle('kn-selected',Number(b.dataset.index)===index);});const typed=$('knSoloTyped');if(typed)typed.disabled=true;
- try{const result=await soloRpc('kanuut_solo_answer',{p_run_id:soloRunId,p_selected_index:index});soloAnswered=true;knSoloStats.answered++;if(result.correct)knSoloStats.correct++;knSoloStats.total=Number(result.total)||knSoloStats.total;
- buttons.forEach(b=>b.classList.remove('kn-selected'));const correctButton=buttons.find(b=>Number(b.dataset.index)===Number(result.correct_index));if(correctButton)correctButton.classList.add('kn-correct');const wrongButton=buttons.find(b=>Number(b.dataset.index)===index);if(!result.correct&&index>=0&&wrongButton)wrongButton.classList.add('kn-wrong');
+ const buttons=[...$('soloOptions').querySelectorAll('button')];buttons.forEach(b=>{b.disabled=true;if(typeof index==='number')b.classList.toggle('kn-selected',Number(b.dataset.index)===index);});const typed=$('knSoloTyped');if(typed)typed.disabled=true;
+ try{const result=await soloRpc('kanuut_solo_answer_mixed',{p_run_id:soloRunId,p_selected_index:typeof index==='number'?index:-1,p_selected_indices:index&&typeof index==='object'&&index.indices?index.indices:null,p_text_answer:index&&typeof index==='object'&&typeof index.text==='string'?index.text:null});soloAnswered=true;knSoloStats.answered++;if(result.correct)knSoloStats.correct++;knSoloStats.total=Number(result.total)||knSoloStats.total;
+ buttons.forEach(b=>b.classList.remove('kn-selected'));if(knSoloType==='multiple'){buttons.forEach(b=>{if(!b.dataset.index)return;const i=Number(b.dataset.index);if((result.correct_indices||[]).includes(i))b.classList.add('kn-correct');else if(knSoloMulti.has(i))b.classList.add('kn-wrong');});}else if(knSoloType==='single'){const correctButton=buttons.find(b=>Number(b.dataset.index)===Number(result.correct_index));if(correctButton)correctButton.classList.add('kn-correct');const wrongButton=buttons.find(b=>Number(b.dataset.index)===index);if(!result.correct&&index>=0&&wrongButton)wrongButton.classList.add('kn-wrong');}
  $('soloFeedback').textContent=(result.timed_out?'⏰ Zeit abgelaufen – unbeantwortet.':result.correct?'✅ Richtig!':'❌ Leider falsch.')+(result.explanation?' '+result.explanation:'')+' · '+result.score+'/'+result.total+' Punkte';
  $('soloNext').textContent=result.finished?'Ergebnis anzeigen':'Nächste Frage ▶';$('soloNext').hidden=false;
- }catch(e){buttons.forEach(b=>b.classList.remove('kn-selected'));soloNotice('Antwort fehlgeschlagen: '+(e.message||e));if(index>=0&&Date.now()<soloDeadline){buttons.forEach(b=>b.disabled=false);soloStartClock(new Date(soloDeadline).toISOString());}else if(soloTimeoutRetries++<3){soloTimeoutPending=false;setTimeout(()=>soloAnswer(-1),1000);}else{soloNotice('Zeitablauf konnte nicht gespeichert werden. Bitte Seite neu laden oder Verbindung prüfen.');}}finally{soloBusy=false;}
+ }catch(e){buttons.forEach(b=>b.classList.remove('kn-selected'));soloNotice('Antwort fehlgeschlagen: '+(e.message||e));if(index!==-1&&Date.now()<soloDeadline){buttons.forEach(b=>b.disabled=false);soloStartClock(new Date(soloDeadline).toISOString());}else if(soloTimeoutRetries++<3){soloTimeoutPending=false;setTimeout(()=>soloAnswer(-1),1000);}else{soloNotice('Zeitablauf konnte nicht gespeichert werden. Bitte Seite neu laden oder Verbindung prüfen.');}}finally{soloBusy=false;}
 }
 $('soloStart').onclick=async()=>{if(soloBusy)return;soloBusy=true;const b=$('soloStart');b.disabled=true;
  try{if(!accountProfile)throw Error('Bitte mit einem registrierten Account anmelden.');if(!kanuutUnlocked)throw Error('Bitte zuerst Klassenpasswort eingeben.');const q=$('soloQuiz').value;if(!q)throw Error('Bitte Quiz wählen');
