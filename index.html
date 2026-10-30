@@ -103,7 +103,7 @@ body{background:radial-gradient(circle at 70% 0%,#102840 0,#07111e 48%,#060e19 1
 .newPage .kn-exam #soloOptions button.kn-wrong::before,.newPage .kn-exam #liveAnswers button.wrong::before{content:'×';background:#ff4159;border-color:#ff4159;color:#111}
 .newPage .kn-exam #soloFeedback,.newPage .kn-exam #liveFeedback{padding:10px 13px;min-height:0;margin:8px 0;font-size:13px}
 #page-solo:has(#soloGame:not([hidden])) #soloSection>h2,#page-solo:has(#soloGame:not([hidden])) #soloSection>p.muted,#page-solo:has(#soloGame:not([hidden])) #soloSection>label,#page-solo:has(#soloGame:not([hidden])) #soloQuiz,#page-solo:has(#soloGame:not([hidden])) #soloStart,#page-solo:has(#soloGame:not([hidden])) #soloRefresh,#page-solo:has(#soloGame:not([hidden])) #soloSection>h3,#page-solo:has(#soloGame:not([hidden])) #soloBoard{display:none!important}
-#page-multiplayer:has(#liveGame:not([hidden])) #hostPanel,#page-multiplayer:has(#liveGame:not([hidden])) #hostControls,#page-multiplayer:has(#liveGame:not([hidden])) #page-multiplayer>.card:first-of-type,#page-multiplayer:has(#liveGame:not([hidden])) #waiting{display:none!important}
+#page-multiplayer:not(.kn-room-waiting):has(#liveGame:not([hidden])) #hostPanel,#page-multiplayer:not(.kn-room-waiting):has(#liveGame:not([hidden])) #hostControls,#page-multiplayer:not(.kn-room-waiting):has(#liveGame:not([hidden])) #page-multiplayer>.card:first-of-type,#page-multiplayer:not(.kn-room-waiting):has(#liveGame:not([hidden])) #waiting{display:none!important}
 #page-multiplayer:has(#liveGame:not([hidden])) .newPageHead{margin-bottom:5px}
 #liveBoard{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px;margin:8px 0;padding:0}#liveBoard li{margin:0;padding:7px 10px;font-size:12px}
 @media(max-width:1050px){#newMain{padding:20px}.newModeGrid{grid-template-columns:repeat(2,1fr)}}
@@ -154,8 +154,8 @@ body,#newKanuutShell{background:#0b0b0e!important;color:#f7f3ed!important}
 #kanuutGate .card{background:#1d171b!important;border-color:#71343d!important}
 </style><style id="kanuut-room-code-visibility-fix">
 /* Room controls must stay visible while the host waits for players. */
-#page-multiplayer.kn-room-waiting #hostControls,
-#page-multiplayer.kn-room-waiting #waiting{display:block!important}
+#page-multiplayer.kn-room-waiting #hostControls:not([hidden]),
+#page-multiplayer.kn-room-waiting #waiting:not([hidden]){display:block!important}
 #page-multiplayer.kn-room-waiting #hostPanel{display:none!important}
 #page-multiplayer .kn-room-code{background:#221b10;border:2px solid #ffce43;color:#ffce43;padding:14px 18px;border-radius:13px;font-size:18px;font-weight:800;margin:0 0 14px}
 #page-multiplayer .kn-room-code strong{font-size:27px;letter-spacing:3px;color:#fff}
