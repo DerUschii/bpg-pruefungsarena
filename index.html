@@ -317,16 +317,17 @@ function syncSmoothTimer(phase,remaining){
 async function updateLiveQuestionCount(){
  const el=document.getElementById('knLiveQuestionCount');
  const label=document.getElementById('knLiveQuestionCountLabel');
- if(!el)return;
+ if(!el||!label)return;
+ if(!accountProfile||!kanuutUnlocked){el.textContent='–';label.textContent='Nach Anmeldung und Freischaltung verfügbar';return;}
  try{
   const sb=await getConnectedClient();
-  const {count,error}=await sb.from('questions').select('*',{count:'exact',head:true});
+  const {data,error}=await sb.rpc('kanuut_question_count');
   if(error)throw error;
-  el.textContent=Number(count||0).toLocaleString('de-DE');
-  label.textContent='Fragen aktuell in Supabase';
+  el.textContent=Number(data||0).toLocaleString('de-DE');
+  label.textContent='Quizfragen aktuell in Supabase';
  }catch(e){
   el.textContent='–';
-  label.textContent='Fragenzahl nicht abrufbar (Zugriffsrechte prüfen)';
+  label.textContent='Fragenzahl nicht abrufbar (SQL-Funktion prüfen)';
   console.warn('KANUUT Fragenzähler:',e);
  }
 }
@@ -409,7 +410,7 @@ $('knAdminVisitorsReload').onclick=loadKanuutAdminVisitors;
 async function checkKanuutAccess(){
  try {const sb=await requirePlayer();const {data,error}=await sb.rpc('kanuut_access_ok');if(error)throw error;
  kanuutUnlocked=data===true;$('kanuutGate').hidden=kanuutUnlocked;document.body.classList.toggle('kanuut-locked',!kanuutUnlocked);
-  if(kanuutUnlocked){tryQrAutoJoin();recordKanuutVisit();}
+  if(kanuutUnlocked){tryQrAutoJoin();recordKanuutVisit();updateLiveQuestionCount();}
  if(!kanuutUnlocked){$('liveGame').hidden=true;$('waiting').hidden=true;}
  return kanuutUnlocked;
  }catch(e){kanuutUnlocked=false;$('kanuutGate').hidden=!accountProfile;document.body.classList.toggle('kanuut-locked',!!accountProfile);$('kanuutGateError').textContent='Zugangsprüfung fehlgeschlagen: '+(e.message||e);return false;}
