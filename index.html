@@ -39,6 +39,76 @@ html{scroll-behavior:smooth}body{background:var(--kn-bg)!important;color:#f4f4f6
 .newPage .kn-exam #soloNext{display:block;margin:18px 0 0 auto;background:#ffcb36!important;color:#111!important;padding:17px 24px;font-weight:900}
 .newPage .kn-exam #soloNext[hidden]{display:none!important}
 @media(max-width:600px){.newPage .kn-exam{padding:14px}.newPage .kn-exam #soloOptions button,.newPage .kn-exam #liveAnswers button{padding-left:55px!important;font-size:14px}.newPage .kn-exam #soloOptions button::before,.newPage .kn-exam #liveAnswers button::before{left:13px}}
+</style><style id="kanuut-ranks-2026">
+/* Eigenständiges KANUUT!-Design; bestehende IDs und Supabase-Aufrufe unverändert */
+:root{--kn-bg:#07111e;--kn-panel:#101f32;--kn-line:#25405b;--kn-yellow:#ffc533;--kn-teal:#37b9e7}
+body{background:radial-gradient(circle at 70% 0%,#102840 0,#07111e 48%,#060e19 100%)!important}
+#newSidebar{background:linear-gradient(180deg,#071727,#08111e)!important;border-right:1px solid #24405b!important}
+#newTop{background:#081827b8!important;border-bottom:1px solid #24405b!important}
+#newSidebar .newLogo{margin-bottom:32px;align-items:center}
+#newSidebar .newLogoMark{font-size:36px!important}
+#newSidebar nav button{color:#c1d5ed!important}
+#newSidebar nav button.active{background:linear-gradient(90deg,#263e54,#11283c)!important;color:#ffc533!important;border-left-color:#ffc533!important}
+.newHero{background:radial-gradient(circle at 90% 10%,#194a65 0,transparent 55%),linear-gradient(125deg,#10263b,#0a1929)!important;border-color:#2c536d!important}
+.newPage .card,.newMode,.newStats>div{background:linear-gradient(145deg,#14273b,#0d1c2e)!important;border-color:#2a4662!important}
+.newMode:hover{border-color:#ffc533!important}
+.newPage .kn-exam{background:#081929!important}
+.newPageHead h1,.newSectionHead h2{color:#f5faff}
+.kn-rank-hero{display:flex;align-items:center;gap:16px;background:linear-gradient(110deg,#132f47,#0c1b2c);border:1px solid #355676;border-radius:17px;padding:20px;margin:12px 0 22px}
+.kn-rank-hero .kn-rank-icon{font-size:43px}
+.kn-rank-hero h3{margin:0 0 6px;font-size:21px}
+.kn-rank-hero p{margin:0;color:#bfd1e5;font-size:13px;line-height:1.5}
+.kn-rank-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:16px 0 22px}
+.kn-rank-tier{background:#0e2237;border:1px solid #2c4a68;border-radius:14px;padding:16px;display:flex;gap:12px;align-items:center}
+.kn-rank-tier .kn-rank-icon{font-size:29px;min-width:37px;text-align:center}
+.kn-rank-tier b{display:block;color:#f5f9ff;font-size:13px}.kn-rank-tier small{color:#9fb7d1;font-size:11px}
+.kn-rank-pill{display:inline-flex;align-items:center;gap:6px;border:1px solid #456586;background:#1b354e;color:#e3efff;border-radius:30px;padding:5px 10px;font-size:12px;font-weight:800;white-space:nowrap}
+.kn-rank-pill.gold{border-color:#a68126;background:#3d321b;color:#ffdb73}
+.kn-rank-pill.silver{border-color:#748ca5;background:#2b3c50;color:#d7e9f7}
+.kn-rank-pill.bronze{border-color:#8f6550;background:#39291f;color:#f2b993}
+.top30-list li{display:flex;flex-wrap:wrap;gap:12px;align-items:center;background:#10253a;border:1px solid #284663;border-radius:13px;margin:9px 0;padding:13px!important}
+.top30-list li:nth-child(-n+3){border-color:#a17c33;background:linear-gradient(100deg,#302b21,#11273b)}
+.top30-list .top30-name{font-weight:800;color:#fff}
+.top30-list .top30-score{margin-left:auto}
+.kn-rank-caption{color:#a7bed5;font-size:12px;line-height:1.55;margin:12px 0}
+#soloBoard{list-style:none;padding:0;counter-reset:solorank}
+#soloBoard li{counter-increment:solorank;display:flex;align-items:center;flex-wrap:wrap;gap:10px;background:#11273c;border:1px solid #2b4a67;border-radius:12px;padding:12px 15px;margin:8px 0}
+#soloBoard li::before{content:counter(solorank) '.';color:#ffca42;font-weight:900;width:25px}
+@media(max-width:780px){.kn-rank-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:500px){.kn-rank-grid{grid-template-columns:1fr}.kn-rank-hero{padding:14px}.kn-rank-pill{font-size:11px}.top30-list li{gap:8px}}
+</style><style id="kanuut-compact-premium-2026">
+/* KANUUT! cockpit – compact and responsive; existing IDs preserved */
+:root{--kn-glow:#26c6ff}
+#newMain{max-width:1500px;padding:25px 32px 35px}
+#newTop{height:60px}#newSidebar{width:218px;padding:20px 12px}#newSidebar .newLogo{margin-bottom:22px}#newSidebar nav button{padding:11px 13px;font-size:13px}
+.newHero{min-height:0;padding:27px 32px;border-radius:20px;position:relative;overflow:hidden;box-shadow:inset 0 1px #ffffff18,0 12px 35px #0003}
+.newHero:after{content:'🚆';position:absolute;right:6%;top:8%;font-size:clamp(65px,10vw,150px);opacity:.17;transform:rotate(-9deg);pointer-events:none}
+.newHero h1{font-size:clamp(31px,3.3vw,49px);margin:10px 0}.newHero p{margin:7px 0;max-width:580px}
+.newSectionHead{margin:20px 0 12px}.newMode{min-height:143px;padding:17px!important}.newModeIcon{margin-bottom:10px}.newStats>div{padding:13px 18px}.newStats b{font-size:23px}.newDisclaimer{margin-top:20px;padding:12px 18px}
+.newPageHead{margin-bottom:14px}.newPageHead h1{font-size:clamp(27px,3vw,37px);margin:5px 0}.newPageHead p{margin:4px 0}
+.newPage .card{padding:17px 20px}.newPage .card h2{margin:0 0 10px}
+.newPage .kn-exam{margin:12px 0 0!important;padding:17px 20px!important;border:1px solid #31618a!important;box-shadow:0 0 0 1px #1a3e62,0 20px 60px #0006, inset 0 1px #ffffff18!important;background:radial-gradient(circle at 100% 0%,#143958,#0a1c30 55%,#071827)!important}
+.kn-exam-top{padding-bottom:8px;margin-bottom:10px}.kn-exam-mode{padding:6px 11px}.kn-exam-eyebrow{padding:5px 9px;margin:0 0 8px}
+.kn-exam #soloProgress,.kn-exam #liveProgress,.kn-exam #soloTimer,.kn-exam #liveTimer{padding:8px 11px;font-size:15px;margin:0 7px 9px 0}
+.kn-exam #soloQuestion,.kn-exam #liveQuestion{font-size:clamp(19px,2.2vw,27px);line-height:1.27;margin:0 0 12px}
+.newPage .kn-exam #soloOptions,.newPage .kn-exam #liveAnswers{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:8px 0 12px}
+.newPage .kn-exam #soloOptions button,.newPage .kn-exam #liveAnswers button{min-height:90px;padding:12px 14px 12px 51px!important;font-size:clamp(13px,1vw,15px);line-height:1.35;border-radius:12px!important;transition:background .12s,border-color .12s,box-shadow .12s,transform .12s}
+.newPage .kn-exam #soloOptions button::before,.newPage .kn-exam #liveAnswers button::before{left:13px;width:24px;height:24px;border-width:2px}
+.newPage .kn-exam #soloOptions button.kn-selected,.newPage .kn-exam #liveAnswers button.kn-selected{background:#194c77!important;border-color:#ffca42!important;box-shadow:0 0 0 2px #ffca4240,inset 0 0 20px #ffca4210!important;color:#fff!important;opacity:1!important}
+.newPage .kn-exam #soloOptions button.kn-selected::before,.newPage .kn-exam #liveAnswers button.kn-selected::before{content:'✓';background:#ffca42;border-color:#ffca42;color:#101e2c;display:grid;place-items:center;font-size:17px;font-weight:900}
+.newPage .kn-exam #soloOptions button.kn-pending,.newPage .kn-exam #liveAnswers button.kn-pending{border-color:#53cfff!important;box-shadow:0 0 0 2px #53cfff30!important}
+.newPage .kn-exam #soloOptions button.kn-correct,.newPage .kn-exam #liveAnswers button.correct{background:#064632!important;border-color:#05eb83!important;box-shadow:0 0 0 1px #05eb8345!important}
+.newPage .kn-exam #soloOptions button.kn-wrong,.newPage .kn-exam #liveAnswers button.wrong{background:#4b1827!important;border-color:#ff4159!important;box-shadow:0 0 0 1px #ff415950!important}
+.newPage .kn-exam #soloOptions button.kn-correct::before,.newPage .kn-exam #liveAnswers button.correct::before{content:'✓';background:#05eb83;border-color:#05eb83;color:#063b2a}
+.newPage .kn-exam #soloOptions button.kn-wrong::before,.newPage .kn-exam #liveAnswers button.wrong::before{content:'×';background:#ff4159;border-color:#ff4159;color:#111}
+.newPage .kn-exam #soloFeedback,.newPage .kn-exam #liveFeedback{padding:10px 13px;min-height:0;margin:8px 0;font-size:13px}
+#page-solo:has(#soloGame:not([hidden])) #soloSection>h2,#page-solo:has(#soloGame:not([hidden])) #soloSection>p.muted,#page-solo:has(#soloGame:not([hidden])) #soloSection>label,#page-solo:has(#soloGame:not([hidden])) #soloQuiz,#page-solo:has(#soloGame:not([hidden])) #soloStart,#page-solo:has(#soloGame:not([hidden])) #soloRefresh,#page-solo:has(#soloGame:not([hidden])) #soloSection>h3,#page-solo:has(#soloGame:not([hidden])) #soloBoard{display:none!important}
+#page-multiplayer:has(#liveGame:not([hidden])) #hostPanel,#page-multiplayer:has(#liveGame:not([hidden])) #hostControls,#page-multiplayer:has(#liveGame:not([hidden])) #page-multiplayer>.card:first-of-type,#page-multiplayer:has(#liveGame:not([hidden])) #waiting{display:none!important}
+#page-multiplayer:has(#liveGame:not([hidden])) .newPageHead{margin-bottom:5px}
+#liveBoard{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px;margin:8px 0;padding:0}#liveBoard li{margin:0;padding:7px 10px;font-size:12px}
+@media(max-width:1050px){#newMain{padding:20px}.newModeGrid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:750px){#newMain{padding:15px}#newTop{height:55px}.newPage .kn-exam{padding:12px!important}.newPage .kn-exam #soloOptions,.newPage .kn-exam #liveAnswers{grid-template-columns:1fr;gap:8px}.newPage .kn-exam #soloOptions button,.newPage .kn-exam #liveAnswers button{min-height:60px;padding:11px 12px 11px 49px!important;font-size:14px}.newHero{padding:23px}.newHero:after{opacity:.08}}
+@media(max-width:480px){.newModeGrid{grid-template-columns:repeat(2,minmax(0,1fr))}.newMode{min-height:140px;padding:12px!important}.newMode b{font-size:13px}.newMode small{font-size:11px}.newStats{grid-template-columns:repeat(3,minmax(0,1fr))}.newStats>div{padding:10px}.newStats b{font-size:17px}.newStats small{font-size:10px}#liveBoard{grid-template-columns:1fr}}
 </style></head><body>
 <div id="newKanuutShell"><aside id="newSidebar"><div class="newLogo"><span class="newLogoMark">🚆</span><div><b>KANUUT!</b><small>DEINE EISENBAHN-LERNWELT</small></div></div><p class="newNavLabel">NAVIGATION</p><nav aria-label="Hauptnavigation"><button data-view="home">⌂ <span>Startseite</span></button><button data-view="account">♙ <span>Mein Account</span></button><button data-view="multiplayer">♟ <span>Multiplayer</span></button><button data-view="solo">◉ <span>Solo-Quiz</span></button><button data-view="flashcards">▤ <span>Lernkarten</span></button><button data-view="rankings">▥ <span>Ranglisten</span></button></nav><div class="newSidebarFoot">● KANUUT! Lernplattform<br/><small>Erstellt von DerUschii</small></div></aside><div id="newMainWrap"><div id="newTop"><button aria-label="Menü öffnen" id="newMenu" type="button">☰</button><span>KANUUT! <i>/</i> <strong id="newBreadcrumb">STARTSEITE</strong></span><span class="newTopRight">● PRIVATES LERNPROJEKT</span></div><main id="newMain"><section class="newPage" id="page-home"><div class="newHero"><span class="newEyebrow">● WILLKOMMEN BEI KANUUT!</span><h1>Wissen, das dich<br/><em>weiterbringt.</em></h1><p>Rangieren, Signale, Bremsen und mehr. Wähle deinen Lernmodus und trainiere auf deine Weise.</p><button class="newCta" data-view="solo" type="button">JETZT LERNEN →</button></div><div class="newSectionHead"><h2>Deine Lernmodi</h2><p>Wähle, wie du heute lernen möchtest.</p></div><div class="newModeGrid"><button class="newMode" data-view="multiplayer"><span class="newModeIcon red">♟</span><b>Multiplayer</b><small>Mit der Lerngruppe spielen</small><span class="newArrow">↗</span></button><button class="newMode" data-view="solo"><span class="newModeIcon yellow">◎</span><b>Solo-Quiz</b><small>Alleine Wissen testen</small><span class="newArrow">↗</span></button><button class="newMode" data-view="flashcards"><span class="newModeIcon teal">▤</span><b>Lernkarten</b><small>Ohne Zeitdruck lernen</small><span class="newArrow">↗</span></button><button class="newMode" data-view="rankings"><span class="newModeIcon purple">▥</span><b>Ranglisten</b><small>Ergebnisse vergleichen</small><span class="newArrow">↗</span></button></div><div class="newSectionHead"><h2>Deine Lernplattform</h2><p>Bestehende Quizze und Lernkartensets werden aus Supabase geladen.</p></div><div class="newStats"><div><b>1.462</b><small>Fragen laut letztem Datenbankstand</small></div><div><b>4</b><small>Lernbereiche</small></div><div><b>100 %</b><small>Bestehende Quizlogik übernommen</small></div></div><div class="newDisclaimer"><strong>Wichtiger Hinweis</strong><p>Jede Aufgabe ohne Gewähr auf Richtigkeit. Maßgeblich sind die gültigen Vorschriften und Ausbildungsunterlagen. KANUUT! ist ein privates, unabhängiges und nicht kommerzielles Lernprojekt für TF14, keine offizielle Anwendung eines Bildungsträgers.</p></div></section><section class="newPage" hidden="" id="page-account"><div class="newPageHead"><span class="newEyebrow">KANUUT! / LERNWELT</span><h1>Mein Account</h1><p>Anmelden, registrieren oder als Gast starten.</p></div><section class="card" id="accountPanel"><h2>🔐 Dein KANUUT!-Spieleraccount</h2>
 <p class="muted">Melde dich mit deinem bestehenden Account an oder registriere dich mit deinem eigenen Spielernamen. Ohne E-Mail kannst du als Gast mitspielen.</p>
@@ -55,8 +125,17 @@ html{scroll-behavior:smooth}body{background:var(--kn-bg)!important;color:#f4f4f6
 <label for="soloQuiz">Quiz auswählen</label><select id="soloQuiz" style="display:block;width:100%;padding:12px;border-radius:9px;margin:8px 0"></select>
 <button id="soloStart" type="button">▶ Solo-Quiz starten</button><button id="soloRefresh" type="button">🏆 Top 5 anzeigen</button><p id="soloStatus" role="status"></p>
 <div class="kn-exam" hidden="" id="soloGame"><div class="kn-exam-top"><span class="kn-exam-mode">▤  SOLO-QUIZ</span></div><p id="soloProgress"></p><p aria-live="off" id="soloTimer" role="timer">⏱ 30 Sekunden</p><div class="kn-exam-eyebrow">PRÜFUNGSFRAGE</div><h3 id="soloQuestion"></h3><div class="solo-options" id="soloOptions"></div><p id="soloFeedback" role="status"></p><button hidden="" id="soloNext" type="button">Weiter ▶</button></div>
-<h3>🏆 Solo-Top-5 – Gesamtwertung aller Quizze</h3><ol id="soloBoard"></ol></section></section><section class="newPage" hidden="" id="page-flashcards"><div class="newPageHead"><span class="newEyebrow">KANUUT! / LERNWELT</span><h1>Lernkarten</h1><p>Lerne Frage für Frage in deinem Tempo.</p></div><section class="card" id="flashcardSection"><h2>📚 Lernkarten</h2><p class="muted">Alle freigeschalteten Quizfragen und zusätzlichen Lernkartensets an einem Ort. Karte anklicken, um die Antwort zu sehen. BG-Themen sind rot, Good to Know blau markiert.</p><label for="flashcardDeck">Lernkartenset auswählen</label><select id="flashcardDeck"><option value="">Lernkarten werden geladen …</option></select><button id="flashcardReload" type="button">🔄 Lernkarten aktualisieren</button><p aria-live="polite" id="flashcardStatus" role="status"></p><div aria-label="Lernkarte umdrehen" hidden="" id="flashcardBox" role="button" tabindex="0"><div id="flashcardBadges"></div><strong id="flashcardSide">FRAGE</strong><div id="flashcardText"></div><small class="muted" id="flashcardSource"></small></div><div id="flashcardNav"><button id="flashcardPrev" type="button">◀ Zurück</button><button id="flashcardFlip" type="button">🔁 Antwort anzeigen</button><button id="flashcardNext" type="button">Weiter ▶</button></div></section></section><section class="newPage" hidden="" id="page-rankings"><div class="newPageHead"><span class="newEyebrow">KANUUT! / LERNWELT</span><h1>Ranglisten</h1><p>Die besten Ergebnisse aus deinen Spielen.</p></div><section class="card" id="top30Section">
-<h2>🏆 Top 30 – Bestenliste</h2>
+<h3>🏆 Solo-Top-5 – Gesamtwertung aller Quizze</h3><ol id="soloBoard"></ol></section></section><section class="newPage" hidden="" id="page-flashcards"><div class="newPageHead"><span class="newEyebrow">KANUUT! / LERNWELT</span><h1>Lernkarten</h1><p>Lerne Frage für Frage in deinem Tempo.</p></div><section class="card" id="flashcardSection"><h2>📚 Lernkarten</h2><p class="muted">Alle freigeschalteten Quizfragen und zusätzlichen Lernkartensets an einem Ort. Karte anklicken, um die Antwort zu sehen. BG-Themen sind rot, Good to Know blau markiert.</p><label for="flashcardDeck">Lernkartenset auswählen</label><select id="flashcardDeck"><option value="">Lernkarten werden geladen …</option></select><button id="flashcardReload" type="button">🔄 Lernkarten aktualisieren</button><p aria-live="polite" id="flashcardStatus" role="status"></p><div aria-label="Lernkarte umdrehen" hidden="" id="flashcardBox" role="button" tabindex="0"><div id="flashcardBadges"></div><strong id="flashcardSide">FRAGE</strong><div id="flashcardText"></div><small class="muted" id="flashcardSource"></small></div><div id="flashcardNav"><button id="flashcardPrev" type="button">◀ Zurück</button><button id="flashcardFlip" type="button">🔁 Antwort anzeigen</button><button id="flashcardNext" type="button">Weiter ▶</button></div></section></section><section class="newPage" hidden="" id="page-rankings"><div class="newPageHead"><span class="newEyebrow">KANUUT! / LERNWELT</span><h1>Ranglisten & Dienstgrade</h1><p>Steige im KANUUT!-Ranking auf und verdiene dir ein Abzeichen.</p></div><section class="card" id="top30Section">
+<h2>🏆 KANUUT! – Rangordnung</h2>
+<div class="kn-rank-hero"><span class="kn-rank-icon">🎖️</span><div><h3>Dein Rang. Deine Leistung.</h3><p>Erreiche einen der besten Plätze und trage deinen Eisenbahn-Dienstgrad. Die Abzeichen werden automatisch aus der bestehenden Top-30-Rangliste vergeben.</p></div></div>
+<div class="kn-rank-grid" id="knRankLegend">
+<div class="kn-rank-tier"><span class="kn-rank-icon">🏅</span><div><b>Eisenbahn-Legende</b><small>Platz 1</small></div></div>
+<div class="kn-rank-tier"><span class="kn-rank-icon">🌟</span><div><b>Oberzugführer</b><small>Platz 2</small></div></div>
+<div class="kn-rank-tier"><span class="kn-rank-icon">⭐</span><div><b>Zugführer</b><small>Platz 3</small></div></div>
+<div class="kn-rank-tier"><span class="kn-rank-icon">🎖️</span><div><b>Rangierbegleiter</b><small>Platz 4–10</small></div></div>
+<div class="kn-rank-tier"><span class="kn-rank-icon">🔰</span><div><b>Rangierhelfer</b><small>Platz 11–20</small></div></div>
+<div class="kn-rank-tier"><span class="kn-rank-icon">🛡️</span><div><b>Anwärter</b><small>Platz 21–30</small></div></div>
+</div><p class="kn-rank-caption">Dienstgrade sind spielerische KANUUT!-Auszeichnungen, keine echten bahnbetrieblichen Qualifikationen. Sie richten sich nach der aktuellen Ranglistenposition und können sich verändern.</p>
 <p class="muted"><small>Die besten Ergebnisse aus abgeschlossenen Online-Spielen. Pro Spieler zählt das beste Ergebnis.</small></p>
 <p aria-live="polite" id="top30Status" role="status">Rangliste wird geladen …</p>
 <ol class="top30-list" id="top30List"></ol>
@@ -73,7 +152,7 @@ const PUBLIC_KEY='sb_publishable_rj6xSl9aYiY83A8UoFpeYA_j8kBEwbF';
 const $=id=>document.getElementById(id);
 let kanuutUnlocked=false;
 let activeClient=null,activePin='',pollTimer=null,loadingPlayers=false;
-let client=null,hostRoomId=null,hostPin='',livePin='',liveTimerHandle=null,liveBusy=false,liveLastKey='',liveLastPhase='',localAnswered=false;
+let client=null,hostRoomId=null,hostPin='',livePin='',liveTimerHandle=null,liveBusy=false,liveLastKey='',liveLastPhase='',localAnswered=false,liveSelectedIndex=-1;
 let smoothTimerHandle=null,smoothDeadline=0,smoothPhase='waiting';
 let accountProfile=null;
 let guestMode=false, guestNickname="";
@@ -400,8 +479,8 @@ async function refreshLive(){
   $('liveStatus').textContent=({waiting:'Warte auf den Spielstart …',question:'Jetzt antworten!',reveal:'Richtige Antwort',leaderboard:'Zwischenstand',finished:'Quiz beendet – Endrangliste'})[phase]||phase;
   $('liveProgress').textContent=(s.question_number||0)+' / '+(s.question_count||0);
   syncSmoothTimer(phase,s.remaining_seconds);
-  if(key!==liveLastKey){localAnswered=false;liveLastKey=key;}
-  if(s.my_answer!==null&&s.my_answer!==undefined)localAnswered=true;
+  if(key!==liveLastKey){localAnswered=false;liveSelectedIndex=-1;liveLastKey=key;}
+  if(s.my_answer!==null&&s.my_answer!==undefined){localAnswered=true;liveSelectedIndex=Number(s.my_answer);}
   $('liveQuestion').textContent=s.question||'';
   const opts=$('liveAnswers');
   if(key+'|'+phase!==liveLastPhase){opts.replaceChildren();
@@ -421,6 +500,7 @@ async function refreshLive(){
    for(const b of opts.children){
     const i=Number(b.dataset.index);
     b.disabled=phase!=='question'||localAnswered||s.is_host;
+    b.classList.toggle('kn-selected',phase==='question'&&localAnswered&&i===liveSelectedIndex);
     b.classList.toggle('correct',validCorrect&&i===correctIndex);
     b.classList.toggle('wrong',validCorrect&&hasAnswer&&i===myIndex&&i!==correctIndex);
    }
@@ -437,11 +517,11 @@ async function refreshLive(){
 }
 async function sendLiveAnswer(index){
  if(localAnswered||!livePin)return;
- localAnswered=true;for(const b of $('liveAnswers').children)b.disabled=true;
+ localAnswered=true;liveSelectedIndex=index;for(const b of $('liveAnswers').children){b.disabled=true;b.classList.toggle('kn-selected',Number(b.dataset.index)===index);}
  $('liveFeedback').textContent='Antwort wird übermittelt …';
  try{const sb=await getConnectedClient();const {error}=await sb.rpc('live_submit_answer',{p_pin:livePin,p_selected_index:index});if(error)throw error;
  $('liveFeedback').textContent='Antwort angenommen!';
- }catch(e){$('liveFeedback').textContent='Antwort nicht angenommen: '+(e.message||String(e));}
+ }catch(e){localAnswered=false;liveSelectedIndex=-1;for(const b of $('liveAnswers').children){b.classList.remove('kn-selected');b.disabled=false;}$('liveFeedback').textContent='Antwort nicht angenommen: '+(e.message||String(e));}
  await refreshLive();
 }
 async function loadTop30(){
@@ -464,7 +544,7 @@ async function loadTop30(){
    const score=document.createElement('strong');
    score.className='top30-score';
    score.textContent=Number(p.player_score||0).toLocaleString('de-DE')+' Pkt.';
-   li.append(place,name,score);
+   li.append(place,name,kanuutRankBadge(i+1),score);
    list.append(li);
   });
   status.textContent=entries.length?('Stand: '+new Date().toLocaleTimeString('de-DE')):'Noch keine abgeschlossenen Spielrunden vorhanden.';
@@ -504,12 +584,25 @@ function soloStartClock(deadline){
  tick();if(!soloTimeoutPending)soloClock=setInterval(tick,200);
 }
 async function soloRpc(name,args){const sb=await requirePlayer();const {data,error}=await sb.rpc(name,args);if(error)throw error;return data;}
+function kanuutRank(position){
+ const ranks=[['🏅','Eisenbahn-Legende','gold'],['🌟','Oberzugführer','silver'],['⭐','Zugführer','bronze']];
+ if(position<=3)return ranks[position-1];
+ if(position<=10)return ['🎖️','Rangierbegleiter',''];
+ if(position<=20)return ['🔰','Rangierhelfer',''];
+ return ['🛡️','Anwärter',''];
+}
+function kanuutRankBadge(position){
+ const [symbol,name,tier]=kanuutRank(position);
+ const badge=document.createElement('span');badge.className='kn-rank-pill'+(tier?' '+tier:'');badge.textContent=symbol+' '+name;
+ badge.title='KANUUT!-Spielrang nach aktuellem Ranglistenplatz '+position;
+ return badge;
+}
 function soloNotice(msg){$('soloStatus').textContent=msg;}
 function soloAccessUI(){const allowed=!!accountProfile&&!guestMode&&kanuutUnlocked;$('soloStart').disabled=!allowed;$('soloQuiz').disabled=!allowed;}
 async function soloTop5(){
  try{const rows=await soloRpc('kanuut_solo_top5',{});const list=$('soloBoard');list.replaceChildren();
  if(!rows?.length){const li=document.createElement('li');li.textContent='Noch keine Ergebnisse';list.append(li);return;}
- for(const x of rows){const li=document.createElement('li');li.textContent=x.nickname+' — '+x.points+' Punkte · '+x.quizzes_played+' Quizze';list.append(li);}
+ for(const [i,x] of rows.entries()){const li=document.createElement('li');const name=document.createElement('strong');name.textContent=x.nickname;const score=document.createElement('span');score.textContent=x.points+' Punkte · '+x.quizzes_played+' Quizze';li.append(name,kanuutRankBadge(i+1),score);list.append(li);}
  }catch(e){soloNotice('Top 5: '+(e.message||e));}
 }
 async function soloShowQuestion(){
@@ -525,12 +618,12 @@ async function soloShowQuestion(){
 }
 async function soloAnswer(index){
  if(soloAnswered||soloBusy)return;soloBusy=true;soloStopClock();
- const buttons=[...$('soloOptions').querySelectorAll('button')];buttons.forEach(b=>b.disabled=true);
+ const buttons=[...$('soloOptions').querySelectorAll('button')];buttons.forEach((b,i)=>{b.disabled=true;b.classList.toggle('kn-selected',i===index);});
  try{const result=await soloRpc('kanuut_solo_answer',{p_run_id:soloRunId,p_selected_index:index});soloAnswered=true;
- if(buttons[result.correct_index])buttons[result.correct_index].classList.add('kn-correct');if(!result.correct&&index>=0&&buttons[index])buttons[index].classList.add('kn-wrong');
+ buttons.forEach(b=>b.classList.remove('kn-selected'));if(buttons[result.correct_index])buttons[result.correct_index].classList.add('kn-correct');if(!result.correct&&index>=0&&buttons[index])buttons[index].classList.add('kn-wrong');
  $('soloFeedback').textContent=(result.timed_out?'⏰ Zeit abgelaufen – unbeantwortet.':result.correct?'✅ Richtig!':'❌ Leider falsch.')+(result.explanation?' '+result.explanation:'')+' · '+result.score+'/'+result.total+' Punkte';
  $('soloNext').textContent=result.finished?'Ergebnis anzeigen':'Nächste Frage ▶';$('soloNext').hidden=false;
- }catch(e){soloNotice('Antwort fehlgeschlagen: '+(e.message||e));if(index>=0&&Date.now()<soloDeadline){buttons.forEach(b=>b.disabled=false);soloStartClock(new Date(soloDeadline).toISOString());}else if(soloTimeoutRetries++<3){soloTimeoutPending=false;setTimeout(()=>soloAnswer(-1),1000);}else{soloNotice('Zeitablauf konnte nicht gespeichert werden. Bitte Seite neu laden oder Verbindung prüfen.');}}finally{soloBusy=false;}
+ }catch(e){buttons.forEach(b=>b.classList.remove('kn-selected'));soloNotice('Antwort fehlgeschlagen: '+(e.message||e));if(index>=0&&Date.now()<soloDeadline){buttons.forEach(b=>b.disabled=false);soloStartClock(new Date(soloDeadline).toISOString());}else if(soloTimeoutRetries++<3){soloTimeoutPending=false;setTimeout(()=>soloAnswer(-1),1000);}else{soloNotice('Zeitablauf konnte nicht gespeichert werden. Bitte Seite neu laden oder Verbindung prüfen.');}}finally{soloBusy=false;}
 }
 $('soloStart').onclick=async()=>{if(soloBusy)return;soloBusy=true;const b=$('soloStart');b.disabled=true;
  try{if(!accountProfile||guestMode)throw Error('Solo-Modus ist nur für registrierte Spieler verfügbar.');if(!kanuutUnlocked)throw Error('Bitte zuerst Klassenpasswort eingeben.');const q=$('soloQuiz').value;if(!q)throw Error('Bitte Quiz wählen');
