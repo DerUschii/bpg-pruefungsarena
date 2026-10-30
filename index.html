@@ -163,7 +163,7 @@ body,#newKanuutShell{background:#0b0b0e!important;color:#f7f3ed!important}
 #page-multiplayer .kn-room-code[hidden]{display:none!important}
 #page-multiplayer #roomInfo{color:#ffce43;font-weight:800;font-size:18px}
 #page-multiplayer #roomPin{color:#ffce43;font-size:25px;letter-spacing:3px}
-</style><style id="kanuut-xp-ui">#knXpAccount,#knXpLeaderboard{border:1px solid #9b7735!important;background:linear-gradient(125deg,#201c1c,#19171b)!important}
+</style><style id="kn-progress-style">.kn-progress-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(45px,1fr));gap:7px}.kn-progress-tile{min-height:43px;border-radius:8px;border:1px solid #7d6a4e;color:#fff;background:#38343b;cursor:pointer;font-weight:700}.kn-progress-tile.passed{background:#176c49}.kn-progress-tile.failed{background:#943b40}.kn-progress-tile.started{background:#9a741e}.kn-progress-tile:focus-visible{outline:3px solid #ffce43}</style><style id="kanuut-xp-ui">#knXpAccount,#knXpLeaderboard{border:1px solid #9b7735!important;background:linear-gradient(125deg,#201c1c,#19171b)!important}
 #knXpAccount h2,#knXpLeaderboard h2{color:#ffcf4b!important}
 .kn-xp-track{height:13px;background:#363036;border-radius:20px;overflow:hidden;border:1px solid #72552d;margin-top:15px}
 .kn-xp-fill{height:100%;width:0%;background:linear-gradient(90deg,#bb2c3b,#ffce43);transition:width .4s}
@@ -183,7 +183,7 @@ body,#newKanuutShell{background:#0b0b0e!important;color:#f7f3ed!important}
 </style><script defer src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script><style id="kanuut-matching-style">
 .kn-match-top{display:flex;justify-content:space-between;gap:15px;flex-wrap:wrap;align-items:center}.kn-match-count{border:1px solid #aa8122;color:#ffcc38;border-radius:999px;padding:7px 12px;font-size:12px}.kn-match-picture{position:relative;max-width:920px;margin:20px auto 25px;border:2px solid #9b6b21;border-radius:16px;overflow:hidden;background:#222}.kn-match-picture img{display:block;width:100%;height:auto}.kn-match-pin{position:absolute;transform:translate(-50%,-50%);width:33px;height:33px;border-radius:50%;background:#ffcc38;color:#111;font-weight:900;border:2px solid #111;display:grid;place-items:center;box-shadow:0 0 0 3px #0009;font-size:15px;pointer-events:none}.kn-match-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.kn-match-field{background:#221d20;border:1px solid #6e3b43;border-radius:12px;padding:12px;display:flex;align-items:center;gap:12px;min-width:0}.kn-match-number{background:#ffcc38;color:#161616;min-width:31px;height:31px;display:grid;place-items:center;border-radius:8px;font-weight:900}.kn-match-field select{flex:1;min-width:0;width:100%;margin:0!important}.kn-match-field.correct{border-color:#32bc78;background:#143124}.kn-match-field.wrong{border-color:#e34b56;background:#381b21}.kn-match-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}.kn-match-actions button:first-child{background:#ffcc38!important;color:#111!important}.kn-match-actions button:last-child{background:#4b252b!important;color:#fff!important}#knMatchFeedback{font-weight:700;color:#ffcc38}@media(max-width:760px){.kn-match-fields{grid-template-columns:1fr}.kn-match-pin{width:25px;height:25px;font-size:12px}.kn-match-field{padding:9px}}
 </style></head><body>
-<div id="newKanuutShell"><aside id="newSidebar"><div class="newLogo"><span class="newLogoMark">🚆</span><div><b>KANUUT!</b><small>DEINE EISENBAHN-LERNWELT</small></div></div><p class="newNavLabel">NAVIGATION</p><nav aria-label="Hauptnavigation"><button data-view="home">⌂ <span>Startseite</span></button><button data-view="account">♙ <span>Mein Account</span></button><button data-view="multiplayer">♟ <span>Multiplayer</span></button><button data-view="solo">◉ <span>Solo-Quiz</span></button><button data-view="flashcards">▤ <span>Lernkarten</span></button><button data-view="matching">▦ <span>Zuordnungsbilder</span></button><button data-view="rankings">▥ <span>Ranglisten</span></button></nav><div class="newSidebarFoot">● KANUUT! Lernplattform<br/><small>Erstellt von DerUschii</small></div></aside><div id="newMainWrap"><div id="newTop"><button aria-label="Menü öffnen" id="newMenu" type="button">☰</button><span>KANUUT! <i>/</i> <strong id="newBreadcrumb">STARTSEITE</strong></span><span class="newTopRight">● PRIVATES LERNPROJEKT</span></div><main id="newMain"><section class="newPage" id="page-home"><div class="newHero"><span class="newEyebrow">● WILLKOMMEN BEI KANUUT!</span><h1>Wissen, das dich<br/><em>weiterbringt.</em></h1><p>Rangieren, Signale, Bremsen und mehr. Wähle deinen Lernmodus und trainiere auf deine Weise.</p><button class="newCta" data-view="solo" type="button">JETZT LERNEN →</button></div><div class="newSectionHead"><h2>Deine Lernmodi</h2><p>Wähle, wie du heute lernen möchtest.</p></div><div class="newModeGrid"><button class="newMode" data-view="multiplayer"><span class="newModeIcon red">♟</span><b>Multiplayer</b><small>Mit der Lerngruppe spielen</small><span class="newArrow">↗</span></button><button class="newMode" data-view="solo"><span class="newModeIcon yellow">◎</span><b>Solo-Quiz</b><small>Alleine Wissen testen</small><span class="newArrow">↗</span></button><button class="newMode" data-view="flashcards"><span class="newModeIcon teal">▤</span><b>Lernkarten</b><small>Ohne Zeitdruck lernen</small><span class="newArrow">↗</span></button><button class="newMode" data-view="matching"><span class="newModeIcon yellow">▦</span><b>Zuordnungsbilder</b><small>Bauteile richtig zuordnen</small><span class="newArrow">↗</span></button><button class="newMode" data-view="rankings"><span class="newModeIcon purple">▥</span><b>Ranglisten</b><small>Ergebnisse vergleichen</small><span class="newArrow">↗</span></button></div><div class="newSectionHead"><h2>Deine Lernplattform</h2><p>Bestehende Quizze und Lernkartensets werden aus Supabase geladen.</p></div><div class="newStats"><div><b id="knLiveQuestionCount">…</b><small id="knLiveQuestionCountLabel">Fragen im aktuellen Datenbankstand</small></div><div><b>4</b><small>Lernbereiche</small></div><div><b>100 %</b><small>Bestehende Quizlogik übernommen</small></div></div><div class="newDisclaimer"><strong>Wichtiger Hinweis</strong><p>Jede Aufgabe ohne Gewähr auf Richtigkeit. Maßgeblich sind die gültigen Vorschriften und Ausbildungsunterlagen. KANUUT! ist ein privates, unabhängiges und nicht kommerzielles Lernprojekt für TF14, keine offizielle Anwendung eines Bildungsträgers.</p></div></section><section class="newPage" hidden="" id="page-account"><div class="newPageHead"><span class="newEyebrow">KANUUT! / LERNWELT</span><h1>Mein Account</h1><p>Melde dich mit deinem Spieleraccount an oder registriere dich.</p></div><section class="card" id="knXpAccount"><h2>🎖️ Dein Dienstgrad</h2><div id="knXpAccountInfo">XP-System noch nicht aktiviert.</div><div class="kn-xp-track"><div class="kn-xp-fill" id="knXpProgress"></div></div><p class="muted" id="knXpNext"></p></section>
+<div id="newKanuutShell"><aside id="newSidebar"><div class="newLogo"><span class="newLogoMark">🚆</span><div><b>KANUUT!</b><small>DEINE EISENBAHN-LERNWELT</small></div></div><p class="newNavLabel">NAVIGATION</p><nav aria-label="Hauptnavigation"><button data-view="home">⌂ <span>Startseite</span></button><button data-view="account">♙ <span>Mein Account</span></button><button data-view="multiplayer">♟ <span>Multiplayer</span></button><button data-view="solo">◉ <span>Solo-Quiz</span></button><button data-view="flashcards">▤ <span>Lernkarten</span></button><button data-view="matching">▦ <span>Zuordnungsbilder</span></button><button data-view="progress">▦ <span>Mein Lernfortschritt</span></button><button data-view="rankings">▥ <span>Ranglisten</span></button></nav><div class="newSidebarFoot">● KANUUT! Lernplattform<br/><small>Erstellt von DerUschii</small></div></aside><div id="newMainWrap"><div id="newTop"><button aria-label="Menü öffnen" id="newMenu" type="button">☰</button><span>KANUUT! <i>/</i> <strong id="newBreadcrumb">STARTSEITE</strong></span><span class="newTopRight">● PRIVATES LERNPROJEKT</span></div><main id="newMain"><section class="newPage" id="page-home"><div class="newHero"><span class="newEyebrow">● WILLKOMMEN BEI KANUUT!</span><h1>Wissen, das dich<br/><em>weiterbringt.</em></h1><p>Rangieren, Signale, Bremsen und mehr. Wähle deinen Lernmodus und trainiere auf deine Weise.</p><button class="newCta" data-view="solo" type="button">JETZT LERNEN →</button></div><div class="newSectionHead"><h2>Deine Lernmodi</h2><p>Wähle, wie du heute lernen möchtest.</p></div><div class="newModeGrid"><button class="newMode" data-view="multiplayer"><span class="newModeIcon red">♟</span><b>Multiplayer</b><small>Mit der Lerngruppe spielen</small><span class="newArrow">↗</span></button><button class="newMode" data-view="solo"><span class="newModeIcon yellow">◎</span><b>Solo-Quiz</b><small>Alleine Wissen testen</small><span class="newArrow">↗</span></button><button class="newMode" data-view="flashcards"><span class="newModeIcon teal">▤</span><b>Lernkarten</b><small>Ohne Zeitdruck lernen</small><span class="newArrow">↗</span></button><button class="newMode" data-view="matching"><span class="newModeIcon yellow">▦</span><b>Zuordnungsbilder</b><small>Bauteile richtig zuordnen</small><span class="newArrow">↗</span></button><button class="newMode" data-view="rankings"><span class="newModeIcon purple">▥</span><b>Ranglisten</b><small>Ergebnisse vergleichen</small><span class="newArrow">↗</span></button></div><div class="newSectionHead"><h2>Deine Lernplattform</h2><p>Bestehende Quizze und Lernkartensets werden aus Supabase geladen.</p></div><div class="newStats"><div><b id="knLiveQuestionCount">…</b><small id="knLiveQuestionCountLabel">Fragen im aktuellen Datenbankstand</small></div><div><b>4</b><small>Lernbereiche</small></div><div><b>100 %</b><small>Bestehende Quizlogik übernommen</small></div></div><div class="newDisclaimer"><strong>Wichtiger Hinweis</strong><p>Jede Aufgabe ohne Gewähr auf Richtigkeit. Maßgeblich sind die gültigen Vorschriften und Ausbildungsunterlagen. KANUUT! ist ein privates, unabhängiges und nicht kommerzielles Lernprojekt für TF14, keine offizielle Anwendung eines Bildungsträgers.</p></div></section><section class="newPage" hidden="" id="page-account"><div class="newPageHead"><span class="newEyebrow">KANUUT! / LERNWELT</span><h1>Mein Account</h1><p>Melde dich mit deinem Spieleraccount an oder registriere dich.</p></div><section class="card" id="knXpAccount"><h2>🎖️ Dein Dienstgrad</h2><div id="knXpAccountInfo">XP-System noch nicht aktiviert.</div><div class="kn-xp-track"><div class="kn-xp-fill" id="knXpProgress"></div></div><p class="muted" id="knXpNext"></p></section>
 <section class="card" id="knAdminVisitors" hidden>
 <h2>📊 Betreiberbereich – Besucherzahlen</h2>
 <p class="muted">Nur für den freigeschalteten Betreiber sichtbar. Einmal pro Spieler und Tag gezählt.</p>
@@ -197,7 +197,7 @@ body,#newKanuutShell{background:#0b0b0e!important;color:#f7f3ed!important}
 <div id="registerFields"><label for="accountNick">Dein einmaliger Nickname</label><input autocomplete="nickname" id="accountNick" maxlength="24" placeholder="z. B. LokMattis"/><p class="muted" style="margin:2px 0 8px"><small>Nur bei der Registrierung erforderlich. Beim Anmelden bleibt dein gespeicherter Nickname erhalten.</small></p></div>
 <p><button id="accountLogin" type="button">Anmelden</button> <button id="accountRegister" type="button">Registrieren</button> <button id="accountReset" type="button">Passwort vergessen?</button></p></div>
 <div hidden="" id="accountLoggedIn"><strong id="accountWho"></strong> <button id="accountLogout" type="button">Abmelden</button></div>
-<p aria-live="polite" id="accountNotice" role="status"></p></section></section><section class="newPage" hidden="" id="page-multiplayer"><div class="newPageHead"><span class="newEyebrow">KANUUT! / LERNWELT</span><h1>Multiplayer</h1><p>Spiel beitreten, Raum erstellen und live quizzen.</p></div><section class="card"><h2>🌐 Online-Spiel beitreten</h2><p>Du brauchst nur die sechsstellige PIN. Ein registrierter Account und das Klassenpasswort sind erforderlich.</p>
+<p aria-live="polite" id="accountNotice" role="status"></p></section></section><section class="newPage" hidden id="page-progress"><div class="newPageHead"><span class="newEyebrow">KANUUT! / MEIN FORTSCHRITT</span><h1>Mein Lernfortschritt</h1><p>Deine abgeschlossenen Solo-Quizze, Trefferquoten und Übungsbereiche.</p></div><section class="card"><h2>Meine Quiz-Kacheln</h2><p id="knProgressSummary">Melde dich an, um deine Statistik zu sehen.</p><div id="knProgressTiles" class="kn-progress-grid"></div><div id="knProgressDetail" class="muted" style="margin-top:15px">Wähle ein Quizkästchen aus.</div></section></section><section class="newPage" hidden="" id="page-multiplayer"><div class="newPageHead"><span class="newEyebrow">KANUUT! / LERNWELT</span><h1>Multiplayer</h1><p>Spiel beitreten, Raum erstellen und live quizzen.</p></div><section class="card"><h2>🌐 Online-Spiel beitreten</h2><p>Du brauchst nur die sechsstellige PIN. Ein registrierter Account und das Klassenpasswort sind erforderlich.</p>
 <label for="pin">Sechsstelliger Spielcode</label><input id="pin" inputmode="numeric" maxlength="6" placeholder="z. B. 402365"/><br/>
 <label for="nickname">Dein Spielername</label><input id="nickname" maxlength="24" placeholder="Bitte zuerst anmelden" readonly=""/><br/>
 <button id="join">Spiel beitreten</button><p aria-live="polite" id="notice" role="status"></p>
@@ -529,7 +529,7 @@ $('flashcardDeck').onchange=flashcardLoadDeck;
 async function loadQuizzes(){
  const info=$('hostActionNotice');info.textContent='Quizze werden geladen ...';info.className='';
  try{const sb=await getConnectedClient();const {data,error}=await sb.rpc('arena_list_quizzes');if(error)throw error;
- const sel=$('quizSelect');sel.replaceChildren();for(const q of data||[]){const opt=document.createElement('option');opt.value=q.quiz_id;opt.textContent=q.quiz_title+' ('+q.question_count+' Fragen)';opt.disabled=Number(q.question_count)===0;sel.append(opt)}
+ knQuizCatalog=data||[];const sel=$('quizSelect');sel.replaceChildren();for(const q of data||[]){const opt=document.createElement('option');opt.value=q.quiz_id;opt.textContent=q.quiz_title+' ('+q.question_count+' Fragen)';opt.disabled=Number(q.question_count)===0;sel.append(opt)}
  const soloSel=$('soloQuiz');soloSel.replaceChildren();for(const q of data||[]){const o=document.createElement('option');o.value=q.quiz_id;o.textContent=q.quiz_title+' ('+q.question_count+' Fragen)';o.disabled=Number(q.question_count)===0;soloSel.append(o)}
  $('soloStart').disabled=!(data||[]).some(q=>Number(q.question_count)>0);
  $('createRoom').disabled=!(data||[]).some(q=>Number(q.question_count)>0);info.textContent=(data||[]).length+' Quizze gefunden.';
@@ -707,6 +707,38 @@ getConnectedClient().then(sb=>sb.auth.onAuthStateChange(async(event)=>{
 setInterval(async()=>{if(!accountProfile)return;const was=kanuutUnlocked;const ok=await checkKanuutAccess();if(ok&&!was){updateLiveQuestionCount();loadQuizzes();flashcardLoadDecks();loadTop30();restoreRejoin();}if(ok&&!document.hidden)loadTop30();},30000);
 
 // Solo-Spiel: serverseitig bewertete Antworten und eigene Rangliste.
+let knSoloStats={quizId:null,correct:0,answered:0,total:0,recorded:false};
+let knQuizCatalog=[];
+async function knLoadProgress(){
+ const grid=$('knProgressTiles'),summary=$('knProgressSummary'),detail=$('knProgressDetail');
+ if(!grid||!accountProfile||!kanuutUnlocked)return;
+ try{
+  const sb=await getConnectedClient();
+  const {data,error}=await sb.rpc('kanuut_my_quiz_progress');
+  if(error)throw error;
+  const records=Array.isArray(data)?data:[];
+  const byId=new Map(records.map(x=>[String(x.quiz_id),x]));
+  grid.replaceChildren();
+  let passed=0,completed=0;
+  knQuizCatalog.forEach((q,i)=>{
+   const r=byId.get(String(q.quiz_id)),pct=r&&r.total>0?Math.round(r.correct*100/r.total):null;
+   if(r){completed++;if(pct>=70)passed++;}
+   const b=document.createElement('button');b.type='button';
+   b.className='kn-progress-tile '+(!r?'':pct>=70?'passed':'failed');
+   b.textContent=String(i+1);b.title=q.quiz_title;
+   b.onclick=()=>{detail.textContent=q.quiz_title+' · '+(r?(r.correct+' richtig / '+(r.total-r.correct)+' falsch · '+pct+' % · '+(pct>=70?'70-%-Grenze erreicht (BG-Status nicht geprüft)':'Unter 70 %')):'Noch kein abgeschlossenes Solo-Quiz');};
+   grid.append(b);
+  });
+  summary.textContent=completed+' von '+knQuizCatalog.length+' Quizzen abgeschlossen · '+passed+' mit mindestens 70 % (BG-Status nicht geprüft).';
+ }catch(e){summary.textContent='Fortschritt nicht abrufbar: '+(e.message||e);}
+}
+async function knSaveSoloProgress(){
+ if(knSoloStats.recorded||!knSoloStats.quizId||!knSoloStats.total)return;
+ const sb=await getConnectedClient();
+ const {error}=await sb.rpc('kanuut_save_quiz_progress',{p_quiz_id:knSoloStats.quizId,p_correct:knSoloStats.correct,p_total:knSoloStats.total});
+ if(error)throw error;
+ knSoloStats.recorded=true;
+}
 let soloRunId=null,soloAnswered=false,soloBusy=false;
 let soloClock=null,soloDeadline=0,soloTimeoutPending=false,soloTimeoutRetries=0;
 function soloStopClock(){if(soloClock!==null){clearInterval(soloClock);soloClock=null;}}
@@ -745,7 +777,7 @@ async function soloTop5(){
 }
 async function soloShowQuestion(){
  const q=await soloRpc('kanuut_solo_question',{p_run_id:soloRunId});
- if(q.finished){soloStopClock();$('soloGame').hidden=true;soloNotice('Fertig! '+q.score+'/'+q.total+' Punkte.');await soloTop5();return;}
+ if(q.finished){soloStopClock();$('soloGame').hidden=true;try{await knSaveSoloProgress();}catch(e){soloNotice('Fortschritt konnte nicht gespeichert werden: '+(e.message||e));return;}const pct=knSoloStats.total?Math.round(100*knSoloStats.correct/knSoloStats.total):0;soloNotice('Fertig! '+knSoloStats.correct+'/'+knSoloStats.total+' richtig ('+pct+' %). '+(pct>=70?'Glückwunsch! 70-%-Grenze erreicht. BG muss gesondert geprüft werden.':'70-%-Grenze noch nicht erreicht.') );await soloTop5();return;}
  soloAnswered=false;$('soloNext').hidden=true;$('soloFeedback').textContent='';$('soloProgress').textContent='Frage '+(q.position+1)+' von '+q.total+' · '+q.score+' Punkte';$('soloQuestion').textContent=q.question;
  const opts=$('soloOptions');opts.replaceChildren();
  let choices=q.options;
@@ -757,7 +789,7 @@ async function soloShowQuestion(){
 async function soloAnswer(index){
  if(soloAnswered||soloBusy)return;soloBusy=true;soloStopClock();
  const buttons=[...$('soloOptions').querySelectorAll('button')];buttons.forEach((b,i)=>{b.disabled=true;b.classList.toggle('kn-selected',i===index);});
- try{const result=await soloRpc('kanuut_solo_answer',{p_run_id:soloRunId,p_selected_index:index});soloAnswered=true;
+ try{const result=await soloRpc('kanuut_solo_answer',{p_run_id:soloRunId,p_selected_index:index});soloAnswered=true;knSoloStats.answered++;if(result.correct)knSoloStats.correct++;knSoloStats.total=Number(result.total)||knSoloStats.total;
  buttons.forEach(b=>b.classList.remove('kn-selected'));if(buttons[result.correct_index])buttons[result.correct_index].classList.add('kn-correct');if(!result.correct&&index>=0&&buttons[index])buttons[index].classList.add('kn-wrong');
  $('soloFeedback').textContent=(result.timed_out?'⏰ Zeit abgelaufen – unbeantwortet.':result.correct?'✅ Richtig!':'❌ Leider falsch.')+(result.explanation?' '+result.explanation:'')+' · '+result.score+'/'+result.total+' Punkte';
  $('soloNext').textContent=result.finished?'Ergebnis anzeigen':'Nächste Frage ▶';$('soloNext').hidden=false;
@@ -765,12 +797,12 @@ async function soloAnswer(index){
 }
 $('soloStart').onclick=async()=>{if(soloBusy)return;soloBusy=true;const b=$('soloStart');b.disabled=true;
  try{if(!accountProfile)throw Error('Bitte mit einem registrierten Account anmelden.');if(!kanuutUnlocked)throw Error('Bitte zuerst Klassenpasswort eingeben.');const q=$('soloQuiz').value;if(!q)throw Error('Bitte Quiz wählen');
- soloStopClock();const r=await soloRpc('kanuut_solo_start',{p_quiz_id:q});soloRunId=r.run_id;$('soloGame').hidden=false;soloNotice('Solo-Spiel gestartet!');await soloShowQuestion();
+ soloStopClock();const r=await soloRpc('kanuut_solo_start',{p_quiz_id:q});soloRunId=r.run_id;knSoloStats={quizId:q,correct:0,answered:0,total:0,recorded:false};$('soloGame').hidden=false;soloNotice('Solo-Spiel gestartet!');await soloShowQuestion();
  }catch(e){soloNotice('Solo-Start fehlgeschlagen: '+(e.message||e));}finally{soloBusy=false;b.disabled=false;}
 };
 $('soloNext').onclick=async()=>{try{await soloShowQuestion()}catch(e){soloNotice('Frage konnte nicht geladen werden: '+(e.message||e))}};
 $('soloRefresh').onclick=soloTop5;
-setInterval(soloAccessUI,1000);soloAccessUI();
+setInterval(soloAccessUI,1000);soloAccessUI();document.querySelectorAll('[data-view="progress"]').forEach(b=>b.addEventListener('click',()=>setTimeout(knLoadProgress,100)));
 // Die globale Solo-Rangliste ist unabhängig vom gewählten Quiz.
 $('soloQuiz').onchange=()=>{};
 </script><script>
