@@ -183,14 +183,21 @@ body,#newKanuutShell{background:#0b0b0e!important;color:#f7f3ed!important}
 </style><script defer src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script><style id="kanuut-matching-style">
 .kn-match-top{display:flex;justify-content:space-between;gap:15px;flex-wrap:wrap;align-items:center}.kn-match-count{border:1px solid #aa8122;color:#ffcc38;border-radius:999px;padding:7px 12px;font-size:12px}.kn-match-picture{position:relative;max-width:920px;margin:20px auto 25px;border:2px solid #9b6b21;border-radius:16px;overflow:hidden;background:#222}.kn-match-picture img{display:block;width:100%;height:auto}.kn-match-pin{position:absolute;transform:translate(-50%,-50%);width:33px;height:33px;border-radius:50%;background:#ffcc38;color:#111;font-weight:900;border:2px solid #111;display:grid;place-items:center;box-shadow:0 0 0 3px #0009;font-size:15px;pointer-events:none}.kn-match-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.kn-match-field{background:#221d20;border:1px solid #6e3b43;border-radius:12px;padding:12px;display:flex;align-items:center;gap:12px;min-width:0}.kn-match-number{background:#ffcc38;color:#161616;min-width:31px;height:31px;display:grid;place-items:center;border-radius:8px;font-weight:900}.kn-match-field select{flex:1;min-width:0;width:100%;margin:0!important}.kn-match-field.correct{border-color:#32bc78;background:#143124}.kn-match-field.wrong{border-color:#e34b56;background:#381b21}.kn-match-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}.kn-match-actions button:first-child{background:#ffcc38!important;color:#111!important}.kn-match-actions button:last-child{background:#4b252b!important;color:#fff!important}#knMatchFeedback{font-weight:700;color:#ffcc38}@media(max-width:760px){.kn-match-fields{grid-template-columns:1fr}.kn-match-pin{width:25px;height:25px;font-size:12px}.kn-match-field{padding:9px}}
 </style></head><body>
-<div id="newKanuutShell"><aside id="newSidebar"><div class="newLogo"><span class="newLogoMark">🚆</span><div><b>KANUUT!</b><small>DEINE EISENBAHN-LERNWELT</small></div></div><p class="newNavLabel">NAVIGATION</p><nav aria-label="Hauptnavigation"><button data-view="home">⌂ <span>Startseite</span></button><button data-view="account">♙ <span>Mein Account</span></button><button data-view="multiplayer">♟ <span>Multiplayer</span></button><button data-view="solo">◉ <span>Solo-Quiz</span></button><button data-view="flashcards">▤ <span>Lernkarten</span></button><button data-view="matching">▦ <span>Zuordnungsbilder</span></button><button data-view="rankings">▥ <span>Ranglisten</span></button></nav><div class="newSidebarFoot">● KANUUT! Lernplattform<br/><small>Erstellt von DerUschii</small></div></aside><div id="newMainWrap"><div id="newTop"><button aria-label="Menü öffnen" id="newMenu" type="button">☰</button><span>KANUUT! <i>/</i> <strong id="newBreadcrumb">STARTSEITE</strong></span><span class="newTopRight">● PRIVATES LERNPROJEKT</span></div><main id="newMain"><section class="newPage" id="page-home"><div class="newHero"><span class="newEyebrow">● WILLKOMMEN BEI KANUUT!</span><h1>Wissen, das dich<br/><em>weiterbringt.</em></h1><p>Rangieren, Signale, Bremsen und mehr. Wähle deinen Lernmodus und trainiere auf deine Weise.</p><button class="newCta" data-view="solo" type="button">JETZT LERNEN →</button></div><div class="newSectionHead"><h2>Deine Lernmodi</h2><p>Wähle, wie du heute lernen möchtest.</p></div><div class="newModeGrid"><button class="newMode" data-view="multiplayer"><span class="newModeIcon red">♟</span><b>Multiplayer</b><small>Mit der Lerngruppe spielen</small><span class="newArrow">↗</span></button><button class="newMode" data-view="solo"><span class="newModeIcon yellow">◎</span><b>Solo-Quiz</b><small>Alleine Wissen testen</small><span class="newArrow">↗</span></button><button class="newMode" data-view="flashcards"><span class="newModeIcon teal">▤</span><b>Lernkarten</b><small>Ohne Zeitdruck lernen</small><span class="newArrow">↗</span></button><button class="newMode" data-view="matching"><span class="newModeIcon yellow">▦</span><b>Zuordnungsbilder</b><small>Bauteile richtig zuordnen</small><span class="newArrow">↗</span></button><button class="newMode" data-view="rankings"><span class="newModeIcon purple">▥</span><b>Ranglisten</b><small>Ergebnisse vergleichen</small><span class="newArrow">↗</span></button></div><div class="newSectionHead"><h2>Deine Lernplattform</h2><p>Bestehende Quizze und Lernkartensets werden aus Supabase geladen.</p></div><div class="newStats"><div><b>1.462</b><small>Fragen laut letztem Datenbankstand</small></div><div><b>4</b><small>Lernbereiche</small></div><div><b>100 %</b><small>Bestehende Quizlogik übernommen</small></div></div><div class="newDisclaimer"><strong>Wichtiger Hinweis</strong><p>Jede Aufgabe ohne Gewähr auf Richtigkeit. Maßgeblich sind die gültigen Vorschriften und Ausbildungsunterlagen. KANUUT! ist ein privates, unabhängiges und nicht kommerzielles Lernprojekt für TF14, keine offizielle Anwendung eines Bildungsträgers.</p></div></section><section class="newPage" hidden="" id="page-account"><div class="newPageHead"><span class="newEyebrow">KANUUT! / LERNWELT</span><h1>Mein Account</h1><p>Anmelden, registrieren oder als Gast starten.</p></div><section class="card" id="knXpAccount"><h2>🎖️ Dein Dienstgrad</h2><div id="knXpAccountInfo">XP-System noch nicht aktiviert.</div><div class="kn-xp-track"><div class="kn-xp-fill" id="knXpProgress"></div></div><p class="muted" id="knXpNext"></p></section><section class="card" id="accountPanel"><h2>🔐 Dein KANUUT!-Spieleraccount</h2>
-<p class="muted">Melde dich mit deinem bestehenden Account an oder registriere dich mit deinem eigenen Spielernamen. Ohne E-Mail kannst du als Gast mitspielen.</p>
+<div id="newKanuutShell"><aside id="newSidebar"><div class="newLogo"><span class="newLogoMark">🚆</span><div><b>KANUUT!</b><small>DEINE EISENBAHN-LERNWELT</small></div></div><p class="newNavLabel">NAVIGATION</p><nav aria-label="Hauptnavigation"><button data-view="home">⌂ <span>Startseite</span></button><button data-view="account">♙ <span>Mein Account</span></button><button data-view="multiplayer">♟ <span>Multiplayer</span></button><button data-view="solo">◉ <span>Solo-Quiz</span></button><button data-view="flashcards">▤ <span>Lernkarten</span></button><button data-view="matching">▦ <span>Zuordnungsbilder</span></button><button data-view="rankings">▥ <span>Ranglisten</span></button></nav><div class="newSidebarFoot">● KANUUT! Lernplattform<br/><small>Erstellt von DerUschii</small></div></aside><div id="newMainWrap"><div id="newTop"><button aria-label="Menü öffnen" id="newMenu" type="button">☰</button><span>KANUUT! <i>/</i> <strong id="newBreadcrumb">STARTSEITE</strong></span><span class="newTopRight">● PRIVATES LERNPROJEKT</span></div><main id="newMain"><section class="newPage" id="page-home"><div class="newHero"><span class="newEyebrow">● WILLKOMMEN BEI KANUUT!</span><h1>Wissen, das dich<br/><em>weiterbringt.</em></h1><p>Rangieren, Signale, Bremsen und mehr. Wähle deinen Lernmodus und trainiere auf deine Weise.</p><button class="newCta" data-view="solo" type="button">JETZT LERNEN →</button></div><div class="newSectionHead"><h2>Deine Lernmodi</h2><p>Wähle, wie du heute lernen möchtest.</p></div><div class="newModeGrid"><button class="newMode" data-view="multiplayer"><span class="newModeIcon red">♟</span><b>Multiplayer</b><small>Mit der Lerngruppe spielen</small><span class="newArrow">↗</span></button><button class="newMode" data-view="solo"><span class="newModeIcon yellow">◎</span><b>Solo-Quiz</b><small>Alleine Wissen testen</small><span class="newArrow">↗</span></button><button class="newMode" data-view="flashcards"><span class="newModeIcon teal">▤</span><b>Lernkarten</b><small>Ohne Zeitdruck lernen</small><span class="newArrow">↗</span></button><button class="newMode" data-view="matching"><span class="newModeIcon yellow">▦</span><b>Zuordnungsbilder</b><small>Bauteile richtig zuordnen</small><span class="newArrow">↗</span></button><button class="newMode" data-view="rankings"><span class="newModeIcon purple">▥</span><b>Ranglisten</b><small>Ergebnisse vergleichen</small><span class="newArrow">↗</span></button></div><div class="newSectionHead"><h2>Deine Lernplattform</h2><p>Bestehende Quizze und Lernkartensets werden aus Supabase geladen.</p></div><div class="newStats"><div><b>1.462</b><small>Fragen laut letztem Datenbankstand</small></div><div><b>4</b><small>Lernbereiche</small></div><div><b>100 %</b><small>Bestehende Quizlogik übernommen</small></div></div><div class="newDisclaimer"><strong>Wichtiger Hinweis</strong><p>Jede Aufgabe ohne Gewähr auf Richtigkeit. Maßgeblich sind die gültigen Vorschriften und Ausbildungsunterlagen. KANUUT! ist ein privates, unabhängiges und nicht kommerzielles Lernprojekt für TF14, keine offizielle Anwendung eines Bildungsträgers.</p></div></section><section class="newPage" hidden="" id="page-account"><div class="newPageHead"><span class="newEyebrow">KANUUT! / LERNWELT</span><h1>Mein Account</h1><p>Melde dich mit deinem Spieleraccount an oder registriere dich.</p></div><section class="card" id="knXpAccount"><h2>🎖️ Dein Dienstgrad</h2><div id="knXpAccountInfo">XP-System noch nicht aktiviert.</div><div class="kn-xp-track"><div class="kn-xp-fill" id="knXpProgress"></div></div><p class="muted" id="knXpNext"></p></section>
+<section class="card" id="knAdminVisitors" hidden>
+<h2>📊 Betreiberbereich – Besucherzahlen</h2>
+<p class="muted">Nur für den freigeschalteten Betreiber sichtbar. Einmal pro Spieler und Tag gezählt.</p>
+<p id="knAdminVisitorsInfo">Lade Besucherstatistik …</p>
+<button id="knAdminVisitorsReload" type="button">Besucherzahlen aktualisieren</button>
+</section>
+<section class="card" id="accountPanel"><h2>🔐 Dein KANUUT!-Spieleraccount</h2>
+<p class="muted">Melde dich mit deinem bestehenden Account an oder registriere dich mit deinem eigenen Spielernamen. Eine Registrierung mit E-Mail-Adresse ist erforderlich.</p>
 <div id="accountForms"><label for="accountEmail">E-Mail-Adresse</label><input autocomplete="email" id="accountEmail" placeholder="deine@email.de" type="email"/>
 <label for="accountPassword">Persönliches Passwort</label><input autocomplete="current-password" id="accountPassword" minlength="8" placeholder="Mindestens 8 Zeichen" type="password"/>
 <div id="registerFields"><label for="accountNick">Dein einmaliger Nickname</label><input autocomplete="nickname" id="accountNick" maxlength="24" placeholder="z. B. LokMattis"/><p class="muted" style="margin:2px 0 8px"><small>Nur bei der Registrierung erforderlich. Beim Anmelden bleibt dein gespeicherter Nickname erhalten.</small></p></div>
 <p><button id="accountLogin" type="button">Anmelden</button> <button id="accountRegister" type="button">Registrieren</button> <button id="accountReset" type="button">Passwort vergessen?</button></p></div>
-<div id="guestEntry"><label for="guestNick">Gast-Nickname</label><input id="guestNick" maxlength="24" placeholder="z. B. Loklöwe"/><button id="guestStart" type="button">Als Gast spielen</button><p class="muted"><small>Gäste benötigen keine E-Mail. Der Zugang gilt nur für dieses Gerät; nach dem Löschen der Browserdaten kann er verloren gehen.</small></p></div><div hidden="" id="accountLoggedIn"><strong id="accountWho"></strong> <button id="accountLogout" type="button">Abmelden</button></div>
-<p aria-live="polite" id="accountNotice" role="status"></p></section></section><section class="newPage" hidden="" id="page-multiplayer"><div class="newPageHead"><span class="newEyebrow">KANUUT! / LERNWELT</span><h1>Multiplayer</h1><p>Spiel beitreten, Raum erstellen und live quizzen.</p></div><section class="card"><h2>🌐 Online-Spiel beitreten</h2><p>Du brauchst nur die sechsstellige PIN. Mit Account oder als Gast. Das Klassenpasswort bleibt erforderlich.</p>
+<div hidden="" id="accountLoggedIn"><strong id="accountWho"></strong> <button id="accountLogout" type="button">Abmelden</button></div>
+<p aria-live="polite" id="accountNotice" role="status"></p></section></section><section class="newPage" hidden="" id="page-multiplayer"><div class="newPageHead"><span class="newEyebrow">KANUUT! / LERNWELT</span><h1>Multiplayer</h1><p>Spiel beitreten, Raum erstellen und live quizzen.</p></div><section class="card"><h2>🌐 Online-Spiel beitreten</h2><p>Du brauchst nur die sechsstellige PIN. Ein registrierter Account und das Klassenpasswort sind erforderlich.</p>
 <label for="pin">Sechsstelliger Spielcode</label><input id="pin" inputmode="numeric" maxlength="6" placeholder="z. B. 402365"/><br/>
 <label for="nickname">Dein Spielername</label><input id="nickname" maxlength="24" placeholder="Bitte zuerst anmelden" readonly=""/><br/>
 <button id="join">Spiel beitreten</button><p aria-live="polite" id="notice" role="status"></p>
@@ -217,7 +224,7 @@ body,#newKanuutShell{background:#0b0b0e!important;color:#f7f3ed!important}
 <p><strong>Jede Aufgabe ohne Gewähr auf Richtigkeit.</strong> KANUUT! ist eine private Lernhilfe und keine offizielle Prüfungssoftware. Maßgeblich sind die gültigen Vorschriften und Ausbildungsunterlagen.</p>
 <p>Erstellt von <strong>DerUschii</strong></p>
 <p><a href="datenschutz.html" style="color:#f5ba28">Datenschutzerklärung</a> · <a href="impressum.html" style="color:#f5ba28">Impressum</a></p>
-</footer></div></div><div aria-label="TF14-Zugang" aria-modal="true" hidden="" id="kanuutGate" role="dialog"><section class="card"><h1>🦁 KANUUT!</h1><h2>🔐 Zugang nur für TF14</h2><p>Bitte gib das Klassenpasswort ein. Mit bestehendem Account oder Gast-Nickname kannst du teilnehmen.</p><label for="kanuutPassword">Klassenpasswort</label><input autocomplete="off" id="kanuutPassword" placeholder="Klassenpasswort eingeben" type="password"/><button id="kanuutEnter" type="button">KANUUT! betreten</button><p id="kanuutGateError" role="status"></p><p class="muted"><small>Das Klassenpasswort ist dauerhaft gültig. Nur für TF14 · Alle Angaben ohne Gewähr · Erstellt von DerUschii.</small></p></section></div>
+</footer></div></div><div aria-label="TF14-Zugang" aria-modal="true" hidden="" id="kanuutGate" role="dialog"><section class="card"><h1>🦁 KANUUT!</h1><h2>🔐 Zugang nur für TF14</h2><p>Bitte gib das Klassenpasswort ein. Melde dich mit deinem registrierten Account an und gib anschließend das Klassenpasswort ein.</p><label for="kanuutPassword">Klassenpasswort</label><input autocomplete="off" id="kanuutPassword" placeholder="Klassenpasswort eingeben" type="password"/><button id="kanuutEnter" type="button">KANUUT! betreten</button><p id="kanuutGateError" role="status"></p><p class="muted"><small>Das Klassenpasswort ist dauerhaft gültig. Nur für TF14 · Alle Angaben ohne Gewähr · Erstellt von DerUschii.</small></p></section></div>
 <script type="module">
 import {createClient} from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
 const URL='https://fhgozciqheeuscwvscvx.supabase.co';
@@ -228,7 +235,7 @@ let activeClient=null,activePin='',pollTimer=null,loadingPlayers=false;
 let client=null,hostRoomId=null,hostPin='',livePin='',liveTimerHandle=null,liveBusy=false,liveLastKey='',liveLastPhase='',localAnswered=false,liveSelectedIndex=-1;
 let smoothTimerHandle=null,smoothDeadline=0,smoothPhase='waiting';
 let accountProfile=null;
-let guestMode=false, guestNickname="";
+let guestMode=false, guestNickname=""; // Gastmodus dauerhaft deaktiviert
 // QR-Einladungen verwenden den vorhandenen Spielcode und den bestehenden Beitrittsweg.
 const qrInvitePin=new URLSearchParams(location.search).get('join');
 const qrValidPin=/^\d{6}$/.test(qrInvitePin||'')?qrInvitePin:null;
@@ -259,7 +266,7 @@ function prepareQrInvite(){
  $('notice').textContent='📱 QR-Einladung erkannt: Raum '+qrValidPin+'. Melde dich an oder wähle einen Gastnamen. Nach der Klassenfreigabe wird der Beitritt versucht.';
 }
 function tryQrAutoJoin(){
- if(!qrValidPin||qrAutoJoinAttempted||!kanuutUnlocked||(!accountProfile&&!guestMode)||activePin===qrValidPin)return;
+ if(!qrValidPin||qrAutoJoinAttempted||!kanuutUnlocked||(!accountProfile)||activePin===qrValidPin)return;
  qrAutoJoinAttempted=true;
  $('pin').value=qrValidPin;
  // Den normalen Join-Handler nutzen: alle bestehenden Rejoin- und Serverprüfungen bleiben erhalten.
@@ -319,38 +326,13 @@ async function requireAccount(){
  accountProfile=profile;$('nickname').value=profile.nickname;
  return sb;
 }
-async function requirePlayer(){
- if(!guestMode)return requireAccount();
- const sb=await getConnectedClient();
- const {data:{user}}=await sb.auth.getUser();
- if(!user||!user.is_anonymous)throw Error('Gast-Sitzung fehlt. Bitte erneut als Gast starten.');
- if(!guestNickname)throw Error('Gast-Nickname fehlt.');
- $('nickname').value=guestNickname;
- return sb;
-}
-$('guestStart').onclick=async()=>{
- const note=$('accountNotice'),nick=$('guestNick').value.trim();
- if(nick.length<2||nick.length>24){note.textContent='Bitte einen Gast-Nicknamen mit 2–24 Zeichen eingeben.';return;}
- const btn=$('guestStart');btn.disabled=true;note.textContent='Gastzugang wird vorbereitet …';
- try{
-  const sb=await getConnectedClient();
-  const {data:{user}}=await sb.auth.getUser();
-  if(user&&!user.is_anonymous)throw Error('Du bist bereits angemeldet. Bitte nutze deinen bestehenden Account.');
-  if(!user){const {error}=await sb.auth.signInAnonymously();if(error)throw error;}
-  guestMode=true;guestNickname=nick;sessionStorage.setItem('kanuut_guest_nick',nick);
-  $('accountForms').hidden=true;$('guestEntry').hidden=true;$('accountLoggedIn').hidden=false;
-  $('accountWho').textContent='Gast: '+nick;$('nickname').value=nick;
-  note.textContent='Gastzugang bereit. Bitte Klassenpasswort eingeben.';
-  await checkKanuutAccess();
- }catch(e){note.textContent='Gastzugang fehlgeschlagen: '+(e.message||String(e));}
- finally{btn.disabled=false;}
-};
+async function requirePlayer(){return requireAccount();}
 async function refreshAccountUI(){
- try{await requireAccount();$('accountForms').hidden=true;$('guestEntry').hidden=true;$('accountLoggedIn').hidden=false;
+ try{await requireAccount();$('accountForms').hidden=true;$('accountLoggedIn').hidden=false;
  $('accountWho').textContent='Angemeldet als '+accountProfile.nickname;
  $('accountPanel').hidden=false;
  if(await checkKanuutAccess()){await loadQuizzes();await flashcardLoadDecks();await loadTop30();await restoreRejoin();}
- }catch(e){accountProfile=null;if(guestMode)return; $('guestEntry').hidden=false;$('accountForms').hidden=false;$('accountLoggedIn').hidden=true;
+ }catch(e){accountProfile=null;$('accountForms').hidden=false;$('accountLoggedIn').hidden=true;
  kanuutUnlocked=false;$('kanuutGate').hidden=true;document.body.classList.remove('kanuut-locked');
  $('waiting').hidden=true;$('liveGame').hidden=true;$('hostControls').hidden=true;
  $('accountPanel').hidden=false;}
@@ -384,13 +366,37 @@ $('accountReset').onclick=async()=>{
 $('accountLogout').onclick=async()=>{const sb=await getConnectedClient();await sb.auth.signOut();sessionStorage.removeItem('kanuut_guest_nick');guestMode=false;forgetRejoin();location.reload();};
 
 
+
+let knVisitSent=false;
+async function recordKanuutVisit(){
+ if(knVisitSent||!accountProfile)return;
+ knVisitSent=true;
+ try{
+  const sb=await getConnectedClient();
+  const result=await sb.rpc('kanuut_record_visit');
+  if(result.error){knVisitSent=false;return;}
+  await loadKanuutAdminVisitors();
+ }catch(e){knVisitSent=false;}
+}
+async function loadKanuutAdminVisitors(){
+ const panel=$('knAdminVisitors'), info=$('knAdminVisitorsInfo');
+ if(!panel||!accountProfile)return;
+ try{
+  const sb=await getConnectedClient();
+  const {data,error}=await sb.rpc('kanuut_admin_visit_stats');
+  if(error||!data||data.is_admin!==true){panel.hidden=true;return;}
+  panel.hidden=false;
+  info.textContent='Heute: '+data.today+' · Letzte 7 Tage: '+data.last_7_days+' · Insgesamt: '+data.total+' eindeutige Spieler-Tage';
+ }catch(e){panel.hidden=true;}
+}
+$('knAdminVisitorsReload').onclick=loadKanuutAdminVisitors;
 async function checkKanuutAccess(){
  try {const sb=await requirePlayer();const {data,error}=await sb.rpc('kanuut_access_ok');if(error)throw error;
  kanuutUnlocked=data===true;$('kanuutGate').hidden=kanuutUnlocked;document.body.classList.toggle('kanuut-locked',!kanuutUnlocked);
-  if(kanuutUnlocked)tryQrAutoJoin();
+  if(kanuutUnlocked){tryQrAutoJoin();recordKanuutVisit();}
  if(!kanuutUnlocked){$('liveGame').hidden=true;$('waiting').hidden=true;}
  return kanuutUnlocked;
- }catch(e){kanuutUnlocked=false;$('kanuutGate').hidden=!(accountProfile||guestMode);document.body.classList.toggle('kanuut-locked',!!(accountProfile||guestMode));$('kanuutGateError').textContent='Zugangsprüfung fehlgeschlagen: '+(e.message||e);return false;}
+ }catch(e){kanuutUnlocked=false;$('kanuutGate').hidden=!accountProfile;document.body.classList.toggle('kanuut-locked',!!accountProfile);$('kanuutGateError').textContent='Zugangsprüfung fehlgeschlagen: '+(e.message||e);return false;}
 }
 async function submitKanuutPassword(){
  const btn=$('kanuutEnter');btn.disabled=true;$('kanuutGateError').textContent='Prüfe Passwort …';
@@ -545,7 +551,7 @@ async function loadPlayers(){
 }
 $('refreshPlayers').onclick=loadPlayers;
 $('join').onclick=async()=>{
- const pin=$('pin').value.trim(),nickname=guestMode?guestNickname:(accountProfile?.nickname||'');
+ const pin=$('pin').value.trim(),nickname=(accountProfile?.nickname||'');
  const note=$('notice');note.className='';note.textContent='';
  if(!/^\d{6}$/.test(pin)){note.className='error';note.textContent='Bitte einen sechsstelligen Spielcode eingeben.';return}
  if(nickname.length<2||nickname.length>24){note.className='error';note.textContent='Spitzname: 2 bis 24 Zeichen.';return}
@@ -677,11 +683,10 @@ getConnectedClient().then(sb=>sb.auth.onAuthStateChange(async(event)=>{
 (async()=>{
  const sb=await getConnectedClient();
  const {data:{user}}=await sb.auth.getUser();
- const saved=sessionStorage.getItem('kanuut_guest_nick');
- if(user?.is_anonymous&&saved){guestMode=true;guestNickname=saved;$('guestEntry').hidden=true;$('accountForms').hidden=true;$('accountLoggedIn').hidden=false;$('accountWho').textContent='Gast: '+saved;$('nickname').value=saved;if(await checkKanuutAccess()){await loadQuizzes();await flashcardLoadDecks();await loadTop30();await restoreRejoin();}}
- else await refreshAccountUI();
+ if(user?.is_anonymous){await sb.auth.signOut();}
+ await refreshAccountUI();
 })();
-setInterval(async()=>{if(!accountProfile&&!guestMode)return;const was=kanuutUnlocked;const ok=await checkKanuutAccess();if(ok&&!was){loadQuizzes();flashcardLoadDecks();loadTop30();restoreRejoin();}if(ok&&!document.hidden)loadTop30();},30000);
+setInterval(async()=>{if(!accountProfile)return;const was=kanuutUnlocked;const ok=await checkKanuutAccess();if(ok&&!was){loadQuizzes();flashcardLoadDecks();loadTop30();restoreRejoin();}if(ok&&!document.hidden)loadTop30();},30000);
 
 // Solo-Spiel: serverseitig bewertete Antworten und eigene Rangliste.
 let soloRunId=null,soloAnswered=false,soloBusy=false;
@@ -713,7 +718,7 @@ function kanuutRankBadge(position){
  return badge;
 }
 function soloNotice(msg){$('soloStatus').textContent=msg;}
-function soloAccessUI(){const allowed=!!accountProfile&&!guestMode&&kanuutUnlocked;$('soloStart').disabled=!allowed;$('soloQuiz').disabled=!allowed;}
+function soloAccessUI(){const allowed=!!accountProfile&&kanuutUnlocked;$('soloStart').disabled=!allowed;$('soloQuiz').disabled=!allowed;}
 async function soloTop5(){
  try{const rows=await soloRpc('kanuut_solo_top5',{});const list=$('soloBoard');list.replaceChildren();
  if(!rows?.length){const li=document.createElement('li');li.textContent='Noch keine Ergebnisse';list.append(li);return;}
@@ -741,7 +746,7 @@ async function soloAnswer(index){
  }catch(e){buttons.forEach(b=>b.classList.remove('kn-selected'));soloNotice('Antwort fehlgeschlagen: '+(e.message||e));if(index>=0&&Date.now()<soloDeadline){buttons.forEach(b=>b.disabled=false);soloStartClock(new Date(soloDeadline).toISOString());}else if(soloTimeoutRetries++<3){soloTimeoutPending=false;setTimeout(()=>soloAnswer(-1),1000);}else{soloNotice('Zeitablauf konnte nicht gespeichert werden. Bitte Seite neu laden oder Verbindung prüfen.');}}finally{soloBusy=false;}
 }
 $('soloStart').onclick=async()=>{if(soloBusy)return;soloBusy=true;const b=$('soloStart');b.disabled=true;
- try{if(!accountProfile||guestMode)throw Error('Solo-Modus ist nur für registrierte Spieler verfügbar.');if(!kanuutUnlocked)throw Error('Bitte zuerst Klassenpasswort eingeben.');const q=$('soloQuiz').value;if(!q)throw Error('Bitte Quiz wählen');
+ try{if(!accountProfile)throw Error('Bitte mit einem registrierten Account anmelden.');if(!kanuutUnlocked)throw Error('Bitte zuerst Klassenpasswort eingeben.');const q=$('soloQuiz').value;if(!q)throw Error('Bitte Quiz wählen');
  soloStopClock();const r=await soloRpc('kanuut_solo_start',{p_quiz_id:q});soloRunId=r.run_id;$('soloGame').hidden=false;soloNotice('Solo-Spiel gestartet!');await soloShowQuestion();
  }catch(e){soloNotice('Solo-Start fehlgeschlagen: '+(e.message||e));}finally{soloBusy=false;b.disabled=false;}
 };
