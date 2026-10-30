@@ -230,7 +230,7 @@ let guestMode=false, guestNickname="";
 const qrInvitePin=new URLSearchParams(location.search).get('join');
 const qrValidPin=/^\d{6}$/.test(qrInvitePin||'')?qrInvitePin:null;
 let qrAutoJoinAttempted=false;
-function kanuutInviteUrl(pin){const u=new URL(location.href);u.searchParams.set('join',pin);u.hash='multiplayer';return u.href;}
+function kanuutInviteUrl(pin){const u=new window.URL(location.href);u.searchParams.set('join',pin);u.hash='multiplayer';return u.href;}
 function showRoomQr(pin){
  const panel=$('knQrJoin'),target=$('knQrCanvas'),link=$('knQrLink');
  if(!/^\d{6}$/.test(String(pin||'')))return;
