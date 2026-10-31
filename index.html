@@ -655,7 +655,12 @@ async function refreshLive(){
    $('liveFeedback').textContent=phase==='question'?(s.is_host?'Du schaust als Spielleiter zu.':localAnswered?'Antwort abgegeben – bitte warten.':'Wähle eine Antwort.'):
     showingResult&&validCorrect?'Richtig: '+String.fromCharCode(65+correctIndex)+(s.explanation?' · '+s.explanation:''):'';
   const hostNextWrap=$('knHostNextWrap');
-  hostNextWrap.hidden=!(s.is_host&&(phase==='reveal'||phase==='leaderboard'));
+  // Der Server liefert is_host nicht in jeder live_game_state-Version.
+  // Lokale Host-Raum-ID dient nur der Anzeige; die SQL-RPC prüft auth.uid() verbindlich.
+  const isLocalHost=Boolean(hostRoomId&&hostPin&&String(livePin)===String(hostPin));
+  hostNextWrap.hidden=!(isLocalHost||s.is_host)||!(phase==='reveal'||phase==='leaderboard');
+  $('knHostNext').disabled=phase!=='leaderboard';
+  $('knHostNextNotice').textContent=phase==='reveal'?'Auflösung läuft – gleich kannst du weiterschalten.':'';
   $('knHostNext').textContent=Number(s.question_number)>=Number(s.question_count)?'✓ Quiz beenden':'▶ Nächste Frage starten';
   const board=$('liveBoard');board.replaceChildren();
   if(Array.isArray(s.leaderboard))s.leaderboard.forEach((p,i)=>{
@@ -668,6 +673,7 @@ async function refreshLive(){
 }
 $('knHostNext').onclick=async()=>{
  const b=$('knHostNext'),notice=$('knHostNextNotice');
+ if(!hostRoomId){notice.textContent='Spielleiter-Raum-ID fehlt. Bitte den Raum mit diesem Konto neu erstellen.';return;}
  b.disabled=true;notice.textContent='Nächste Runde wird freigegeben …';
  try{
   const sb=await getConnectedClient();
