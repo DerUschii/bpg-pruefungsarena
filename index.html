@@ -778,38 +778,25 @@ async function soloTop5(){
  for(const [i,x] of rows.entries()){const li=document.createElement('li');const name=document.createElement('strong');name.textContent=x.nickname;const score=document.createElement('span');score.textContent=x.points+' Punkte · '+x.quizzes_played+' Quizze';li.append(name,kanuutRankBadge(i+1),score);list.append(li);}
  }catch(e){soloNotice('Top 5: '+(e.message||e));}
 }
-let knSoloQuestionType='single_choice';
 async function soloShowQuestion(){
  const q=await soloRpc('kanuut_solo_question',{p_run_id:soloRunId});
- if(q.finished){soloStopClock();$('soloGame').hidden=true;try{await knSaveSoloProgress();}catch(e){soloNotice('Fortschritt konnte nicht gespeichert werden: '+(e.message||e));return;}const pct=knSoloStats.total?Math.round(100*knSoloStats.correct/knSoloStats.total):0;soloNotice('Fertig! '+knSoloStats.correct+'/'+knSoloStats.total+' richtig ('+pct+' %). '+(pct>=70?'Glückwunsch! 70-%-Grenze erreicht. BG muss gesondert geprüft werden.':'70-%-Grenze noch nicht erreicht.'));await soloTop5();return;}
+ if(q.finished){soloStopClock();$('soloGame').hidden=true;try{await knSaveSoloProgress();}catch(e){soloNotice('Fortschritt konnte nicht gespeichert werden: '+(e.message||e));return;}const pct=knSoloStats.total?Math.round(100*knSoloStats.correct/knSoloStats.total):0;soloNotice('Fertig! '+knSoloStats.correct+'/'+knSoloStats.total+' richtig ('+pct+' %). '+(pct>=70?'Glückwunsch! 70-%-Grenze erreicht. BG muss gesondert geprüft werden.':'70-%-Grenze noch nicht erreicht.') );await soloTop5();return;}
  soloAnswered=false;$('soloNext').hidden=true;$('soloFeedback').textContent='';$('soloProgress').textContent='Frage '+(q.position+1)+' von '+q.total+' · '+q.score+' Punkte';$('soloQuestion').textContent=q.question;
- const opts=$('soloOptions');opts.replaceChildren();knSoloQuestionType=q.question_type||'single_choice';
- let choices=q.options;if(typeof choices==='string'){try{choices=JSON.parse(choices)}catch(e){choices=[]}}
- if(knSoloQuestionType==='free_text'){
-   const input=document.createElement('textarea');input.rows=3;input.placeholder='Antwort hier eingeben …';input.setAttribute('aria-label','Antwort eingeben');input.style.cssText='width:100%;box-sizing:border-box;padding:14px;border-radius:10px;background:#2b2d34;color:white;border:1px solid #777;font:inherit;';
-   const submit=document.createElement('button');submit.type='button';submit.textContent='Antwort abgeben';submit.onclick=()=>soloAnswer({text:input.value});opts.append(input,submit);
- }else if(knSoloQuestionType==='multiple_choice'){
-   if(!Array.isArray(choices)||choices.length<2)throw Error('Mehrfachauswahl ohne Antwortmöglichkeiten');
-   const selected=new Set();choices.forEach((choice,i)=>{const btn=document.createElement('button');btn.type='button';btn.textContent=String.fromCharCode(65+i)+': '+(typeof choice==='string'?choice:(choice?.text??choice?.label??String(choice)));btn.setAttribute('aria-pressed','false');btn.onclick=()=>{if(selected.has(i))selected.delete(i);else selected.add(i);btn.setAttribute('aria-pressed',String(selected.has(i)));btn.style.outline=selected.has(i)?'3px solid #f5ba28':'';};opts.append(btn)});
-   const submit=document.createElement('button');submit.type='button';submit.textContent='Ausgewählte Antworten abgeben';submit.onclick=()=>soloAnswer({indices:[...selected].sort((a,b)=>a-b)});opts.append(submit);
- }else if(knSoloQuestionType==='single_choice'){
-   if(!Array.isArray(choices)||choices.length<2)throw Error('Einfachauswahl ohne Antwortmöglichkeiten');
-   choices.forEach((choice,i)=>{const btn=document.createElement('button');btn.type='button';btn.textContent=String.fromCharCode(65+i)+': '+(typeof choice==='string'?choice:(choice?.text??choice?.label??String(choice)));btn.onclick=()=>soloAnswer(i);opts.append(btn)});
- }else throw Error('Unbekannter Fragetyp: '+knSoloQuestionType);
+ const opts=$('soloOptions');opts.replaceChildren();
+ let choices=q.options;
+ if(typeof choices==='string'){try{choices=JSON.parse(choices)}catch(e){choices=[]}}
+ if(!Array.isArray(choices)||choices.length!==4)throw Error('Antwortformat dieser Frage ist ungültig');
+ choices.forEach((choice,i)=>{const b=document.createElement('button');b.type='button';b.textContent=typeof choice==='string'?choice:(choice?.text??choice?.label??String(choice));b.onclick=()=>soloAnswer(i);opts.append(b)});
  soloStartClock(q.deadline_at);
 }
-async function soloAnswer(answer){
+async function soloAnswer(index){
  if(soloAnswered||soloBusy)return;soloBusy=true;soloStopClock();
- const opts=$('soloOptions');const buttons=[...opts.querySelectorAll('button')];buttons.forEach(b=>b.disabled=true);const input=opts.querySelector('textarea');if(input)input.disabled=true;
- const timedOut=answer===-1;
- try{
-  const mixed=knSoloQuestionType!=='single_choice';
-  const result=mixed?await soloRpc('kanuut_solo_answer_mixed',{p_run_id:soloRunId,p_selected_indices:timedOut?[]:(answer.indices||[]),p_text_answer:timedOut?'':(answer.text||'')}):await soloRpc('kanuut_solo_answer',{p_run_id:soloRunId,p_selected_index:answer});
-  soloAnswered=true;knSoloStats.answered++;if(result.correct)knSoloStats.correct++;knSoloStats.total=Number(result.total)||knSoloStats.total;
-  if(!mixed){if(buttons[result.correct_index])buttons[result.correct_index].classList.add('kn-correct');if(!result.correct&&answer>=0&&buttons[answer])buttons[answer].classList.add('kn-wrong');}
-  $('soloFeedback').textContent=(result.timed_out?'⏰ Zeit abgelaufen – unbeantwortet.':result.correct?'✅ Richtig!':'❌ Leider falsch.')+(result.explanation?' '+result.explanation:'')+' · '+result.score+'/'+result.total+' Punkte';
-  $('soloNext').textContent=result.finished?'Ergebnis anzeigen':'Nächste Frage ▶';$('soloNext').hidden=false;
- }catch(e){soloNotice('Antwort fehlgeschlagen: '+(e.message||e));if(!timedOut&&Date.now()<soloDeadline){buttons.forEach(b=>b.disabled=false);if(input)input.disabled=false;soloStartClock(new Date(soloDeadline).toISOString());}else if(soloTimeoutRetries++<3){soloTimeoutPending=false;setTimeout(()=>soloAnswer(-1),1000);}else soloNotice('Zeitablauf konnte nicht gespeichert werden. Bitte Seite neu laden oder Verbindung prüfen.');}finally{soloBusy=false;}
+ const buttons=[...$('soloOptions').querySelectorAll('button')];buttons.forEach((b,i)=>{b.disabled=true;b.classList.toggle('kn-selected',i===index);});
+ try{const result=await soloRpc('kanuut_solo_answer',{p_run_id:soloRunId,p_selected_index:index});soloAnswered=true;knSoloStats.answered++;if(result.correct)knSoloStats.correct++;knSoloStats.total=Number(result.total)||knSoloStats.total;
+ buttons.forEach(b=>b.classList.remove('kn-selected'));if(buttons[result.correct_index])buttons[result.correct_index].classList.add('kn-correct');if(!result.correct&&index>=0&&buttons[index])buttons[index].classList.add('kn-wrong');
+ $('soloFeedback').textContent=(result.timed_out?'⏰ Zeit abgelaufen – unbeantwortet.':result.correct?'✅ Richtig!':'❌ Leider falsch.')+(result.explanation?' '+result.explanation:'')+' · '+result.score+'/'+result.total+' Punkte';
+ $('soloNext').textContent=result.finished?'Ergebnis anzeigen':'Nächste Frage ▶';$('soloNext').hidden=false;
+ }catch(e){buttons.forEach(b=>b.classList.remove('kn-selected'));soloNotice('Antwort fehlgeschlagen: '+(e.message||e));if(index>=0&&Date.now()<soloDeadline){buttons.forEach(b=>b.disabled=false);soloStartClock(new Date(soloDeadline).toISOString());}else if(soloTimeoutRetries++<3){soloTimeoutPending=false;setTimeout(()=>soloAnswer(-1),1000);}else{soloNotice('Zeitablauf konnte nicht gespeichert werden. Bitte Seite neu laden oder Verbindung prüfen.');}}finally{soloBusy=false;}
 }
 $('soloStart').onclick=async()=>{if(soloBusy)return;soloBusy=true;const b=$('soloStart');b.disabled=true;
  try{if(!accountProfile)throw Error('Bitte mit einem registrierten Account anmelden.');if(!kanuutUnlocked)throw Error('Bitte zuerst Klassenpasswort eingeben.');const q=$('soloQuiz').value;if(!q)throw Error('Bitte Quiz wählen');
