@@ -786,7 +786,7 @@ async function soloShowQuestion(){
  const q=await soloRpc('kanuut_solo_question',{p_run_id:soloRunId});
  if(q.finished){soloStopClock();$('soloGame').hidden=true;try{await knSaveSoloProgress();}catch(e){soloNotice('Fortschritt konnte nicht gespeichert werden: '+(e.message||e));return;}const pct=knSoloStats.total?Math.round(100*knSoloStats.correct/knSoloStats.total):0;soloNotice('Fertig! '+knSoloStats.correct+'/'+knSoloStats.total+' richtig ('+pct+' %). '+(pct>=70?'Glückwunsch! 70-%-Grenze erreicht. BG muss gesondert geprüft werden.':'70-%-Grenze noch nicht erreicht.'));await soloTop5();return;}
  soloAnswered=false;$('soloNext').hidden=true;$('soloFeedback').textContent='';$('soloProgress').textContent='Frage '+(q.position+1)+' von '+q.total+' · '+q.score+' Punkte';$('soloQuestion').textContent=q.question;
- const opts=$('soloOptions');opts.replaceChildren();knSoloQuestionType=q.question_type||'single_choice';
+ const opts=$('soloOptions');opts.replaceChildren();const rawSoloType=String(q.question_type||'single_choice').toLowerCase().trim();knSoloQuestionType=({single:'single_choice',single_choice:'single_choice',multiple:'multiple_choice',multi:'multiple_choice',multiple_choice:'multiple_choice',text:'free_text',free_text:'free_text',freetext:'free_text'})[rawSoloType]||rawSoloType;
  let choices=q.options;if(typeof choices==='string'){try{choices=JSON.parse(choices)}catch(e){choices=[]}}
  if(knSoloQuestionType==='free_text'){
    const input=document.createElement('textarea');input.rows=3;input.placeholder='Antwort hier eingeben …';input.setAttribute('aria-label','Antwort eingeben');input.style.cssText='width:100%;box-sizing:border-box;padding:14px;border-radius:10px;background:#2b2d34;color:white;border:1px solid #777;font:inherit;';
